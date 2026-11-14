@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     sim_seed: int = 20261114
     gemini_api_key: SecretStr | None = None
     gemini_model: str | None = None
+    synthea_java: str | None = None
+    synthea_population: int = Field(default=3000, ge=1)
+    synthea_seed: int = 20261114
 
     def secret_values(self) -> list[str]:
         """Plain values that must never appear in logs."""

@@ -1,0 +1,65 @@
+ version |         name          
+---------+-----------------------
+       1 | extensions
+       2 | reference_tables
+       3 | hypertables
+       4 | continuous_aggregates
+       5 | compression
+(5 rows)
+
+ hypertable_name | compression_enabled 
+-----------------+---------------------
+ agent_recs      | f
+ audit_log       | f
+ bed_state       | f
+ drift           | f
+ events          | t
+ forecasts       | f
+ risk_scores     | f
+ vitals          | t
+(8 rows)
+
+    view_name    | materialized_only 
+-----------------+-------------------
+ alerts_hourly   | f
+ arrivals_hourly | f
+ er_wait_15m     | f
+ occupancy_15m   | f
+ vitals_5m       | f
+(5 rows)
+
+              proc_name              |       hypertable_name       | schedule_interval |                               config                                
+-------------------------------------+-----------------------------+-------------------+---------------------------------------------------------------------
+ policy_compression                  | events                      | 12:00:00          | {"hypertable_id": 2, "compress_after": "1 day"}
+ policy_compression                  | vitals                      | 12:00:00          | {"hypertable_id": 1, "compress_after": "1 day"}
+ policy_job_error_retention          |                             | 1 mon             | {"drop_after": "1 month"}
+ policy_job_stat_history_retention   |                             | 1 mon             | {"drop_after": "1 month"}
+ policy_refresh_continuous_aggregate | _materialized_hypertable_10 | 00:01:00          | {"end_offset": null, "start_offset": null, "mat_hypertable_id": 10}
+ policy_refresh_continuous_aggregate | _materialized_hypertable_11 | 00:01:00          | {"end_offset": null, "start_offset": null, "mat_hypertable_id": 11}
+ policy_refresh_continuous_aggregate | _materialized_hypertable_12 | 00:01:00          | {"end_offset": null, "start_offset": null, "mat_hypertable_id": 12}
+ policy_refresh_continuous_aggregate | _materialized_hypertable_13 | 00:01:00          | {"end_offset": null, "start_offset": null, "mat_hypertable_id": 13}
+ policy_refresh_continuous_aggregate | _materialized_hypertable_9  | 00:01:00          | {"end_offset": null, "start_offset": null, "mat_hypertable_id": 9}
+ policy_telemetry                    |                             | 24:00:00          | 
+(10 rows)
+
+ hospital_id | unit | beds 
+-------------+------+------
+ desert      | ER   |    6
+ desert      | ICU  |    6
+ desert      | REC  |    3
+ desert      | WARD |   14
+ mercy       | ER   |    6
+ mercy       | ICU  |    6
+ mercy       | REC  |    3
+ mercy       | WARD |   14
+ stlukes     | ER   |    6
+ stlukes     | ICU  |    6
+ stlukes     | REC  |    3
+ stlukes     | WARD |   14
+(12 rows)
+
+ patients 
+----------
+     3000
+(1 row)
+

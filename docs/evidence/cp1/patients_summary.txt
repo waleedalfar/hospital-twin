@@ -1,0 +1,56 @@
+ patients | min | max | avg_age | female | avg_comorb | max_comorb | size  
+----------+-----+-----+---------+--------+------------+------------+-------
+     3000 |  17 |  89 |    53.5 |   1499 |       3.04 |         10 | 20 MB
+(1 row)
+
+ comorbidity_count | count 
+-------------------+-------
+                 0 |   529
+                 1 |   406
+                 2 |   412
+                 3 |   434
+                 4 |   330
+                 5 |   354
+                 6 |   303
+                 7 |   181
+                 8 |    44
+                 9 |     5
+                10 |     2
+(11 rows)
+
+                                   c                                    | count 
+------------------------------------------------------------------------+-------
+ Body mass index 30+ - obesity (finding)                                |  1815
+ Prediabetes                                                            |  1446
+ Essential hypertension (disorder)                                      |  1369
+ Gingivitis (disorder)                                                  |  1301
+ Anemia (disorder)                                                      |  1282
+ Abnormal findings diagnostic imaging heart+coronary circulat (finding) |   835
+ Ischemic heart disease (disorder)                                      |   832
+ Chronic pain (finding)                                                 |   803
+ Chronic sinusitis (disorder)                                           |   787
+ Metabolic syndrome X (disorder)                                        |   757
+ Past pregnancy history of miscarriage (situation)                      |   744
+ Chronic low back pain (finding)                                        |   742
+ Disorder of kidney due to diabetes mellitus (disorder)                 |   562
+ Microalbuminuria due to type 2 diabetes mellitus (disorder)            |   491
+ Hyperlipidemia                                                         |   470
+ Chronic neck pain (finding)                                            |   453
+ Chronic kidney disease stage 1 (disorder)                              |   413
+ History of tubal ligation (situation)                                  |   410
+ Proteinuria due to type 2 diabetes mellitus (disorder)                 |   350
+ Chronic kidney disease stage 2 (disorder)                              |   346
+ History of coronary artery bypass grafting (situation)                 |   326
+ Hypertriglyceridemia (disorder)                                        |   304
+ Diabetes mellitus type 2 (disorder)                                    |   304
+ Chronic intractable migraine without aura                              |   248
+ Impacted molars                                                        |   246
+(25 rows)
+
+   id   |              synthea_id              | age |  sex   | comorbidity_count |                                                conditions                                                | entries 
+--------+--------------------------------------+-----+--------+-------------------+----------------------------------------------------------------------------------------------------------+---------
+ P-0001 | 0008f5e1-8a43-32a4-5da3-8811cc934ecd |  27 | female |                 1 | {"Body mass index 30+ - obesity (finding)","Chronic intractable migraine without aura","Chronic pain"}   |      16
+ P-0002 | 000b0a3b-0d4f-b803-14e4-2029d5d5cbd6 |  25 | female |                 2 | {"Anemia (disorder)","Chronic sinusitis (disorder)","Past pregnancy history of miscarriage (situation)"} |      13
+ P-0003 | 001c0d53-57bf-bebf-570d-6aa46b861ef3 |  72 | male   |                 5 | {"Anemia (disorder)","Body mass index 30+ - obesity (finding)","Chronic low back pain (finding)"}        |      25
+(3 rows)
+

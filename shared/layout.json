@@ -1,0 +1,7041 @@
+{
+ "version": 1,
+ "units": "meters",
+ "building": {
+  "footprint": {
+   "x1": -20.0,
+   "x2": 20.0,
+   "z1": -14.0,
+   "z2": 14.0
+  },
+  "levels": 3,
+  "floor_height": 3.4,
+  "slab": 0.3,
+  "wall_height": 3.0,
+  "corridor": {
+   "x1": -20.0,
+   "x2": 17.0,
+   "z1": -2.0,
+   "z2": 2.0
+  },
+  "stairs": {
+   "x1": -20.0,
+   "x2": -17.0,
+   "z1": -2.0,
+   "z2": 2.0
+  },
+  "elevator": {
+   "x1": 17.0,
+   "x2": 20.0,
+   "z1": -2.0,
+   "z2": 2.0
+  }
+ },
+ "hospitals": [
+  {
+   "id": "mercy",
+   "name": "Mercy General",
+   "lat": 33.4484,
+   "lon": -112.074,
+   "helipad": true
+  },
+  {
+   "id": "stlukes",
+   "name": "St. Luke's",
+   "lat": 33.5106,
+   "lon": -112.0296,
+   "helipad": false
+  },
+  {
+   "id": "desert",
+   "name": "Desert Valley",
+   "lat": 33.3942,
+   "lon": -112.1513,
+   "helipad": false
+  }
+ ],
+ "care_units": [
+  {
+   "id": "ER",
+   "name": "Emergency",
+   "clinical": true,
+   "capacity": 6
+  },
+  {
+   "id": "WARD",
+   "name": "Ward",
+   "clinical": true,
+   "capacity": 14
+  },
+  {
+   "id": "REC",
+   "name": "Recovery",
+   "clinical": true,
+   "capacity": 3
+  },
+  {
+   "id": "ICU",
+   "name": "Intensive care",
+   "clinical": true,
+   "capacity": 6
+  },
+  {
+   "id": "OR",
+   "name": "Surgery",
+   "clinical": true,
+   "capacity": 1
+  },
+  {
+   "id": "TRIAGE",
+   "name": "Triage",
+   "clinical": true,
+   "capacity": 2
+  },
+  {
+   "id": "WAITING",
+   "name": "Waiting",
+   "clinical": false,
+   "capacity": 12
+  },
+  {
+   "id": "IMAGING",
+   "name": "Imaging",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "PHARMACY",
+   "name": "Pharmacy",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "RECEPTION",
+   "name": "Reception",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "LAB",
+   "name": "Lab",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "STAFF",
+   "name": "Staff lounge",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "PRAYER",
+   "name": "Prayer room",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "ADMIN",
+   "name": "Admin",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "CORRIDOR",
+   "name": "Corridor",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "ELEVATOR",
+   "name": "Elevator",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "OUTSIDE",
+   "name": "Outside",
+   "clinical": false,
+   "capacity": 0
+  },
+  {
+   "id": "ROOF",
+   "name": "Roof",
+   "clinical": false,
+   "capacity": 0
+  }
+ ],
+ "floors": [
+  {
+   "level": 0,
+   "name": "Ground",
+   "rooms": [
+    {
+     "id": "ER",
+     "name": "ER",
+     "floor": 0,
+     "unit": "ER",
+     "kind": "room",
+     "rect": {
+      "x1": -20.0,
+      "x2": -4.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "ER",
+     "label_x": -12.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "IMAGING",
+     "name": "Imaging",
+     "floor": 0,
+     "unit": "IMAGING",
+     "kind": "room",
+     "rect": {
+      "x1": -4.0,
+      "x2": 8.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "IMG",
+     "label_x": 2.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "PHARMACY",
+     "name": "Pharmacy",
+     "floor": 0,
+     "unit": "PHARMACY",
+     "kind": "room",
+     "rect": {
+      "x1": 8.0,
+      "x2": 20.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "PHARM",
+     "label_x": 14.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "TRIAGE",
+     "name": "Triage",
+     "floor": 0,
+     "unit": "TRIAGE",
+     "kind": "room",
+     "rect": {
+      "x1": -20.0,
+      "x2": -4.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "TRIAGE",
+     "label_x": -12.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "WAITING",
+     "name": "Waiting",
+     "floor": 0,
+     "unit": "WAITING",
+     "kind": "room",
+     "rect": {
+      "x1": -4.0,
+      "x2": 8.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "WAIT",
+     "label_x": 2.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "RECEPTION",
+     "name": "Reception",
+     "floor": 0,
+     "unit": "RECEPTION",
+     "kind": "room",
+     "rect": {
+      "x1": 8.0,
+      "x2": 20.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "RECEP",
+     "label_x": 14.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "CORR-0",
+     "name": "Corridor",
+     "floor": 0,
+     "unit": "CORRIDOR",
+     "kind": "corridor",
+     "rect": {
+      "x1": -20.0,
+      "x2": 17.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 0.0,
+     "label_z": 0.0
+    },
+    {
+     "id": "ELEV-0",
+     "name": "Elevator",
+     "floor": 0,
+     "unit": "ELEVATOR",
+     "kind": "elevator",
+     "rect": {
+      "x1": 17.0,
+      "x2": 20.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 18.5,
+     "label_z": 0.0
+    },
+    {
+     "id": "OUTSIDE",
+     "name": "Outside",
+     "floor": 0,
+     "unit": "OUTSIDE",
+     "kind": "outside",
+     "rect": {
+      "x1": -60.0,
+      "x2": 60.0,
+      "z1": 14.0,
+      "z2": 32.0
+     },
+     "color": "OUT",
+     "label_x": 14.0,
+     "label_z": 20.0
+    }
+   ],
+   "doors": [
+    {
+     "id": "ER-door-1",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "ER"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": -13.0,
+     "end": -10.0,
+     "kind": "door",
+     "node": "f0-ER-door-1"
+    },
+    {
+     "id": "IMAGING-door-1",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "IMAGING"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": 0.0,
+     "end": 3.0,
+     "kind": "door",
+     "node": "f0-IMAGING-door-1"
+    },
+    {
+     "id": "PHARMACY-door-1",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "PHARMACY"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": 12.0,
+     "end": 14.5,
+     "kind": "door",
+     "node": "f0-PHARMACY-door-1"
+    },
+    {
+     "id": "TRIAGE-door-1",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "TRIAGE"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": -13.0,
+     "end": -10.0,
+     "kind": "door",
+     "node": "f0-TRIAGE-door-1"
+    },
+    {
+     "id": "WAITING-door-1",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "WAITING"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": -2.0,
+     "end": 4.0,
+     "kind": "door",
+     "node": "f0-WAITING-door-1"
+    },
+    {
+     "id": "RECEPTION-door-1",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "RECEPTION"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": 10.0,
+     "end": 13.0,
+     "kind": "door",
+     "node": "f0-RECEPTION-door-1"
+    },
+    {
+     "id": "ELEV-door-0",
+     "floor": 0,
+     "rooms": [
+      "CORR-0",
+      "ELEV-0"
+     ],
+     "wall": "elevator-west",
+     "axis": "z",
+     "at": 17.0,
+     "start": -1.0,
+     "end": 1.0,
+     "kind": "elevator",
+     "node": "f0-ELEV-door"
+    },
+    {
+     "id": "WAITING-opening",
+     "floor": 0,
+     "rooms": [
+      "WAITING",
+      "RECEPTION"
+     ],
+     "wall": "x=8",
+     "axis": "z",
+     "at": 8.0,
+     "start": 5.0,
+     "end": 9.0,
+     "kind": "opening",
+     "node": "f0-WAITING-opening"
+    },
+    {
+     "id": "main-entrance",
+     "floor": 0,
+     "rooms": [
+      "RECEPTION",
+      "OUTSIDE"
+     ],
+     "wall": "exterior-south",
+     "axis": "x",
+     "at": 14.0,
+     "start": 12.0,
+     "end": 16.0,
+     "kind": "entrance",
+     "node": "f0-entrance"
+    }
+   ]
+  },
+  {
+   "level": 1,
+   "name": "Wards",
+   "rooms": [
+    {
+     "id": "WARD_A",
+     "name": "Ward A",
+     "floor": 1,
+     "unit": "WARD",
+     "kind": "room",
+     "rect": {
+      "x1": -20.0,
+      "x2": 6.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "WARD",
+     "label_x": -7.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "OR",
+     "name": "Surgery (OR-1)",
+     "floor": 1,
+     "unit": "OR",
+     "kind": "room",
+     "rect": {
+      "x1": 6.0,
+      "x2": 20.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "OR",
+     "label_x": 13.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "WARD_B",
+     "name": "Ward B",
+     "floor": 1,
+     "unit": "WARD",
+     "kind": "room",
+     "rect": {
+      "x1": -20.0,
+      "x2": 6.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "WARD",
+     "label_x": -7.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "RECOVERY",
+     "name": "Recovery",
+     "floor": 1,
+     "unit": "REC",
+     "kind": "room",
+     "rect": {
+      "x1": 6.0,
+      "x2": 20.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "RECOV",
+     "label_x": 13.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "CORR-1",
+     "name": "Corridor",
+     "floor": 1,
+     "unit": "CORRIDOR",
+     "kind": "corridor",
+     "rect": {
+      "x1": -20.0,
+      "x2": 17.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 0.0,
+     "label_z": 0.0
+    },
+    {
+     "id": "ELEV-1",
+     "name": "Elevator",
+     "floor": 1,
+     "unit": "ELEVATOR",
+     "kind": "elevator",
+     "rect": {
+      "x1": 17.0,
+      "x2": 20.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 18.5,
+     "label_z": 0.0
+    }
+   ],
+   "doors": [
+    {
+     "id": "WARD_A-door-1",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "WARD_A"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": -14.0,
+     "end": -11.0,
+     "kind": "door",
+     "node": "f1-WARD_A-door-1"
+    },
+    {
+     "id": "WARD_A-door-2",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "WARD_A"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": -1.0,
+     "end": 2.0,
+     "kind": "door",
+     "node": "f1-WARD_A-door-2"
+    },
+    {
+     "id": "OR-door-1",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "OR"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": 10.0,
+     "end": 13.0,
+     "kind": "door",
+     "node": "f1-OR-door-1"
+    },
+    {
+     "id": "WARD_B-door-1",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "WARD_B"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": -14.0,
+     "end": -11.0,
+     "kind": "door",
+     "node": "f1-WARD_B-door-1"
+    },
+    {
+     "id": "WARD_B-door-2",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "WARD_B"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": -1.0,
+     "end": 2.0,
+     "kind": "door",
+     "node": "f1-WARD_B-door-2"
+    },
+    {
+     "id": "RECOVERY-door-1",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "RECOVERY"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": 10.0,
+     "end": 13.0,
+     "kind": "door",
+     "node": "f1-RECOVERY-door-1"
+    },
+    {
+     "id": "ELEV-door-1",
+     "floor": 1,
+     "rooms": [
+      "CORR-1",
+      "ELEV-1"
+     ],
+     "wall": "elevator-west",
+     "axis": "z",
+     "at": 17.0,
+     "start": -1.0,
+     "end": 1.0,
+     "kind": "elevator",
+     "node": "f1-ELEV-door"
+    }
+   ]
+  },
+  {
+   "level": 2,
+   "name": "Critical care and support",
+   "rooms": [
+    {
+     "id": "ICU",
+     "name": "ICU",
+     "floor": 2,
+     "unit": "ICU",
+     "kind": "room",
+     "rect": {
+      "x1": -20.0,
+      "x2": 6.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "ICU",
+     "label_x": -7.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "LAB",
+     "name": "Lab",
+     "floor": 2,
+     "unit": "LAB",
+     "kind": "room",
+     "rect": {
+      "x1": 6.0,
+      "x2": 20.0,
+      "z1": -14.0,
+      "z2": -2.0
+     },
+     "color": "LAB",
+     "label_x": 13.0,
+     "label_z": -8.0
+    },
+    {
+     "id": "STAFF",
+     "name": "Staff lounge",
+     "floor": 2,
+     "unit": "STAFF",
+     "kind": "room",
+     "rect": {
+      "x1": -20.0,
+      "x2": -4.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "STAFF",
+     "label_x": -12.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "PRAYER",
+     "name": "Prayer room",
+     "floor": 2,
+     "unit": "PRAYER",
+     "kind": "room",
+     "rect": {
+      "x1": -4.0,
+      "x2": 6.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "PRAY",
+     "label_x": 1.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "ADMIN",
+     "name": "Admin",
+     "floor": 2,
+     "unit": "ADMIN",
+     "kind": "room",
+     "rect": {
+      "x1": 6.0,
+      "x2": 20.0,
+      "z1": 2.0,
+      "z2": 14.0
+     },
+     "color": "ADMIN",
+     "label_x": 13.0,
+     "label_z": 8.0
+    },
+    {
+     "id": "CORR-2",
+     "name": "Corridor",
+     "floor": 2,
+     "unit": "CORRIDOR",
+     "kind": "corridor",
+     "rect": {
+      "x1": -20.0,
+      "x2": 17.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 0.0,
+     "label_z": 0.0
+    },
+    {
+     "id": "ELEV-2",
+     "name": "Elevator",
+     "floor": 2,
+     "unit": "ELEVATOR",
+     "kind": "elevator",
+     "rect": {
+      "x1": 17.0,
+      "x2": 20.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 18.5,
+     "label_z": 0.0
+    }
+   ],
+   "doors": [
+    {
+     "id": "ICU-door-1",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "ICU"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": -14.0,
+     "end": -11.0,
+     "kind": "door",
+     "node": "f2-ICU-door-1"
+    },
+    {
+     "id": "ICU-door-2",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "ICU"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": -1.0,
+     "end": 2.0,
+     "kind": "door",
+     "node": "f2-ICU-door-2"
+    },
+    {
+     "id": "LAB-door-1",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "LAB"
+     ],
+     "wall": "corridor-north",
+     "axis": "x",
+     "at": -2.0,
+     "start": 10.0,
+     "end": 13.0,
+     "kind": "door",
+     "node": "f2-LAB-door-1"
+    },
+    {
+     "id": "STAFF-door-1",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "STAFF"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": -13.0,
+     "end": -10.0,
+     "kind": "door",
+     "node": "f2-STAFF-door-1"
+    },
+    {
+     "id": "PRAYER-door-1",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "PRAYER"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": 0.0,
+     "end": 3.0,
+     "kind": "door",
+     "node": "f2-PRAYER-door-1"
+    },
+    {
+     "id": "ADMIN-door-1",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "ADMIN"
+     ],
+     "wall": "corridor-south",
+     "axis": "x",
+     "at": 2.0,
+     "start": 10.0,
+     "end": 13.0,
+     "kind": "door",
+     "node": "f2-ADMIN-door-1"
+    },
+    {
+     "id": "ELEV-door-2",
+     "floor": 2,
+     "rooms": [
+      "CORR-2",
+      "ELEV-2"
+     ],
+     "wall": "elevator-west",
+     "axis": "z",
+     "at": 17.0,
+     "start": -1.0,
+     "end": 1.0,
+     "kind": "elevator",
+     "node": "f2-ELEV-door"
+    }
+   ]
+  },
+  {
+   "level": 3,
+   "name": "Roof",
+   "rooms": [
+    {
+     "id": "ELEV-3",
+     "name": "Elevator",
+     "floor": 3,
+     "unit": "ELEVATOR",
+     "kind": "elevator",
+     "rect": {
+      "x1": 17.0,
+      "x2": 20.0,
+      "z1": -2.0,
+      "z2": 2.0
+     },
+     "color": "CORR",
+     "label_x": 18.5,
+     "label_z": 0.0
+    },
+    {
+     "id": "ROOF",
+     "name": "Roof",
+     "floor": 3,
+     "unit": "ROOF",
+     "kind": "roof",
+     "rect": {
+      "x1": -20.0,
+      "x2": 20.0,
+      "z1": -14.0,
+      "z2": 14.0
+     },
+     "color": "ROOF",
+     "label_x": 6.0,
+     "label_z": 0.0
+    }
+   ],
+   "doors": [
+    {
+     "id": "ELEV-door-3",
+     "floor": 3,
+     "rooms": [
+      "ROOF",
+      "ELEV-3"
+     ],
+     "wall": "elevator-west",
+     "axis": "z",
+     "at": 17.0,
+     "start": -1.0,
+     "end": 1.0,
+     "kind": "elevator",
+     "node": "f3-ELEV-door"
+    }
+   ]
+  }
+ ],
+ "beds": [
+  {
+   "id": "ER-1",
+   "room": "ER",
+   "floor": 0,
+   "unit": "ER",
+   "x": -18.0,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ER-ws-1"
+  },
+  {
+   "id": "ER-2",
+   "room": "ER",
+   "floor": 0,
+   "unit": "ER",
+   "x": -15.4,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ER-ws-2"
+  },
+  {
+   "id": "ER-3",
+   "room": "ER",
+   "floor": 0,
+   "unit": "ER",
+   "x": -12.8,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ER-ws-3"
+  },
+  {
+   "id": "ER-4",
+   "room": "ER",
+   "floor": 0,
+   "unit": "ER",
+   "x": -10.2,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ER-ws-4"
+  },
+  {
+   "id": "ER-5",
+   "room": "ER",
+   "floor": 0,
+   "unit": "ER",
+   "x": -7.6,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ER-ws-5"
+  },
+  {
+   "id": "ER-6",
+   "room": "ER",
+   "floor": 0,
+   "unit": "ER",
+   "x": -5.0,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ER-ws-6"
+  },
+  {
+   "id": "WARD-1",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -18.5,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-1"
+  },
+  {
+   "id": "WARD-2",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -15.6,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-2"
+  },
+  {
+   "id": "WARD-3",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -12.7,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-3"
+  },
+  {
+   "id": "WARD-4",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -9.8,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-4"
+  },
+  {
+   "id": "WARD-5",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -6.9,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-5"
+  },
+  {
+   "id": "WARD-6",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -4.0,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-6"
+  },
+  {
+   "id": "WARD-7",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -1.1,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-7"
+  },
+  {
+   "id": "WARD-8",
+   "room": "WARD_A",
+   "floor": 1,
+   "unit": "WARD",
+   "x": 1.8,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "WARD_A-ws-8"
+  },
+  {
+   "id": "WARD-9",
+   "room": "WARD_B",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -18.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "WARD_B-ws-1"
+  },
+  {
+   "id": "WARD-10",
+   "room": "WARD_B",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -15.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "WARD_B-ws-2"
+  },
+  {
+   "id": "WARD-11",
+   "room": "WARD_B",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -12.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "WARD_B-ws-3"
+  },
+  {
+   "id": "WARD-12",
+   "room": "WARD_B",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -9.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "WARD_B-ws-4"
+  },
+  {
+   "id": "WARD-13",
+   "room": "WARD_B",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -6.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "WARD_B-ws-5"
+  },
+  {
+   "id": "WARD-14",
+   "room": "WARD_B",
+   "floor": 1,
+   "unit": "WARD",
+   "x": -3.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "WARD_B-ws-6"
+  },
+  {
+   "id": "REC-1",
+   "room": "RECOVERY",
+   "floor": 1,
+   "unit": "REC",
+   "x": 9.0,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "RECOVERY-ws-1"
+  },
+  {
+   "id": "REC-2",
+   "room": "RECOVERY",
+   "floor": 1,
+   "unit": "REC",
+   "x": 12.5,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "RECOVERY-ws-2"
+  },
+  {
+   "id": "REC-3",
+   "room": "RECOVERY",
+   "floor": 1,
+   "unit": "REC",
+   "x": 16.0,
+   "z": 12.4,
+   "rotation": 0.0,
+   "head": "south",
+   "spot": "RECOVERY-ws-3"
+  },
+  {
+   "id": "ICU-1",
+   "room": "ICU",
+   "floor": 2,
+   "unit": "ICU",
+   "x": -18.5,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ICU-ws-1"
+  },
+  {
+   "id": "ICU-2",
+   "room": "ICU",
+   "floor": 2,
+   "unit": "ICU",
+   "x": -14.9,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ICU-ws-2"
+  },
+  {
+   "id": "ICU-3",
+   "room": "ICU",
+   "floor": 2,
+   "unit": "ICU",
+   "x": -11.3,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ICU-ws-3"
+  },
+  {
+   "id": "ICU-4",
+   "room": "ICU",
+   "floor": 2,
+   "unit": "ICU",
+   "x": -7.7,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ICU-ws-4"
+  },
+  {
+   "id": "ICU-5",
+   "room": "ICU",
+   "floor": 2,
+   "unit": "ICU",
+   "x": -4.1,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ICU-ws-5"
+  },
+  {
+   "id": "ICU-6",
+   "room": "ICU",
+   "floor": 2,
+   "unit": "ICU",
+   "x": -0.5,
+   "z": -12.4,
+   "rotation": 3.141593,
+   "head": "north",
+   "spot": "ICU-ws-6"
+  }
+ ],
+ "seats": [
+  {
+   "id": "W-1",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": -2.5,
+   "z": 7.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-1"
+  },
+  {
+   "id": "W-2",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": -0.8,
+   "z": 7.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-2"
+  },
+  {
+   "id": "W-3",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 0.9,
+   "z": 7.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-3"
+  },
+  {
+   "id": "W-4",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 2.6,
+   "z": 7.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-4"
+  },
+  {
+   "id": "W-5",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 4.3,
+   "z": 7.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-5"
+  },
+  {
+   "id": "W-6",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 6.0,
+   "z": 7.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-6"
+  },
+  {
+   "id": "W-7",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": -2.5,
+   "z": 10.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-7"
+  },
+  {
+   "id": "W-8",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": -0.8,
+   "z": 10.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-8"
+  },
+  {
+   "id": "W-9",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 0.9,
+   "z": 10.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-9"
+  },
+  {
+   "id": "W-10",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 2.6,
+   "z": 10.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-10"
+  },
+  {
+   "id": "W-11",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 4.3,
+   "z": 10.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-11"
+  },
+  {
+   "id": "W-12",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "waiting",
+   "x": 6.0,
+   "z": 10.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-W-12"
+  },
+  {
+   "id": "T-1",
+   "room": "TRIAGE",
+   "floor": 0,
+   "kind": "triage",
+   "x": -16.0,
+   "z": 9.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-T-1"
+  },
+  {
+   "id": "T-2",
+   "room": "TRIAGE",
+   "floor": 0,
+   "kind": "triage",
+   "x": -14.5,
+   "z": 9.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f0-T-2"
+  },
+  {
+   "id": "LOUNGE-1",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "lounge",
+   "x": -13.4,
+   "z": 11.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-LOUNGE-1"
+  },
+  {
+   "id": "LOUNGE-2",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "lounge",
+   "x": -12.47,
+   "z": 11.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-LOUNGE-2"
+  },
+  {
+   "id": "LOUNGE-3",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "lounge",
+   "x": -11.53,
+   "z": 11.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-LOUNGE-3"
+  },
+  {
+   "id": "LOUNGE-4",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "lounge",
+   "x": -10.6,
+   "z": 11.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-LOUNGE-4"
+  },
+  {
+   "id": "ADMIN-1",
+   "room": "ADMIN",
+   "floor": 2,
+   "kind": "desk",
+   "x": 9.0,
+   "z": 8.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-ADMIN-1"
+  },
+  {
+   "id": "ADMIN-2",
+   "room": "ADMIN",
+   "floor": 2,
+   "kind": "desk",
+   "x": 13.0,
+   "z": 8.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-ADMIN-2"
+  },
+  {
+   "id": "ADMIN-3",
+   "room": "ADMIN",
+   "floor": 2,
+   "kind": "desk",
+   "x": 17.0,
+   "z": 8.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-ADMIN-3"
+  },
+  {
+   "id": "ADMIN-4",
+   "room": "ADMIN",
+   "floor": 2,
+   "kind": "desk",
+   "x": 9.0,
+   "z": 12.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-ADMIN-4"
+  },
+  {
+   "id": "ADMIN-5",
+   "room": "ADMIN",
+   "floor": 2,
+   "kind": "desk",
+   "x": 13.0,
+   "z": 12.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "node": "f2-ADMIN-5"
+  }
+ ],
+ "spots": [
+  {
+   "id": "ER-ws-1",
+   "room": "ER",
+   "floor": 0,
+   "kind": "bedside",
+   "x": -18.95,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ER-1",
+   "node": "f0-ER-ws-1"
+  },
+  {
+   "id": "ER-ws-2",
+   "room": "ER",
+   "floor": 0,
+   "kind": "bedside",
+   "x": -16.35,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ER-2",
+   "node": "f0-ER-ws-2"
+  },
+  {
+   "id": "ER-ws-3",
+   "room": "ER",
+   "floor": 0,
+   "kind": "bedside",
+   "x": -13.75,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ER-3",
+   "node": "f0-ER-ws-3"
+  },
+  {
+   "id": "ER-ws-4",
+   "room": "ER",
+   "floor": 0,
+   "kind": "bedside",
+   "x": -11.15,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ER-4",
+   "node": "f0-ER-ws-4"
+  },
+  {
+   "id": "ER-ws-5",
+   "room": "ER",
+   "floor": 0,
+   "kind": "bedside",
+   "x": -8.55,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ER-5",
+   "node": "f0-ER-ws-5"
+  },
+  {
+   "id": "ER-ws-6",
+   "room": "ER",
+   "floor": 0,
+   "kind": "bedside",
+   "x": -5.95,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ER-6",
+   "node": "f0-ER-ws-6"
+  },
+  {
+   "id": "WARD_A-ws-1",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -19.45,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-1",
+   "node": "f1-WARD_A-ws-1"
+  },
+  {
+   "id": "WARD_A-ws-2",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -16.55,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-2",
+   "node": "f1-WARD_A-ws-2"
+  },
+  {
+   "id": "WARD_A-ws-3",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -13.65,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-3",
+   "node": "f1-WARD_A-ws-3"
+  },
+  {
+   "id": "WARD_A-ws-4",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -10.75,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-4",
+   "node": "f1-WARD_A-ws-4"
+  },
+  {
+   "id": "WARD_A-ws-5",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -7.85,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-5",
+   "node": "f1-WARD_A-ws-5"
+  },
+  {
+   "id": "WARD_A-ws-6",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -4.95,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-6",
+   "node": "f1-WARD_A-ws-6"
+  },
+  {
+   "id": "WARD_A-ws-7",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -2.05,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-7",
+   "node": "f1-WARD_A-ws-7"
+  },
+  {
+   "id": "WARD_A-ws-8",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "bedside",
+   "x": 0.85,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "WARD-8",
+   "node": "f1-WARD_A-ws-8"
+  },
+  {
+   "id": "WARD_B-ws-1",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -17.55,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "WARD-9",
+   "node": "f1-WARD_B-ws-1"
+  },
+  {
+   "id": "WARD_B-ws-2",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -14.55,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "WARD-10",
+   "node": "f1-WARD_B-ws-2"
+  },
+  {
+   "id": "WARD_B-ws-3",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -11.55,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "WARD-11",
+   "node": "f1-WARD_B-ws-3"
+  },
+  {
+   "id": "WARD_B-ws-4",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -8.55,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "WARD-12",
+   "node": "f1-WARD_B-ws-4"
+  },
+  {
+   "id": "WARD_B-ws-5",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -5.55,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "WARD-13",
+   "node": "f1-WARD_B-ws-5"
+  },
+  {
+   "id": "WARD_B-ws-6",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "bedside",
+   "x": -2.55,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "WARD-14",
+   "node": "f1-WARD_B-ws-6"
+  },
+  {
+   "id": "RECOVERY-ws-1",
+   "room": "RECOVERY",
+   "floor": 1,
+   "kind": "bedside",
+   "x": 9.95,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "REC-1",
+   "node": "f1-RECOVERY-ws-1"
+  },
+  {
+   "id": "RECOVERY-ws-2",
+   "room": "RECOVERY",
+   "floor": 1,
+   "kind": "bedside",
+   "x": 13.45,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "REC-2",
+   "node": "f1-RECOVERY-ws-2"
+  },
+  {
+   "id": "RECOVERY-ws-3",
+   "room": "RECOVERY",
+   "floor": 1,
+   "kind": "bedside",
+   "x": 16.95,
+   "z": 12.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": "REC-3",
+   "node": "f1-RECOVERY-ws-3"
+  },
+  {
+   "id": "ICU-ws-1",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "bedside",
+   "x": -19.45,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ICU-1",
+   "node": "f2-ICU-ws-1"
+  },
+  {
+   "id": "ICU-ws-2",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "bedside",
+   "x": -15.85,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ICU-2",
+   "node": "f2-ICU-ws-2"
+  },
+  {
+   "id": "ICU-ws-3",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "bedside",
+   "x": -12.25,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ICU-3",
+   "node": "f2-ICU-ws-3"
+  },
+  {
+   "id": "ICU-ws-4",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "bedside",
+   "x": -8.65,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ICU-4",
+   "node": "f2-ICU-ws-4"
+  },
+  {
+   "id": "ICU-ws-5",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "bedside",
+   "x": -5.05,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ICU-5",
+   "node": "f2-ICU-ws-5"
+  },
+  {
+   "id": "ICU-ws-6",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "bedside",
+   "x": -1.45,
+   "z": -12.2,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": "ICU-6",
+   "node": "f2-ICU-ws-6"
+  },
+  {
+   "id": "ER-ws-7",
+   "room": "ER",
+   "floor": 0,
+   "kind": "station",
+   "x": -8.0,
+   "z": -5.5,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-ER-ws-7"
+  },
+  {
+   "id": "ER-ws-8",
+   "room": "ER",
+   "floor": 0,
+   "kind": "station",
+   "x": -6.5,
+   "z": -5.5,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-ER-ws-8"
+  },
+  {
+   "id": "IMAGING-table",
+   "room": "IMAGING",
+   "floor": 0,
+   "kind": "table",
+   "x": 2.0,
+   "z": -8.2,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-IMAGING-table"
+  },
+  {
+   "id": "IMAGING-ws-1",
+   "room": "IMAGING",
+   "floor": 0,
+   "kind": "station",
+   "x": 3.2,
+   "z": -8.2,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f0-IMAGING-ws-1"
+  },
+  {
+   "id": "IMAGING-ws-2",
+   "room": "IMAGING",
+   "floor": 0,
+   "kind": "station",
+   "x": -2.0,
+   "z": -6.0,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": null,
+   "node": "f0-IMAGING-ws-2"
+  },
+  {
+   "id": "PHARMACY-ws-1",
+   "room": "PHARMACY",
+   "floor": 0,
+   "kind": "station",
+   "x": 12.3,
+   "z": -9.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f0-PHARMACY-ws-1"
+  },
+  {
+   "id": "PHARMACY-ws-2",
+   "room": "PHARMACY",
+   "floor": 0,
+   "kind": "station",
+   "x": 15.3,
+   "z": -9.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f0-PHARMACY-ws-2"
+  },
+  {
+   "id": "PHARMACY-ws-3",
+   "room": "PHARMACY",
+   "floor": 0,
+   "kind": "station",
+   "x": 18.3,
+   "z": -9.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f0-PHARMACY-ws-3"
+  },
+  {
+   "id": "PHARMACY-ws-4",
+   "room": "PHARMACY",
+   "floor": 0,
+   "kind": "station",
+   "x": 15.6,
+   "z": -3.6,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f0-PHARMACY-ws-4"
+  },
+  {
+   "id": "TRIAGE-ws-1",
+   "room": "TRIAGE",
+   "floor": 0,
+   "kind": "station",
+   "x": -12.0,
+   "z": 5.0,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f0-TRIAGE-ws-1"
+  },
+  {
+   "id": "TRIAGE-ws-2",
+   "room": "TRIAGE",
+   "floor": 0,
+   "kind": "station",
+   "x": -10.0,
+   "z": 8.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f0-TRIAGE-ws-2"
+  },
+  {
+   "id": "WAITING-ws-1",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "standing",
+   "x": -3.4,
+   "z": 12.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-WAITING-ws-1"
+  },
+  {
+   "id": "WAITING-ws-2",
+   "room": "WAITING",
+   "floor": 0,
+   "kind": "standing",
+   "x": 7.0,
+   "z": 12.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-WAITING-ws-2"
+  },
+  {
+   "id": "RECEPTION-ws-1",
+   "room": "RECEPTION",
+   "floor": 0,
+   "kind": "station",
+   "x": 19.2,
+   "z": 8.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f0-RECEPTION-ws-1"
+  },
+  {
+   "id": "RECEPTION-ws-2",
+   "room": "RECEPTION",
+   "floor": 0,
+   "kind": "standing",
+   "x": 16.9,
+   "z": 8.0,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": null,
+   "node": "f0-RECEPTION-ws-2"
+  },
+  {
+   "id": "WARD_A-ws-9",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "station",
+   "x": -6.0,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f1-WARD_A-ws-9"
+  },
+  {
+   "id": "WARD_A-ws-10",
+   "room": "WARD_A",
+   "floor": 1,
+   "kind": "station",
+   "x": -4.5,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f1-WARD_A-ws-10"
+  },
+  {
+   "id": "OR-1",
+   "room": "OR",
+   "floor": 1,
+   "kind": "table",
+   "x": 13.0,
+   "z": -8.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f1-OR-1"
+  },
+  {
+   "id": "OR-ws-1",
+   "room": "OR",
+   "floor": 1,
+   "kind": "station",
+   "x": 11.9,
+   "z": -8.0,
+   "facing": "east",
+   "rotation": 1.570796,
+   "bed": null,
+   "node": "f1-OR-ws-1"
+  },
+  {
+   "id": "OR-ws-2",
+   "room": "OR",
+   "floor": 1,
+   "kind": "station",
+   "x": 14.1,
+   "z": -8.4,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f1-OR-ws-2"
+  },
+  {
+   "id": "OR-ws-3",
+   "room": "OR",
+   "floor": 1,
+   "kind": "station",
+   "x": 13.0,
+   "z": -6.3,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f1-OR-ws-3"
+  },
+  {
+   "id": "OR-ws-4",
+   "room": "OR",
+   "floor": 1,
+   "kind": "station",
+   "x": 16.5,
+   "z": -8.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f1-OR-ws-4"
+  },
+  {
+   "id": "WARD_B-ws-7",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "station",
+   "x": -6.0,
+   "z": 5.0,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f1-WARD_B-ws-7"
+  },
+  {
+   "id": "WARD_B-ws-8",
+   "room": "WARD_B",
+   "floor": 1,
+   "kind": "station",
+   "x": -4.5,
+   "z": 5.0,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f1-WARD_B-ws-8"
+  },
+  {
+   "id": "RECOVERY-ws-4",
+   "room": "RECOVERY",
+   "floor": 1,
+   "kind": "station",
+   "x": 17.0,
+   "z": 5.0,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f1-RECOVERY-ws-4"
+  },
+  {
+   "id": "ICU-ws-7",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "station",
+   "x": -6.0,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-ICU-ws-7"
+  },
+  {
+   "id": "ICU-ws-8",
+   "room": "ICU",
+   "floor": 2,
+   "kind": "station",
+   "x": -4.5,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-ICU-ws-8"
+  },
+  {
+   "id": "LAB-ws-1",
+   "room": "LAB",
+   "floor": 2,
+   "kind": "station",
+   "x": 8.5,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-LAB-ws-1"
+  },
+  {
+   "id": "LAB-ws-2",
+   "room": "LAB",
+   "floor": 2,
+   "kind": "station",
+   "x": 11.0,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-LAB-ws-2"
+  },
+  {
+   "id": "LAB-ws-3",
+   "room": "LAB",
+   "floor": 2,
+   "kind": "station",
+   "x": 13.5,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-LAB-ws-3"
+  },
+  {
+   "id": "LAB-ws-4",
+   "room": "LAB",
+   "floor": 2,
+   "kind": "station",
+   "x": 16.0,
+   "z": -5.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-LAB-ws-4"
+  },
+  {
+   "id": "STAFF-ws-1",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "standing",
+   "x": -18.0,
+   "z": 11.5,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f2-STAFF-ws-1"
+  },
+  {
+   "id": "STAFF-ws-2",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "standing",
+   "x": -12.0,
+   "z": 7.9,
+   "facing": "south",
+   "rotation": 0.0,
+   "bed": null,
+   "node": "f2-STAFF-ws-2"
+  },
+  {
+   "id": "STAFF-ws-3",
+   "room": "STAFF",
+   "floor": 2,
+   "kind": "standing",
+   "x": -9.5,
+   "z": 9.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f2-STAFF-ws-3"
+  },
+  {
+   "id": "PRAYER-1",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": -2.6,
+   "z": 6.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-1"
+  },
+  {
+   "id": "PRAYER-2",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": -0.4,
+   "z": 6.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-2"
+  },
+  {
+   "id": "PRAYER-3",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": 1.8,
+   "z": 6.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-3"
+  },
+  {
+   "id": "PRAYER-4",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": 4.0,
+   "z": 6.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-4"
+  },
+  {
+   "id": "PRAYER-5",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": -2.6,
+   "z": 9.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-5"
+  },
+  {
+   "id": "PRAYER-6",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": -0.4,
+   "z": 9.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-6"
+  },
+  {
+   "id": "PRAYER-7",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": 1.8,
+   "z": 9.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-7"
+  },
+  {
+   "id": "PRAYER-8",
+   "room": "PRAYER",
+   "floor": 2,
+   "kind": "prayer",
+   "x": 4.0,
+   "z": 9.0,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f2-PRAYER-8"
+  },
+  {
+   "id": "AMB-unload-1",
+   "room": "OUTSIDE",
+   "floor": 0,
+   "kind": "unload",
+   "x": 8.6,
+   "z": 17.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-AMB-unload-1"
+  },
+  {
+   "id": "AMB-unload-2",
+   "room": "OUTSIDE",
+   "floor": 0,
+   "kind": "unload",
+   "x": 11.4,
+   "z": 17.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-AMB-unload-2"
+  },
+  {
+   "id": "AMB-unload-3",
+   "room": "OUTSIDE",
+   "floor": 0,
+   "kind": "unload",
+   "x": 16.6,
+   "z": 17.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-AMB-unload-3"
+  },
+  {
+   "id": "AMB-unload-4",
+   "room": "OUTSIDE",
+   "floor": 0,
+   "kind": "unload",
+   "x": 19.4,
+   "z": 17.4,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-AMB-unload-4"
+  },
+  {
+   "id": "CURB",
+   "room": "OUTSIDE",
+   "floor": 0,
+   "kind": "curb",
+   "x": 14.0,
+   "z": 24.6,
+   "facing": "north",
+   "rotation": 3.141593,
+   "bed": null,
+   "node": "f0-CURB"
+  },
+  {
+   "id": "HELIPAD",
+   "room": "ROOF",
+   "floor": 3,
+   "kind": "helipad",
+   "x": 9.2,
+   "z": 0.0,
+   "facing": "west",
+   "rotation": -1.570796,
+   "bed": null,
+   "node": "f3-HELIPAD"
+  }
+ ],
+ "props": [
+  {
+   "id": "W-1-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": -2.5,
+   "z": 7.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-1"
+  },
+  {
+   "id": "W-2-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": -0.8,
+   "z": 7.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-2"
+  },
+  {
+   "id": "W-3-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 0.9,
+   "z": 7.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-3"
+  },
+  {
+   "id": "W-4-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 2.6,
+   "z": 7.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-4"
+  },
+  {
+   "id": "W-5-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 4.3,
+   "z": 7.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-5"
+  },
+  {
+   "id": "W-6-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 6.0,
+   "z": 7.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-6"
+  },
+  {
+   "id": "W-7-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": -2.5,
+   "z": 10.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-7"
+  },
+  {
+   "id": "W-8-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": -0.8,
+   "z": 10.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-8"
+  },
+  {
+   "id": "W-9-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 0.9,
+   "z": 10.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-9"
+  },
+  {
+   "id": "W-10-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 2.6,
+   "z": 10.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-10"
+  },
+  {
+   "id": "W-11-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 4.3,
+   "z": 10.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-11"
+  },
+  {
+   "id": "W-12-chair",
+   "type": "chair",
+   "room": "WAITING",
+   "floor": 0,
+   "x": 6.0,
+   "z": 10.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "W-12"
+  },
+  {
+   "id": "T-1-chair",
+   "type": "chair",
+   "room": "TRIAGE",
+   "floor": 0,
+   "x": -16.0,
+   "z": 9.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "T-1"
+  },
+  {
+   "id": "T-2-chair",
+   "type": "chair",
+   "room": "TRIAGE",
+   "floor": 0,
+   "x": -14.5,
+   "z": 9.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "T-2"
+  },
+  {
+   "id": "ADMIN-1-chair",
+   "type": "chair",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 9.0,
+   "z": 8.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "ADMIN-1"
+  },
+  {
+   "id": "ADMIN-2-chair",
+   "type": "chair",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 13.0,
+   "z": 8.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "ADMIN-2"
+  },
+  {
+   "id": "ADMIN-3-chair",
+   "type": "chair",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 17.0,
+   "z": 8.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "ADMIN-3"
+  },
+  {
+   "id": "ADMIN-4-chair",
+   "type": "chair",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 9.0,
+   "z": 12.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "ADMIN-4"
+  },
+  {
+   "id": "ADMIN-5-chair",
+   "type": "chair",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 13.0,
+   "z": 12.0,
+   "w": 0.6,
+   "d": 0.6,
+   "rotation": 3.141593,
+   "blocks": true,
+   "target": "ADMIN-5"
+  },
+  {
+   "id": "ER-curtain-1",
+   "type": "curtain",
+   "room": "ER",
+   "floor": 0,
+   "x": -16.7,
+   "z": -12.2,
+   "w": 0.05,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ER-curtain-2",
+   "type": "curtain",
+   "room": "ER",
+   "floor": 0,
+   "x": -14.1,
+   "z": -12.2,
+   "w": 0.05,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ER-curtain-3",
+   "type": "curtain",
+   "room": "ER",
+   "floor": 0,
+   "x": -11.5,
+   "z": -12.2,
+   "w": 0.05,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ER-curtain-4",
+   "type": "curtain",
+   "room": "ER",
+   "floor": 0,
+   "x": -8.9,
+   "z": -12.2,
+   "w": 0.05,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ER-curtain-5",
+   "type": "curtain",
+   "room": "ER",
+   "floor": 0,
+   "x": -6.3,
+   "z": -12.2,
+   "w": 0.05,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "IMAGING-scanner",
+   "type": "ct_scanner",
+   "room": "IMAGING",
+   "floor": 0,
+   "x": 2.0,
+   "z": -10.0,
+   "w": 2.8,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "IMAGING-ct-table",
+   "type": "ct_table",
+   "room": "IMAGING",
+   "floor": 0,
+   "x": 2.0,
+   "z": -8.2,
+   "w": 0.8,
+   "d": 3.2,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "PHARMACY-shelf-1",
+   "type": "shelf",
+   "room": "PHARMACY",
+   "floor": 0,
+   "x": 11.0,
+   "z": -9.0,
+   "w": 1.0,
+   "d": 4.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "PHARMACY-shelf-2",
+   "type": "shelf",
+   "room": "PHARMACY",
+   "floor": 0,
+   "x": 14.0,
+   "z": -9.0,
+   "w": 1.0,
+   "d": 4.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "PHARMACY-shelf-3",
+   "type": "shelf",
+   "room": "PHARMACY",
+   "floor": 0,
+   "x": 17.0,
+   "z": -9.0,
+   "w": 1.0,
+   "d": 4.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "TRIAGE-desk",
+   "type": "triage_desk",
+   "room": "TRIAGE",
+   "floor": 0,
+   "x": -12.0,
+   "z": 6.0,
+   "w": 3.0,
+   "d": 0.9,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "RECEPTION-desk",
+   "type": "reception_desk",
+   "room": "RECEPTION",
+   "floor": 0,
+   "x": 18.0,
+   "z": 8.0,
+   "w": 1.0,
+   "d": 4.2,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "RECEPTION-plant-1",
+   "type": "plant",
+   "room": "RECEPTION",
+   "floor": 0,
+   "x": 9.2,
+   "z": 13.0,
+   "w": 0.9,
+   "d": 0.9,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "RECEPTION-plant-2",
+   "type": "plant",
+   "room": "RECEPTION",
+   "floor": 0,
+   "x": 9.2,
+   "z": 3.0,
+   "w": 0.9,
+   "d": 0.9,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "OR-table",
+   "type": "or_table",
+   "room": "OR",
+   "floor": 1,
+   "x": 13.0,
+   "z": -8.0,
+   "w": 1.0,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "OR-lamp",
+   "type": "or_lamp",
+   "room": "OR",
+   "floor": 1,
+   "x": 13.0,
+   "z": -8.0,
+   "w": 1.4,
+   "d": 1.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "OR-anesthesia",
+   "type": "anesthesia_machine",
+   "room": "OR",
+   "floor": 1,
+   "x": 16.5,
+   "z": -9.5,
+   "w": 0.8,
+   "d": 0.8,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ICU-glass-1",
+   "type": "glass_partition",
+   "room": "ICU",
+   "floor": 2,
+   "x": -16.7,
+   "z": -12.3,
+   "w": 0.06,
+   "d": 2.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ICU-glass-2",
+   "type": "glass_partition",
+   "room": "ICU",
+   "floor": 2,
+   "x": -13.1,
+   "z": -12.3,
+   "w": 0.06,
+   "d": 2.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ICU-glass-3",
+   "type": "glass_partition",
+   "room": "ICU",
+   "floor": 2,
+   "x": -9.5,
+   "z": -12.3,
+   "w": 0.06,
+   "d": 2.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ICU-glass-4",
+   "type": "glass_partition",
+   "room": "ICU",
+   "floor": 2,
+   "x": -5.9,
+   "z": -12.3,
+   "w": 0.06,
+   "d": 2.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ICU-glass-5",
+   "type": "glass_partition",
+   "room": "ICU",
+   "floor": 2,
+   "x": -2.3,
+   "z": -12.3,
+   "w": 0.06,
+   "d": 2.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "LAB-bench-1",
+   "type": "lab_bench",
+   "room": "LAB",
+   "floor": 2,
+   "x": 13.0,
+   "z": -9.0,
+   "w": 12.0,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "LAB-bench-2",
+   "type": "lab_bench",
+   "room": "LAB",
+   "floor": 2,
+   "x": 13.0,
+   "z": -6.0,
+   "w": 12.0,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "STAFF-couch",
+   "type": "couch",
+   "room": "STAFF",
+   "floor": 2,
+   "x": -12.0,
+   "z": 11.65,
+   "w": 4.0,
+   "d": 1.5,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "STAFF-table",
+   "type": "coffee_table",
+   "room": "STAFF",
+   "floor": 2,
+   "x": -12.0,
+   "z": 9.0,
+   "w": 1.8,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "STAFF-vending",
+   "type": "vending_machine",
+   "room": "STAFF",
+   "floor": 2,
+   "x": -18.0,
+   "z": 12.8,
+   "w": 1.2,
+   "d": 0.8,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-1",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": -2.6,
+   "z": 6.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-2",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": -0.4,
+   "z": 6.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-3",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": 1.8,
+   "z": 6.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-4",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": 4.0,
+   "z": 6.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-5",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": -2.6,
+   "z": 9.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-6",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": -0.4,
+   "z": 9.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-7",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": 1.8,
+   "z": 9.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-rug-8",
+   "type": "prayer_rug",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": 4.0,
+   "z": 9.0,
+   "w": 1.4,
+   "d": 2.4,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "PRAYER-shoe-shelf",
+   "type": "shoe_shelf",
+   "room": "PRAYER",
+   "floor": 2,
+   "x": 4.6,
+   "z": 12.8,
+   "w": 2.4,
+   "d": 0.5,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ADMIN-desk-1",
+   "type": "admin_desk",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 9.0,
+   "z": 7.0,
+   "w": 2.2,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ADMIN-desk-2",
+   "type": "admin_desk",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 13.0,
+   "z": 7.0,
+   "w": 2.2,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ADMIN-desk-3",
+   "type": "admin_desk",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 17.0,
+   "z": 7.0,
+   "w": 2.2,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ADMIN-desk-4",
+   "type": "admin_desk",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 9.0,
+   "z": 11.0,
+   "w": 2.2,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ADMIN-desk-5",
+   "type": "admin_desk",
+   "room": "ADMIN",
+   "floor": 2,
+   "x": 13.0,
+   "z": 11.0,
+   "w": 2.2,
+   "d": 1.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ROOF-hvac-1",
+   "type": "hvac",
+   "room": "ROOF",
+   "floor": 3,
+   "x": -14.0,
+   "z": -8.0,
+   "w": 3.0,
+   "d": 2.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ROOF-hvac-2",
+   "type": "hvac",
+   "room": "ROOF",
+   "floor": 3,
+   "x": -14.0,
+   "z": 6.0,
+   "w": 3.0,
+   "d": 2.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ROOF-hvac-3",
+   "type": "hvac",
+   "room": "ROOF",
+   "floor": 3,
+   "x": -8.0,
+   "z": -8.0,
+   "w": 3.0,
+   "d": 2.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ROOF-machine-room",
+   "type": "elevator_machine_room",
+   "room": "ROOF",
+   "floor": 3,
+   "x": 18.5,
+   "z": 0.0,
+   "w": 3.0,
+   "d": 4.0,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "ROOF-helipad",
+   "type": "helipad",
+   "room": "ROOF",
+   "floor": 3,
+   "x": 6.0,
+   "z": 0.0,
+   "w": 12.0,
+   "d": 12.0,
+   "rotation": 0.0,
+   "blocks": false,
+   "target": null
+  },
+  {
+   "id": "ROOF-helicopter",
+   "type": "helicopter",
+   "room": "ROOF",
+   "floor": 3,
+   "x": 6.0,
+   "z": 0.0,
+   "w": 2.0,
+   "d": 3.2,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "stairs-0",
+   "type": "stairs",
+   "room": "CORR-0",
+   "floor": 0,
+   "x": -19.2,
+   "z": -0.05,
+   "w": 1.2,
+   "d": 3.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "stairs-1",
+   "type": "stairs",
+   "room": "CORR-1",
+   "floor": 1,
+   "x": -19.2,
+   "z": -0.05,
+   "w": 1.2,
+   "d": 3.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  },
+  {
+   "id": "stairs-2",
+   "type": "stairs",
+   "room": "CORR-2",
+   "floor": 2,
+   "x": -19.2,
+   "z": -0.05,
+   "w": 1.2,
+   "d": 3.6,
+   "rotation": 0.0,
+   "blocks": true,
+   "target": null
+  }
+ ],
+ "outside": {
+  "ambulance_bay": {
+   "x1": 7.0,
+   "x2": 21.0,
+   "z1": 15.5,
+   "z2": 24.5
+  },
+  "ambulance_slots": [
+   {
+    "id": "AMB-slot-1",
+    "x": 8.6,
+    "z": 20.6,
+    "rotation": 0.0,
+    "spot": "AMB-unload-1"
+   },
+   {
+    "id": "AMB-slot-2",
+    "x": 11.4,
+    "z": 20.6,
+    "rotation": 0.0,
+    "spot": "AMB-unload-2"
+   },
+   {
+    "id": "AMB-slot-3",
+    "x": 16.6,
+    "z": 20.6,
+    "rotation": 0.0,
+    "spot": "AMB-unload-3"
+   },
+   {
+    "id": "AMB-slot-4",
+    "x": 19.4,
+    "z": 20.6,
+    "rotation": 0.0,
+    "spot": "AMB-unload-4"
+   }
+  ],
+  "street_z": 28.0,
+  "street_width": 8.0,
+  "entrance_node": "f0-entrance",
+  "curb_spot": "CURB"
+ },
+ "roof": {
+  "level": 3,
+  "helipad_x": 6.0,
+  "helipad_z": 0.0,
+  "helipad_size": 12.0,
+  "helicopter_x": 6.0,
+  "helicopter_z": 0.0,
+  "helipad_spot": "HELIPAD"
+ },
+ "graph": {
+  "nodes": [
+   {
+    "id": "f0-AMB-unload-1",
+    "floor": 0,
+    "x": 8.6,
+    "z": 17.4,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-AMB-unload-2",
+    "floor": 0,
+    "x": 11.4,
+    "z": 17.4,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-AMB-unload-3",
+    "floor": 0,
+    "x": 16.6,
+    "z": 17.4,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-AMB-unload-4",
+    "floor": 0,
+    "x": 19.4,
+    "z": 17.4,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-CURB",
+    "floor": 0,
+    "x": 14.0,
+    "z": 24.6,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-ELEV",
+    "floor": 0,
+    "x": 18.5,
+    "z": 0.0,
+    "room": "ELEV-0"
+   },
+   {
+    "id": "f0-ELEV-door",
+    "floor": 0,
+    "x": 17.0,
+    "z": 0.0,
+    "room": "ELEV-0"
+   },
+   {
+    "id": "f0-ER-door-1",
+    "floor": 0,
+    "x": -11.5,
+    "z": -2.0,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-1",
+    "floor": 0,
+    "x": -18.95,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-2",
+    "floor": 0,
+    "x": -16.35,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-3",
+    "floor": 0,
+    "x": -13.75,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-4",
+    "floor": 0,
+    "x": -11.5,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-5",
+    "floor": 0,
+    "x": -11.15,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-6",
+    "floor": 0,
+    "x": -8.55,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-7",
+    "floor": 0,
+    "x": -8.0,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-8",
+    "floor": 0,
+    "x": -6.5,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-l0-9",
+    "floor": 0,
+    "x": -5.95,
+    "z": -9.6,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-1",
+    "floor": 0,
+    "x": -18.95,
+    "z": -12.2,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-2",
+    "floor": 0,
+    "x": -16.35,
+    "z": -12.2,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-3",
+    "floor": 0,
+    "x": -13.75,
+    "z": -12.2,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-4",
+    "floor": 0,
+    "x": -11.15,
+    "z": -12.2,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-5",
+    "floor": 0,
+    "x": -8.55,
+    "z": -12.2,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-6",
+    "floor": 0,
+    "x": -5.95,
+    "z": -12.2,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-7",
+    "floor": 0,
+    "x": -8.0,
+    "z": -5.5,
+    "room": "ER"
+   },
+   {
+    "id": "f0-ER-ws-8",
+    "floor": 0,
+    "x": -6.5,
+    "z": -5.5,
+    "room": "ER"
+   },
+   {
+    "id": "f0-IMAGING-door-1",
+    "floor": 0,
+    "x": 1.5,
+    "z": -2.0,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-l0-1",
+    "floor": 0,
+    "x": -2.0,
+    "z": -4.5,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-l0-2",
+    "floor": 0,
+    "x": 1.5,
+    "z": -4.5,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-l0-3",
+    "floor": 0,
+    "x": 2.0,
+    "z": -4.5,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-l0-4",
+    "floor": 0,
+    "x": 3.2,
+    "z": -4.5,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-table",
+    "floor": 0,
+    "x": 2.0,
+    "z": -8.2,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-ws-1",
+    "floor": 0,
+    "x": 3.2,
+    "z": -8.2,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-IMAGING-ws-2",
+    "floor": 0,
+    "x": -2.0,
+    "z": -6.0,
+    "room": "IMAGING"
+   },
+   {
+    "id": "f0-OUTSIDE-l0-1",
+    "floor": 0,
+    "x": 8.6,
+    "z": 16.6,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-OUTSIDE-l0-2",
+    "floor": 0,
+    "x": 11.4,
+    "z": 16.6,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-OUTSIDE-l0-3",
+    "floor": 0,
+    "x": 14.0,
+    "z": 16.6,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-OUTSIDE-l0-4",
+    "floor": 0,
+    "x": 16.6,
+    "z": 16.6,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-OUTSIDE-l0-5",
+    "floor": 0,
+    "x": 19.4,
+    "z": 16.6,
+    "room": "OUTSIDE"
+   },
+   {
+    "id": "f0-PHARMACY-door-1",
+    "floor": 0,
+    "x": 13.25,
+    "z": -2.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-l0-1",
+    "floor": 0,
+    "x": 12.3,
+    "z": -5.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-l0-2",
+    "floor": 0,
+    "x": 13.25,
+    "z": -5.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-l0-3",
+    "floor": 0,
+    "x": 15.3,
+    "z": -5.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-l0-4",
+    "floor": 0,
+    "x": 15.6,
+    "z": -5.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-l0-5",
+    "floor": 0,
+    "x": 18.3,
+    "z": -5.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-ws-1",
+    "floor": 0,
+    "x": 12.3,
+    "z": -9.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-ws-2",
+    "floor": 0,
+    "x": 15.3,
+    "z": -9.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-ws-3",
+    "floor": 0,
+    "x": 18.3,
+    "z": -9.0,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-PHARMACY-ws-4",
+    "floor": 0,
+    "x": 15.6,
+    "z": -3.6,
+    "room": "PHARMACY"
+   },
+   {
+    "id": "f0-RECEPTION-door-1",
+    "floor": 0,
+    "x": 11.5,
+    "z": 2.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-l0-1",
+    "floor": 0,
+    "x": 11.5,
+    "z": 4.5,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-l0-2",
+    "floor": 0,
+    "x": 14.0,
+    "z": 4.5,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-l0-3",
+    "floor": 0,
+    "x": 19.2,
+    "z": 4.5,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-l1-1",
+    "floor": 0,
+    "x": 9.5,
+    "z": 7.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-l1-2",
+    "floor": 0,
+    "x": 14.0,
+    "z": 7.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-l1-3",
+    "floor": 0,
+    "x": 16.9,
+    "z": 7.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-ws-1",
+    "floor": 0,
+    "x": 19.2,
+    "z": 8.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-RECEPTION-ws-2",
+    "floor": 0,
+    "x": 16.9,
+    "z": 8.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f0-T-1",
+    "floor": 0,
+    "x": -16.0,
+    "z": 9.0,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-T-2",
+    "floor": 0,
+    "x": -14.5,
+    "z": 9.0,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-door-1",
+    "floor": 0,
+    "x": -11.5,
+    "z": 2.0,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-l0-1",
+    "floor": 0,
+    "x": -16.0,
+    "z": 3.6,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-l0-2",
+    "floor": 0,
+    "x": -14.5,
+    "z": 3.6,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-l0-3",
+    "floor": 0,
+    "x": -12.0,
+    "z": 3.6,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-l0-4",
+    "floor": 0,
+    "x": -11.5,
+    "z": 3.6,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-l0-5",
+    "floor": 0,
+    "x": -10.0,
+    "z": 3.6,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-ws-1",
+    "floor": 0,
+    "x": -12.0,
+    "z": 5.0,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-TRIAGE-ws-2",
+    "floor": 0,
+    "x": -10.0,
+    "z": 8.0,
+    "room": "TRIAGE"
+   },
+   {
+    "id": "f0-W-1",
+    "floor": 0,
+    "x": -2.5,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-10",
+    "floor": 0,
+    "x": 2.6,
+    "z": 10.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-11",
+    "floor": 0,
+    "x": 4.3,
+    "z": 10.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-12",
+    "floor": 0,
+    "x": 6.0,
+    "z": 10.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-2",
+    "floor": 0,
+    "x": -0.8,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-3",
+    "floor": 0,
+    "x": 0.9,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-4",
+    "floor": 0,
+    "x": 2.6,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-5",
+    "floor": 0,
+    "x": 4.3,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-6",
+    "floor": 0,
+    "x": 6.0,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-7",
+    "floor": 0,
+    "x": -2.5,
+    "z": 10.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-8",
+    "floor": 0,
+    "x": -0.8,
+    "z": 10.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-W-9",
+    "floor": 0,
+    "x": 0.9,
+    "z": 10.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-door-1",
+    "floor": 0,
+    "x": 1.0,
+    "z": 2.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-east",
+    "floor": 0,
+    "x": 7.0,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-1",
+    "floor": 0,
+    "x": -3.4,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-2",
+    "floor": 0,
+    "x": -2.5,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-3",
+    "floor": 0,
+    "x": -0.8,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-4",
+    "floor": 0,
+    "x": 0.9,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-5",
+    "floor": 0,
+    "x": 1.0,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-6",
+    "floor": 0,
+    "x": 2.6,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-7",
+    "floor": 0,
+    "x": 4.3,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-8",
+    "floor": 0,
+    "x": 6.0,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l0-9",
+    "floor": 0,
+    "x": 7.0,
+    "z": 4.4,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-1",
+    "floor": 0,
+    "x": -3.4,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-2",
+    "floor": 0,
+    "x": -2.5,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-3",
+    "floor": 0,
+    "x": -0.8,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-4",
+    "floor": 0,
+    "x": 0.9,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-5",
+    "floor": 0,
+    "x": 2.6,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-6",
+    "floor": 0,
+    "x": 4.3,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-7",
+    "floor": 0,
+    "x": 6.0,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-l1-8",
+    "floor": 0,
+    "x": 7.0,
+    "z": 8.5,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-opening",
+    "floor": 0,
+    "x": 8.0,
+    "z": 7.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-ws-1",
+    "floor": 0,
+    "x": -3.4,
+    "z": 12.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-WAITING-ws-2",
+    "floor": 0,
+    "x": 7.0,
+    "z": 12.0,
+    "room": "WAITING"
+   },
+   {
+    "id": "f0-c-1",
+    "floor": 0,
+    "x": -16.5,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-c-2",
+    "floor": 0,
+    "x": -11.5,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-c-3",
+    "floor": 0,
+    "x": 1.0,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-c-4",
+    "floor": 0,
+    "x": 1.5,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-c-5",
+    "floor": 0,
+    "x": 11.5,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-c-6",
+    "floor": 0,
+    "x": 13.25,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-c-7",
+    "floor": 0,
+    "x": 16.0,
+    "z": 0.0,
+    "room": "CORR-0"
+   },
+   {
+    "id": "f0-entrance",
+    "floor": 0,
+    "x": 14.0,
+    "z": 14.0,
+    "room": "RECEPTION"
+   },
+   {
+    "id": "f1-ELEV",
+    "floor": 1,
+    "x": 18.5,
+    "z": 0.0,
+    "room": "ELEV-1"
+   },
+   {
+    "id": "f1-ELEV-door",
+    "floor": 1,
+    "x": 17.0,
+    "z": 0.0,
+    "room": "ELEV-1"
+   },
+   {
+    "id": "f1-OR-1",
+    "floor": 1,
+    "x": 13.0,
+    "z": -8.0,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-door-1",
+    "floor": 1,
+    "x": 11.5,
+    "z": -2.0,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-l0-1",
+    "floor": 1,
+    "x": 11.5,
+    "z": -4.5,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-l0-2",
+    "floor": 1,
+    "x": 11.9,
+    "z": -4.5,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-l0-3",
+    "floor": 1,
+    "x": 13.0,
+    "z": -4.5,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-l0-4",
+    "floor": 1,
+    "x": 14.1,
+    "z": -4.5,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-l0-5",
+    "floor": 1,
+    "x": 16.5,
+    "z": -4.5,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-ws-1",
+    "floor": 1,
+    "x": 11.9,
+    "z": -8.0,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-ws-2",
+    "floor": 1,
+    "x": 14.1,
+    "z": -8.4,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-ws-3",
+    "floor": 1,
+    "x": 13.0,
+    "z": -6.3,
+    "room": "OR"
+   },
+   {
+    "id": "f1-OR-ws-4",
+    "floor": 1,
+    "x": 16.5,
+    "z": -8.4,
+    "room": "OR"
+   },
+   {
+    "id": "f1-RECOVERY-door-1",
+    "floor": 1,
+    "x": 11.5,
+    "z": 2.0,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-l0-1",
+    "floor": 1,
+    "x": 9.95,
+    "z": 9.6,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-l0-2",
+    "floor": 1,
+    "x": 11.5,
+    "z": 9.6,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-l0-3",
+    "floor": 1,
+    "x": 13.45,
+    "z": 9.6,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-l0-4",
+    "floor": 1,
+    "x": 16.95,
+    "z": 9.6,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-l0-5",
+    "floor": 1,
+    "x": 17.0,
+    "z": 9.6,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-ws-1",
+    "floor": 1,
+    "x": 9.95,
+    "z": 12.2,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-ws-2",
+    "floor": 1,
+    "x": 13.45,
+    "z": 12.2,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-ws-3",
+    "floor": 1,
+    "x": 16.95,
+    "z": 12.2,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-RECOVERY-ws-4",
+    "floor": 1,
+    "x": 17.0,
+    "z": 5.0,
+    "room": "RECOVERY"
+   },
+   {
+    "id": "f1-WARD_A-door-1",
+    "floor": 1,
+    "x": -12.5,
+    "z": -2.0,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-door-2",
+    "floor": 1,
+    "x": 0.5,
+    "z": -2.0,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-1",
+    "floor": 1,
+    "x": -19.45,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-10",
+    "floor": 1,
+    "x": -2.05,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-11",
+    "floor": 1,
+    "x": 0.5,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-12",
+    "floor": 1,
+    "x": 0.85,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-2",
+    "floor": 1,
+    "x": -16.55,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-3",
+    "floor": 1,
+    "x": -13.65,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-4",
+    "floor": 1,
+    "x": -12.5,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-5",
+    "floor": 1,
+    "x": -10.75,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-6",
+    "floor": 1,
+    "x": -7.85,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-7",
+    "floor": 1,
+    "x": -6.0,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-8",
+    "floor": 1,
+    "x": -4.95,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-l0-9",
+    "floor": 1,
+    "x": -4.5,
+    "z": -9.6,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-1",
+    "floor": 1,
+    "x": -19.45,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-10",
+    "floor": 1,
+    "x": -4.5,
+    "z": -5.0,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-2",
+    "floor": 1,
+    "x": -16.55,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-3",
+    "floor": 1,
+    "x": -13.65,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-4",
+    "floor": 1,
+    "x": -10.75,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-5",
+    "floor": 1,
+    "x": -7.85,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-6",
+    "floor": 1,
+    "x": -4.95,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-7",
+    "floor": 1,
+    "x": -2.05,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-8",
+    "floor": 1,
+    "x": 0.85,
+    "z": -12.2,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_A-ws-9",
+    "floor": 1,
+    "x": -6.0,
+    "z": -5.0,
+    "room": "WARD_A"
+   },
+   {
+    "id": "f1-WARD_B-door-1",
+    "floor": 1,
+    "x": -12.5,
+    "z": 2.0,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-door-2",
+    "floor": 1,
+    "x": 0.5,
+    "z": 2.0,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-1",
+    "floor": 1,
+    "x": -17.55,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-10",
+    "floor": 1,
+    "x": 0.5,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-2",
+    "floor": 1,
+    "x": -14.55,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-3",
+    "floor": 1,
+    "x": -12.5,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-4",
+    "floor": 1,
+    "x": -11.55,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-5",
+    "floor": 1,
+    "x": -8.55,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-6",
+    "floor": 1,
+    "x": -6.0,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-7",
+    "floor": 1,
+    "x": -5.55,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-8",
+    "floor": 1,
+    "x": -4.5,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-l0-9",
+    "floor": 1,
+    "x": -2.55,
+    "z": 9.6,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-1",
+    "floor": 1,
+    "x": -17.55,
+    "z": 12.2,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-2",
+    "floor": 1,
+    "x": -14.55,
+    "z": 12.2,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-3",
+    "floor": 1,
+    "x": -11.55,
+    "z": 12.2,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-4",
+    "floor": 1,
+    "x": -8.55,
+    "z": 12.2,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-5",
+    "floor": 1,
+    "x": -5.55,
+    "z": 12.2,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-6",
+    "floor": 1,
+    "x": -2.55,
+    "z": 12.2,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-7",
+    "floor": 1,
+    "x": -6.0,
+    "z": 5.0,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-WARD_B-ws-8",
+    "floor": 1,
+    "x": -4.5,
+    "z": 5.0,
+    "room": "WARD_B"
+   },
+   {
+    "id": "f1-c-1",
+    "floor": 1,
+    "x": -16.5,
+    "z": 0.0,
+    "room": "CORR-1"
+   },
+   {
+    "id": "f1-c-2",
+    "floor": 1,
+    "x": -12.5,
+    "z": 0.0,
+    "room": "CORR-1"
+   },
+   {
+    "id": "f1-c-3",
+    "floor": 1,
+    "x": 0.5,
+    "z": 0.0,
+    "room": "CORR-1"
+   },
+   {
+    "id": "f1-c-4",
+    "floor": 1,
+    "x": 11.5,
+    "z": 0.0,
+    "room": "CORR-1"
+   },
+   {
+    "id": "f1-c-5",
+    "floor": 1,
+    "x": 16.0,
+    "z": 0.0,
+    "room": "CORR-1"
+   },
+   {
+    "id": "f2-ADMIN-1",
+    "floor": 2,
+    "x": 9.0,
+    "z": 8.0,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-2",
+    "floor": 2,
+    "x": 13.0,
+    "z": 8.0,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-3",
+    "floor": 2,
+    "x": 17.0,
+    "z": 8.0,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-4",
+    "floor": 2,
+    "x": 9.0,
+    "z": 12.0,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-5",
+    "floor": 2,
+    "x": 13.0,
+    "z": 12.0,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-door-1",
+    "floor": 2,
+    "x": 11.5,
+    "z": 2.0,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l0-1",
+    "floor": 2,
+    "x": 11.0,
+    "z": 4.5,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l0-2",
+    "floor": 2,
+    "x": 11.5,
+    "z": 4.5,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l1-1",
+    "floor": 2,
+    "x": 9.0,
+    "z": 9.2,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l1-2",
+    "floor": 2,
+    "x": 11.0,
+    "z": 9.2,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l1-3",
+    "floor": 2,
+    "x": 13.0,
+    "z": 9.2,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l1-4",
+    "floor": 2,
+    "x": 15.5,
+    "z": 9.2,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l1-5",
+    "floor": 2,
+    "x": 17.0,
+    "z": 9.2,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l2-1",
+    "floor": 2,
+    "x": 9.0,
+    "z": 13.1,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l2-2",
+    "floor": 2,
+    "x": 13.0,
+    "z": 13.1,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ADMIN-l2-3",
+    "floor": 2,
+    "x": 15.5,
+    "z": 13.1,
+    "room": "ADMIN"
+   },
+   {
+    "id": "f2-ELEV",
+    "floor": 2,
+    "x": 18.5,
+    "z": 0.0,
+    "room": "ELEV-2"
+   },
+   {
+    "id": "f2-ELEV-door",
+    "floor": 2,
+    "x": 17.0,
+    "z": 0.0,
+    "room": "ELEV-2"
+   },
+   {
+    "id": "f2-ICU-door-1",
+    "floor": 2,
+    "x": -12.5,
+    "z": -2.0,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-door-2",
+    "floor": 2,
+    "x": 0.5,
+    "z": -2.0,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-1",
+    "floor": 2,
+    "x": -19.45,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-10",
+    "floor": 2,
+    "x": 0.5,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-2",
+    "floor": 2,
+    "x": -15.85,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-3",
+    "floor": 2,
+    "x": -12.5,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-4",
+    "floor": 2,
+    "x": -12.25,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-5",
+    "floor": 2,
+    "x": -8.65,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-6",
+    "floor": 2,
+    "x": -6.0,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-7",
+    "floor": 2,
+    "x": -5.05,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-8",
+    "floor": 2,
+    "x": -4.5,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-l0-9",
+    "floor": 2,
+    "x": -1.45,
+    "z": -9.6,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-1",
+    "floor": 2,
+    "x": -19.45,
+    "z": -12.2,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-2",
+    "floor": 2,
+    "x": -15.85,
+    "z": -12.2,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-3",
+    "floor": 2,
+    "x": -12.25,
+    "z": -12.2,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-4",
+    "floor": 2,
+    "x": -8.65,
+    "z": -12.2,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-5",
+    "floor": 2,
+    "x": -5.05,
+    "z": -12.2,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-6",
+    "floor": 2,
+    "x": -1.45,
+    "z": -12.2,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-7",
+    "floor": 2,
+    "x": -6.0,
+    "z": -5.0,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-ICU-ws-8",
+    "floor": 2,
+    "x": -4.5,
+    "z": -5.0,
+    "room": "ICU"
+   },
+   {
+    "id": "f2-LAB-door-1",
+    "floor": 2,
+    "x": 11.5,
+    "z": -2.0,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-l0-1",
+    "floor": 2,
+    "x": 8.5,
+    "z": -4.2,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-l0-2",
+    "floor": 2,
+    "x": 11.0,
+    "z": -4.2,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-l0-3",
+    "floor": 2,
+    "x": 11.5,
+    "z": -4.2,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-l0-4",
+    "floor": 2,
+    "x": 13.5,
+    "z": -4.2,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-l0-5",
+    "floor": 2,
+    "x": 16.0,
+    "z": -4.2,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-ws-1",
+    "floor": 2,
+    "x": 8.5,
+    "z": -5.0,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-ws-2",
+    "floor": 2,
+    "x": 11.0,
+    "z": -5.0,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-ws-3",
+    "floor": 2,
+    "x": 13.5,
+    "z": -5.0,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LAB-ws-4",
+    "floor": 2,
+    "x": 16.0,
+    "z": -5.0,
+    "room": "LAB"
+   },
+   {
+    "id": "f2-LOUNGE-1",
+    "floor": 2,
+    "x": -13.4,
+    "z": 11.4,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-LOUNGE-2",
+    "floor": 2,
+    "x": -12.47,
+    "z": 11.4,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-LOUNGE-3",
+    "floor": 2,
+    "x": -11.53,
+    "z": 11.4,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-LOUNGE-4",
+    "floor": 2,
+    "x": -10.6,
+    "z": 11.4,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-PRAYER-1",
+    "floor": 2,
+    "x": -2.6,
+    "z": 6.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-2",
+    "floor": 2,
+    "x": -0.4,
+    "z": 6.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-3",
+    "floor": 2,
+    "x": 1.8,
+    "z": 6.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-4",
+    "floor": 2,
+    "x": 4.0,
+    "z": 6.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-5",
+    "floor": 2,
+    "x": -2.6,
+    "z": 9.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-6",
+    "floor": 2,
+    "x": -0.4,
+    "z": 9.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-7",
+    "floor": 2,
+    "x": 1.8,
+    "z": 9.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-8",
+    "floor": 2,
+    "x": 4.0,
+    "z": 9.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-door-1",
+    "floor": 2,
+    "x": 1.5,
+    "z": 2.0,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l0-1",
+    "floor": 2,
+    "x": -2.6,
+    "z": 3.8,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l0-2",
+    "floor": 2,
+    "x": -0.4,
+    "z": 3.8,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l0-3",
+    "floor": 2,
+    "x": 1.5,
+    "z": 3.8,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l0-4",
+    "floor": 2,
+    "x": 1.8,
+    "z": 3.8,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l0-5",
+    "floor": 2,
+    "x": 4.0,
+    "z": 3.8,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l0-6",
+    "floor": 2,
+    "x": 5.3,
+    "z": 3.8,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l1-1",
+    "floor": 2,
+    "x": -2.6,
+    "z": 7.5,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l1-2",
+    "floor": 2,
+    "x": -0.4,
+    "z": 7.5,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l1-3",
+    "floor": 2,
+    "x": 1.8,
+    "z": 7.5,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l1-4",
+    "floor": 2,
+    "x": 4.0,
+    "z": 7.5,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-PRAYER-l1-5",
+    "floor": 2,
+    "x": 5.3,
+    "z": 7.5,
+    "room": "PRAYER"
+   },
+   {
+    "id": "f2-STAFF-door-1",
+    "floor": 2,
+    "x": -11.5,
+    "z": 2.0,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l0-1",
+    "floor": 2,
+    "x": -14.5,
+    "z": 5.0,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l0-2",
+    "floor": 2,
+    "x": -12.0,
+    "z": 5.0,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l0-3",
+    "floor": 2,
+    "x": -11.5,
+    "z": 5.0,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l0-4",
+    "floor": 2,
+    "x": -9.5,
+    "z": 5.0,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l1-1",
+    "floor": 2,
+    "x": -18.0,
+    "z": 10.3,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l1-2",
+    "floor": 2,
+    "x": -14.5,
+    "z": 10.3,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l1-3",
+    "floor": 2,
+    "x": -13.4,
+    "z": 10.3,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l1-4",
+    "floor": 2,
+    "x": -12.47,
+    "z": 10.3,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l1-5",
+    "floor": 2,
+    "x": -11.53,
+    "z": 10.3,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-l1-6",
+    "floor": 2,
+    "x": -10.6,
+    "z": 10.3,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-ws-1",
+    "floor": 2,
+    "x": -18.0,
+    "z": 11.5,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-ws-2",
+    "floor": 2,
+    "x": -12.0,
+    "z": 7.9,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-STAFF-ws-3",
+    "floor": 2,
+    "x": -9.5,
+    "z": 9.0,
+    "room": "STAFF"
+   },
+   {
+    "id": "f2-c-1",
+    "floor": 2,
+    "x": -16.5,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f2-c-2",
+    "floor": 2,
+    "x": -12.5,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f2-c-3",
+    "floor": 2,
+    "x": -11.5,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f2-c-4",
+    "floor": 2,
+    "x": 0.5,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f2-c-5",
+    "floor": 2,
+    "x": 1.5,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f2-c-6",
+    "floor": 2,
+    "x": 11.5,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f2-c-7",
+    "floor": 2,
+    "x": 16.0,
+    "z": 0.0,
+    "room": "CORR-2"
+   },
+   {
+    "id": "f3-ELEV",
+    "floor": 3,
+    "x": 18.5,
+    "z": 0.0,
+    "room": "ELEV-3"
+   },
+   {
+    "id": "f3-ELEV-door",
+    "floor": 3,
+    "x": 17.0,
+    "z": 0.0,
+    "room": "ELEV-3"
+   },
+   {
+    "id": "f3-HELIPAD",
+    "floor": 3,
+    "x": 9.2,
+    "z": 0.0,
+    "room": "ROOF"
+   },
+   {
+    "id": "f3-ROOF-l0-1",
+    "floor": 3,
+    "x": 16.0,
+    "z": 0.0,
+    "room": "ROOF"
+   }
+  ],
+  "edges": [
+   {
+    "a": "f0-AMB-unload-1",
+    "b": "f0-OUTSIDE-l0-1",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f0-AMB-unload-2",
+    "b": "f0-OUTSIDE-l0-2",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f0-AMB-unload-3",
+    "b": "f0-OUTSIDE-l0-4",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f0-AMB-unload-4",
+    "b": "f0-OUTSIDE-l0-5",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f0-CURB",
+    "b": "f0-OUTSIDE-l0-3",
+    "kind": "walk",
+    "length": 8.0
+   },
+   {
+    "a": "f0-ELEV",
+    "b": "f0-ELEV-door",
+    "kind": "door",
+    "length": 1.5
+   },
+   {
+    "a": "f0-ELEV",
+    "b": "f1-ELEV",
+    "kind": "elevator",
+    "length": 3.4
+   },
+   {
+    "a": "f0-ELEV-door",
+    "b": "f0-c-7",
+    "kind": "door",
+    "length": 1.0
+   },
+   {
+    "a": "f0-ER-door-1",
+    "b": "f0-ER-l0-4",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f0-ER-door-1",
+    "b": "f0-c-2",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f0-ER-l0-1",
+    "b": "f0-ER-l0-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-1",
+    "b": "f0-ER-ws-1",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-2",
+    "b": "f0-ER-l0-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-2",
+    "b": "f0-ER-ws-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-3",
+    "b": "f0-ER-l0-4",
+    "kind": "walk",
+    "length": 2.25
+   },
+   {
+    "a": "f0-ER-l0-3",
+    "b": "f0-ER-ws-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-4",
+    "b": "f0-ER-l0-5",
+    "kind": "walk",
+    "length": 0.35
+   },
+   {
+    "a": "f0-ER-l0-5",
+    "b": "f0-ER-l0-6",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-5",
+    "b": "f0-ER-ws-4",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-6",
+    "b": "f0-ER-l0-7",
+    "kind": "walk",
+    "length": 0.55
+   },
+   {
+    "a": "f0-ER-l0-6",
+    "b": "f0-ER-ws-5",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-ER-l0-7",
+    "b": "f0-ER-l0-8",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-ER-l0-7",
+    "b": "f0-ER-ws-7",
+    "kind": "walk",
+    "length": 4.1
+   },
+   {
+    "a": "f0-ER-l0-8",
+    "b": "f0-ER-l0-9",
+    "kind": "walk",
+    "length": 0.55
+   },
+   {
+    "a": "f0-ER-l0-8",
+    "b": "f0-ER-ws-8",
+    "kind": "walk",
+    "length": 4.1
+   },
+   {
+    "a": "f0-ER-l0-9",
+    "b": "f0-ER-ws-6",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-IMAGING-door-1",
+    "b": "f0-IMAGING-l0-2",
+    "kind": "door",
+    "length": 2.5
+   },
+   {
+    "a": "f0-IMAGING-door-1",
+    "b": "f0-c-4",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f0-IMAGING-l0-1",
+    "b": "f0-IMAGING-l0-2",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f0-IMAGING-l0-1",
+    "b": "f0-IMAGING-ws-2",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-IMAGING-l0-2",
+    "b": "f0-IMAGING-l0-3",
+    "kind": "walk",
+    "length": 0.5
+   },
+   {
+    "a": "f0-IMAGING-l0-3",
+    "b": "f0-IMAGING-l0-4",
+    "kind": "walk",
+    "length": 1.2
+   },
+   {
+    "a": "f0-IMAGING-l0-3",
+    "b": "f0-IMAGING-table",
+    "kind": "walk",
+    "length": 3.7
+   },
+   {
+    "a": "f0-IMAGING-l0-4",
+    "b": "f0-IMAGING-ws-1",
+    "kind": "walk",
+    "length": 3.7
+   },
+   {
+    "a": "f0-OUTSIDE-l0-1",
+    "b": "f0-OUTSIDE-l0-2",
+    "kind": "walk",
+    "length": 2.8
+   },
+   {
+    "a": "f0-OUTSIDE-l0-2",
+    "b": "f0-OUTSIDE-l0-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-OUTSIDE-l0-3",
+    "b": "f0-OUTSIDE-l0-4",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-OUTSIDE-l0-3",
+    "b": "f0-entrance",
+    "kind": "door",
+    "length": 2.6
+   },
+   {
+    "a": "f0-OUTSIDE-l0-4",
+    "b": "f0-OUTSIDE-l0-5",
+    "kind": "walk",
+    "length": 2.8
+   },
+   {
+    "a": "f0-PHARMACY-door-1",
+    "b": "f0-PHARMACY-l0-2",
+    "kind": "door",
+    "length": 3.0
+   },
+   {
+    "a": "f0-PHARMACY-door-1",
+    "b": "f0-c-6",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f0-PHARMACY-l0-1",
+    "b": "f0-PHARMACY-l0-2",
+    "kind": "walk",
+    "length": 0.95
+   },
+   {
+    "a": "f0-PHARMACY-l0-1",
+    "b": "f0-PHARMACY-ws-1",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f0-PHARMACY-l0-2",
+    "b": "f0-PHARMACY-l0-3",
+    "kind": "walk",
+    "length": 2.05
+   },
+   {
+    "a": "f0-PHARMACY-l0-3",
+    "b": "f0-PHARMACY-l0-4",
+    "kind": "walk",
+    "length": 0.3
+   },
+   {
+    "a": "f0-PHARMACY-l0-3",
+    "b": "f0-PHARMACY-ws-2",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f0-PHARMACY-l0-4",
+    "b": "f0-PHARMACY-l0-5",
+    "kind": "walk",
+    "length": 2.7
+   },
+   {
+    "a": "f0-PHARMACY-l0-4",
+    "b": "f0-PHARMACY-ws-4",
+    "kind": "walk",
+    "length": 1.4
+   },
+   {
+    "a": "f0-PHARMACY-l0-5",
+    "b": "f0-PHARMACY-ws-3",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f0-RECEPTION-door-1",
+    "b": "f0-RECEPTION-l0-1",
+    "kind": "door",
+    "length": 2.5
+   },
+   {
+    "a": "f0-RECEPTION-door-1",
+    "b": "f0-c-5",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f0-RECEPTION-l0-1",
+    "b": "f0-RECEPTION-l0-2",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f0-RECEPTION-l0-2",
+    "b": "f0-RECEPTION-l0-3",
+    "kind": "walk",
+    "length": 5.2
+   },
+   {
+    "a": "f0-RECEPTION-l0-2",
+    "b": "f0-RECEPTION-l1-2",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f0-RECEPTION-l0-3",
+    "b": "f0-RECEPTION-ws-1",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f0-RECEPTION-l1-1",
+    "b": "f0-RECEPTION-l1-2",
+    "kind": "walk",
+    "length": 4.5
+   },
+   {
+    "a": "f0-RECEPTION-l1-1",
+    "b": "f0-WAITING-opening",
+    "kind": "door",
+    "length": 1.5
+   },
+   {
+    "a": "f0-RECEPTION-l1-2",
+    "b": "f0-RECEPTION-l1-3",
+    "kind": "walk",
+    "length": 2.9
+   },
+   {
+    "a": "f0-RECEPTION-l1-2",
+    "b": "f0-entrance",
+    "kind": "door",
+    "length": 7.0
+   },
+   {
+    "a": "f0-RECEPTION-l1-3",
+    "b": "f0-RECEPTION-ws-2",
+    "kind": "walk",
+    "length": 1.0
+   },
+   {
+    "a": "f0-T-1",
+    "b": "f0-TRIAGE-l0-1",
+    "kind": "walk",
+    "length": 5.4
+   },
+   {
+    "a": "f0-T-2",
+    "b": "f0-TRIAGE-l0-2",
+    "kind": "walk",
+    "length": 5.4
+   },
+   {
+    "a": "f0-TRIAGE-door-1",
+    "b": "f0-TRIAGE-l0-4",
+    "kind": "door",
+    "length": 1.6
+   },
+   {
+    "a": "f0-TRIAGE-door-1",
+    "b": "f0-c-2",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f0-TRIAGE-l0-1",
+    "b": "f0-TRIAGE-l0-2",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-TRIAGE-l0-2",
+    "b": "f0-TRIAGE-l0-3",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f0-TRIAGE-l0-3",
+    "b": "f0-TRIAGE-l0-4",
+    "kind": "walk",
+    "length": 0.5
+   },
+   {
+    "a": "f0-TRIAGE-l0-3",
+    "b": "f0-TRIAGE-ws-1",
+    "kind": "walk",
+    "length": 1.4
+   },
+   {
+    "a": "f0-TRIAGE-l0-4",
+    "b": "f0-TRIAGE-l0-5",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-TRIAGE-l0-5",
+    "b": "f0-TRIAGE-ws-2",
+    "kind": "walk",
+    "length": 4.4
+   },
+   {
+    "a": "f0-W-1",
+    "b": "f0-WAITING-l0-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-W-10",
+    "b": "f0-WAITING-l1-5",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-W-11",
+    "b": "f0-WAITING-l1-6",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-W-12",
+    "b": "f0-WAITING-l1-7",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-W-2",
+    "b": "f0-WAITING-l0-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-W-3",
+    "b": "f0-WAITING-l0-4",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-W-4",
+    "b": "f0-WAITING-l0-6",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-W-5",
+    "b": "f0-WAITING-l0-7",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-W-6",
+    "b": "f0-WAITING-l0-8",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-W-7",
+    "b": "f0-WAITING-l1-2",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-W-8",
+    "b": "f0-WAITING-l1-3",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-W-9",
+    "b": "f0-WAITING-l1-4",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-WAITING-door-1",
+    "b": "f0-WAITING-l0-5",
+    "kind": "door",
+    "length": 2.4
+   },
+   {
+    "a": "f0-WAITING-door-1",
+    "b": "f0-c-3",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f0-WAITING-east",
+    "b": "f0-WAITING-l0-9",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f0-WAITING-east",
+    "b": "f0-WAITING-l1-8",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f0-WAITING-east",
+    "b": "f0-WAITING-opening",
+    "kind": "door",
+    "length": 1.0
+   },
+   {
+    "a": "f0-WAITING-l0-1",
+    "b": "f0-WAITING-l0-2",
+    "kind": "walk",
+    "length": 0.9
+   },
+   {
+    "a": "f0-WAITING-l0-1",
+    "b": "f0-WAITING-l1-1",
+    "kind": "walk",
+    "length": 4.1
+   },
+   {
+    "a": "f0-WAITING-l0-2",
+    "b": "f0-WAITING-l0-3",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l0-3",
+    "b": "f0-WAITING-l0-4",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l0-4",
+    "b": "f0-WAITING-l0-5",
+    "kind": "walk",
+    "length": 0.1
+   },
+   {
+    "a": "f0-WAITING-l0-5",
+    "b": "f0-WAITING-l0-6",
+    "kind": "walk",
+    "length": 1.6
+   },
+   {
+    "a": "f0-WAITING-l0-6",
+    "b": "f0-WAITING-l0-7",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l0-7",
+    "b": "f0-WAITING-l0-8",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l0-8",
+    "b": "f0-WAITING-l0-9",
+    "kind": "walk",
+    "length": 1.0
+   },
+   {
+    "a": "f0-WAITING-l1-1",
+    "b": "f0-WAITING-l1-2",
+    "kind": "walk",
+    "length": 0.9
+   },
+   {
+    "a": "f0-WAITING-l1-1",
+    "b": "f0-WAITING-ws-1",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f0-WAITING-l1-2",
+    "b": "f0-WAITING-l1-3",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l1-3",
+    "b": "f0-WAITING-l1-4",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l1-4",
+    "b": "f0-WAITING-l1-5",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l1-5",
+    "b": "f0-WAITING-l1-6",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l1-6",
+    "b": "f0-WAITING-l1-7",
+    "kind": "walk",
+    "length": 1.7
+   },
+   {
+    "a": "f0-WAITING-l1-7",
+    "b": "f0-WAITING-l1-8",
+    "kind": "walk",
+    "length": 1.0
+   },
+   {
+    "a": "f0-WAITING-l1-8",
+    "b": "f0-WAITING-ws-2",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f0-c-1",
+    "b": "f0-c-2",
+    "kind": "walk",
+    "length": 5.0
+   },
+   {
+    "a": "f0-c-2",
+    "b": "f0-c-3",
+    "kind": "walk",
+    "length": 12.5
+   },
+   {
+    "a": "f0-c-3",
+    "b": "f0-c-4",
+    "kind": "walk",
+    "length": 0.5
+   },
+   {
+    "a": "f0-c-4",
+    "b": "f0-c-5",
+    "kind": "walk",
+    "length": 10.0
+   },
+   {
+    "a": "f0-c-5",
+    "b": "f0-c-6",
+    "kind": "walk",
+    "length": 1.75
+   },
+   {
+    "a": "f0-c-6",
+    "b": "f0-c-7",
+    "kind": "walk",
+    "length": 2.75
+   },
+   {
+    "a": "f1-ELEV",
+    "b": "f1-ELEV-door",
+    "kind": "door",
+    "length": 1.5
+   },
+   {
+    "a": "f1-ELEV",
+    "b": "f2-ELEV",
+    "kind": "elevator",
+    "length": 3.4
+   },
+   {
+    "a": "f1-ELEV-door",
+    "b": "f1-c-5",
+    "kind": "door",
+    "length": 1.0
+   },
+   {
+    "a": "f1-OR-1",
+    "b": "f1-OR-l0-3",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f1-OR-door-1",
+    "b": "f1-OR-l0-1",
+    "kind": "door",
+    "length": 2.5
+   },
+   {
+    "a": "f1-OR-door-1",
+    "b": "f1-c-4",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f1-OR-l0-1",
+    "b": "f1-OR-l0-2",
+    "kind": "walk",
+    "length": 0.4
+   },
+   {
+    "a": "f1-OR-l0-2",
+    "b": "f1-OR-l0-3",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f1-OR-l0-2",
+    "b": "f1-OR-ws-1",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f1-OR-l0-3",
+    "b": "f1-OR-l0-4",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f1-OR-l0-3",
+    "b": "f1-OR-ws-3",
+    "kind": "walk",
+    "length": 1.8
+   },
+   {
+    "a": "f1-OR-l0-4",
+    "b": "f1-OR-l0-5",
+    "kind": "walk",
+    "length": 2.4
+   },
+   {
+    "a": "f1-OR-l0-4",
+    "b": "f1-OR-ws-2",
+    "kind": "walk",
+    "length": 3.9
+   },
+   {
+    "a": "f1-OR-l0-5",
+    "b": "f1-OR-ws-4",
+    "kind": "walk",
+    "length": 3.9
+   },
+   {
+    "a": "f1-RECOVERY-door-1",
+    "b": "f1-RECOVERY-l0-2",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f1-RECOVERY-door-1",
+    "b": "f1-c-4",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f1-RECOVERY-l0-1",
+    "b": "f1-RECOVERY-l0-2",
+    "kind": "walk",
+    "length": 1.55
+   },
+   {
+    "a": "f1-RECOVERY-l0-1",
+    "b": "f1-RECOVERY-ws-1",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-RECOVERY-l0-2",
+    "b": "f1-RECOVERY-l0-3",
+    "kind": "walk",
+    "length": 1.95
+   },
+   {
+    "a": "f1-RECOVERY-l0-3",
+    "b": "f1-RECOVERY-l0-4",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f1-RECOVERY-l0-3",
+    "b": "f1-RECOVERY-ws-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-RECOVERY-l0-4",
+    "b": "f1-RECOVERY-l0-5",
+    "kind": "walk",
+    "length": 0.05
+   },
+   {
+    "a": "f1-RECOVERY-l0-4",
+    "b": "f1-RECOVERY-ws-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-RECOVERY-l0-5",
+    "b": "f1-RECOVERY-ws-4",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f1-WARD_A-door-1",
+    "b": "f1-WARD_A-l0-4",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f1-WARD_A-door-1",
+    "b": "f1-c-2",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f1-WARD_A-door-2",
+    "b": "f1-WARD_A-l0-11",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f1-WARD_A-door-2",
+    "b": "f1-c-3",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f1-WARD_A-l0-1",
+    "b": "f1-WARD_A-l0-2",
+    "kind": "walk",
+    "length": 2.9
+   },
+   {
+    "a": "f1-WARD_A-l0-1",
+    "b": "f1-WARD_A-ws-1",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-10",
+    "b": "f1-WARD_A-l0-11",
+    "kind": "walk",
+    "length": 2.55
+   },
+   {
+    "a": "f1-WARD_A-l0-10",
+    "b": "f1-WARD_A-l0-9",
+    "kind": "walk",
+    "length": 2.45
+   },
+   {
+    "a": "f1-WARD_A-l0-10",
+    "b": "f1-WARD_A-ws-7",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-11",
+    "b": "f1-WARD_A-l0-12",
+    "kind": "walk",
+    "length": 0.35
+   },
+   {
+    "a": "f1-WARD_A-l0-12",
+    "b": "f1-WARD_A-ws-8",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-2",
+    "b": "f1-WARD_A-l0-3",
+    "kind": "walk",
+    "length": 2.9
+   },
+   {
+    "a": "f1-WARD_A-l0-2",
+    "b": "f1-WARD_A-ws-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-3",
+    "b": "f1-WARD_A-l0-4",
+    "kind": "walk",
+    "length": 1.15
+   },
+   {
+    "a": "f1-WARD_A-l0-3",
+    "b": "f1-WARD_A-ws-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-4",
+    "b": "f1-WARD_A-l0-5",
+    "kind": "walk",
+    "length": 1.75
+   },
+   {
+    "a": "f1-WARD_A-l0-5",
+    "b": "f1-WARD_A-l0-6",
+    "kind": "walk",
+    "length": 2.9
+   },
+   {
+    "a": "f1-WARD_A-l0-5",
+    "b": "f1-WARD_A-ws-4",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-6",
+    "b": "f1-WARD_A-l0-7",
+    "kind": "walk",
+    "length": 1.85
+   },
+   {
+    "a": "f1-WARD_A-l0-6",
+    "b": "f1-WARD_A-ws-5",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-7",
+    "b": "f1-WARD_A-l0-8",
+    "kind": "walk",
+    "length": 1.05
+   },
+   {
+    "a": "f1-WARD_A-l0-7",
+    "b": "f1-WARD_A-ws-9",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f1-WARD_A-l0-8",
+    "b": "f1-WARD_A-l0-9",
+    "kind": "walk",
+    "length": 0.45
+   },
+   {
+    "a": "f1-WARD_A-l0-8",
+    "b": "f1-WARD_A-ws-6",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_A-l0-9",
+    "b": "f1-WARD_A-ws-10",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f1-WARD_B-door-1",
+    "b": "f1-WARD_B-l0-3",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f1-WARD_B-door-1",
+    "b": "f1-c-2",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f1-WARD_B-door-2",
+    "b": "f1-WARD_B-l0-10",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f1-WARD_B-door-2",
+    "b": "f1-c-3",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f1-WARD_B-l0-1",
+    "b": "f1-WARD_B-l0-2",
+    "kind": "walk",
+    "length": 3.0
+   },
+   {
+    "a": "f1-WARD_B-l0-1",
+    "b": "f1-WARD_B-ws-1",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_B-l0-10",
+    "b": "f1-WARD_B-l0-9",
+    "kind": "walk",
+    "length": 3.05
+   },
+   {
+    "a": "f1-WARD_B-l0-2",
+    "b": "f1-WARD_B-l0-3",
+    "kind": "walk",
+    "length": 2.05
+   },
+   {
+    "a": "f1-WARD_B-l0-2",
+    "b": "f1-WARD_B-ws-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_B-l0-3",
+    "b": "f1-WARD_B-l0-4",
+    "kind": "walk",
+    "length": 0.95
+   },
+   {
+    "a": "f1-WARD_B-l0-4",
+    "b": "f1-WARD_B-l0-5",
+    "kind": "walk",
+    "length": 3.0
+   },
+   {
+    "a": "f1-WARD_B-l0-4",
+    "b": "f1-WARD_B-ws-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_B-l0-5",
+    "b": "f1-WARD_B-l0-6",
+    "kind": "walk",
+    "length": 2.55
+   },
+   {
+    "a": "f1-WARD_B-l0-5",
+    "b": "f1-WARD_B-ws-4",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_B-l0-6",
+    "b": "f1-WARD_B-l0-7",
+    "kind": "walk",
+    "length": 0.45
+   },
+   {
+    "a": "f1-WARD_B-l0-6",
+    "b": "f1-WARD_B-ws-7",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f1-WARD_B-l0-7",
+    "b": "f1-WARD_B-l0-8",
+    "kind": "walk",
+    "length": 1.05
+   },
+   {
+    "a": "f1-WARD_B-l0-7",
+    "b": "f1-WARD_B-ws-5",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-WARD_B-l0-8",
+    "b": "f1-WARD_B-l0-9",
+    "kind": "walk",
+    "length": 1.95
+   },
+   {
+    "a": "f1-WARD_B-l0-8",
+    "b": "f1-WARD_B-ws-8",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f1-WARD_B-l0-9",
+    "b": "f1-WARD_B-ws-6",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f1-c-1",
+    "b": "f1-c-2",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f1-c-2",
+    "b": "f1-c-3",
+    "kind": "walk",
+    "length": 13.0
+   },
+   {
+    "a": "f1-c-3",
+    "b": "f1-c-4",
+    "kind": "walk",
+    "length": 11.0
+   },
+   {
+    "a": "f1-c-4",
+    "b": "f1-c-5",
+    "kind": "walk",
+    "length": 4.5
+   },
+   {
+    "a": "f2-ADMIN-1",
+    "b": "f2-ADMIN-l1-1",
+    "kind": "walk",
+    "length": 1.2
+   },
+   {
+    "a": "f2-ADMIN-2",
+    "b": "f2-ADMIN-l1-3",
+    "kind": "walk",
+    "length": 1.2
+   },
+   {
+    "a": "f2-ADMIN-3",
+    "b": "f2-ADMIN-l1-5",
+    "kind": "walk",
+    "length": 1.2
+   },
+   {
+    "a": "f2-ADMIN-4",
+    "b": "f2-ADMIN-l2-1",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-ADMIN-5",
+    "b": "f2-ADMIN-l2-2",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-ADMIN-door-1",
+    "b": "f2-ADMIN-l0-2",
+    "kind": "door",
+    "length": 2.5
+   },
+   {
+    "a": "f2-ADMIN-door-1",
+    "b": "f2-c-6",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f2-ADMIN-l0-1",
+    "b": "f2-ADMIN-l0-2",
+    "kind": "walk",
+    "length": 0.5
+   },
+   {
+    "a": "f2-ADMIN-l0-1",
+    "b": "f2-ADMIN-l1-2",
+    "kind": "walk",
+    "length": 4.7
+   },
+   {
+    "a": "f2-ADMIN-l1-1",
+    "b": "f2-ADMIN-l1-2",
+    "kind": "walk",
+    "length": 2.0
+   },
+   {
+    "a": "f2-ADMIN-l1-2",
+    "b": "f2-ADMIN-l1-3",
+    "kind": "walk",
+    "length": 2.0
+   },
+   {
+    "a": "f2-ADMIN-l1-3",
+    "b": "f2-ADMIN-l1-4",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f2-ADMIN-l1-4",
+    "b": "f2-ADMIN-l1-5",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f2-ADMIN-l1-4",
+    "b": "f2-ADMIN-l2-3",
+    "kind": "walk",
+    "length": 3.9
+   },
+   {
+    "a": "f2-ADMIN-l2-1",
+    "b": "f2-ADMIN-l2-2",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f2-ADMIN-l2-2",
+    "b": "f2-ADMIN-l2-3",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f2-ELEV",
+    "b": "f2-ELEV-door",
+    "kind": "door",
+    "length": 1.5
+   },
+   {
+    "a": "f2-ELEV",
+    "b": "f3-ELEV",
+    "kind": "elevator",
+    "length": 3.4
+   },
+   {
+    "a": "f2-ELEV-door",
+    "b": "f2-c-7",
+    "kind": "door",
+    "length": 1.0
+   },
+   {
+    "a": "f2-ICU-door-1",
+    "b": "f2-ICU-l0-3",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f2-ICU-door-1",
+    "b": "f2-c-2",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f2-ICU-door-2",
+    "b": "f2-ICU-l0-10",
+    "kind": "door",
+    "length": 7.6
+   },
+   {
+    "a": "f2-ICU-door-2",
+    "b": "f2-c-4",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f2-ICU-l0-1",
+    "b": "f2-ICU-l0-2",
+    "kind": "walk",
+    "length": 3.6
+   },
+   {
+    "a": "f2-ICU-l0-1",
+    "b": "f2-ICU-ws-1",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f2-ICU-l0-10",
+    "b": "f2-ICU-l0-9",
+    "kind": "walk",
+    "length": 1.95
+   },
+   {
+    "a": "f2-ICU-l0-2",
+    "b": "f2-ICU-l0-3",
+    "kind": "walk",
+    "length": 3.35
+   },
+   {
+    "a": "f2-ICU-l0-2",
+    "b": "f2-ICU-ws-2",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f2-ICU-l0-3",
+    "b": "f2-ICU-l0-4",
+    "kind": "walk",
+    "length": 0.25
+   },
+   {
+    "a": "f2-ICU-l0-4",
+    "b": "f2-ICU-l0-5",
+    "kind": "walk",
+    "length": 3.6
+   },
+   {
+    "a": "f2-ICU-l0-4",
+    "b": "f2-ICU-ws-3",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f2-ICU-l0-5",
+    "b": "f2-ICU-l0-6",
+    "kind": "walk",
+    "length": 2.65
+   },
+   {
+    "a": "f2-ICU-l0-5",
+    "b": "f2-ICU-ws-4",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f2-ICU-l0-6",
+    "b": "f2-ICU-l0-7",
+    "kind": "walk",
+    "length": 0.95
+   },
+   {
+    "a": "f2-ICU-l0-6",
+    "b": "f2-ICU-ws-7",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f2-ICU-l0-7",
+    "b": "f2-ICU-l0-8",
+    "kind": "walk",
+    "length": 0.55
+   },
+   {
+    "a": "f2-ICU-l0-7",
+    "b": "f2-ICU-ws-5",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f2-ICU-l0-8",
+    "b": "f2-ICU-l0-9",
+    "kind": "walk",
+    "length": 3.05
+   },
+   {
+    "a": "f2-ICU-l0-8",
+    "b": "f2-ICU-ws-8",
+    "kind": "walk",
+    "length": 4.6
+   },
+   {
+    "a": "f2-ICU-l0-9",
+    "b": "f2-ICU-ws-6",
+    "kind": "walk",
+    "length": 2.6
+   },
+   {
+    "a": "f2-LAB-door-1",
+    "b": "f2-LAB-l0-3",
+    "kind": "door",
+    "length": 2.2
+   },
+   {
+    "a": "f2-LAB-door-1",
+    "b": "f2-c-6",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f2-LAB-l0-1",
+    "b": "f2-LAB-l0-2",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f2-LAB-l0-1",
+    "b": "f2-LAB-ws-1",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f2-LAB-l0-2",
+    "b": "f2-LAB-l0-3",
+    "kind": "walk",
+    "length": 0.5
+   },
+   {
+    "a": "f2-LAB-l0-2",
+    "b": "f2-LAB-ws-2",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f2-LAB-l0-3",
+    "b": "f2-LAB-l0-4",
+    "kind": "walk",
+    "length": 2.0
+   },
+   {
+    "a": "f2-LAB-l0-4",
+    "b": "f2-LAB-l0-5",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f2-LAB-l0-4",
+    "b": "f2-LAB-ws-3",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f2-LAB-l0-5",
+    "b": "f2-LAB-ws-4",
+    "kind": "walk",
+    "length": 0.8
+   },
+   {
+    "a": "f2-LOUNGE-1",
+    "b": "f2-STAFF-l1-3",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-LOUNGE-2",
+    "b": "f2-STAFF-l1-4",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-LOUNGE-3",
+    "b": "f2-STAFF-l1-5",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-LOUNGE-4",
+    "b": "f2-STAFF-l1-6",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-PRAYER-1",
+    "b": "f2-PRAYER-l0-1",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-2",
+    "b": "f2-PRAYER-l0-2",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-3",
+    "b": "f2-PRAYER-l0-4",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-4",
+    "b": "f2-PRAYER-l0-5",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-5",
+    "b": "f2-PRAYER-l1-1",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f2-PRAYER-6",
+    "b": "f2-PRAYER-l1-2",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f2-PRAYER-7",
+    "b": "f2-PRAYER-l1-3",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f2-PRAYER-8",
+    "b": "f2-PRAYER-l1-4",
+    "kind": "walk",
+    "length": 1.5
+   },
+   {
+    "a": "f2-PRAYER-door-1",
+    "b": "f2-PRAYER-l0-3",
+    "kind": "door",
+    "length": 1.8
+   },
+   {
+    "a": "f2-PRAYER-door-1",
+    "b": "f2-c-5",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f2-PRAYER-l0-1",
+    "b": "f2-PRAYER-l0-2",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-l0-2",
+    "b": "f2-PRAYER-l0-3",
+    "kind": "walk",
+    "length": 1.9
+   },
+   {
+    "a": "f2-PRAYER-l0-3",
+    "b": "f2-PRAYER-l0-4",
+    "kind": "walk",
+    "length": 0.3
+   },
+   {
+    "a": "f2-PRAYER-l0-4",
+    "b": "f2-PRAYER-l0-5",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-l0-5",
+    "b": "f2-PRAYER-l0-6",
+    "kind": "walk",
+    "length": 1.3
+   },
+   {
+    "a": "f2-PRAYER-l0-6",
+    "b": "f2-PRAYER-l1-5",
+    "kind": "walk",
+    "length": 3.7
+   },
+   {
+    "a": "f2-PRAYER-l1-1",
+    "b": "f2-PRAYER-l1-2",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-l1-2",
+    "b": "f2-PRAYER-l1-3",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-l1-3",
+    "b": "f2-PRAYER-l1-4",
+    "kind": "walk",
+    "length": 2.2
+   },
+   {
+    "a": "f2-PRAYER-l1-4",
+    "b": "f2-PRAYER-l1-5",
+    "kind": "walk",
+    "length": 1.3
+   },
+   {
+    "a": "f2-STAFF-door-1",
+    "b": "f2-STAFF-l0-3",
+    "kind": "door",
+    "length": 3.0
+   },
+   {
+    "a": "f2-STAFF-door-1",
+    "b": "f2-c-3",
+    "kind": "door",
+    "length": 2.0
+   },
+   {
+    "a": "f2-STAFF-l0-1",
+    "b": "f2-STAFF-l0-2",
+    "kind": "walk",
+    "length": 2.5
+   },
+   {
+    "a": "f2-STAFF-l0-1",
+    "b": "f2-STAFF-l1-2",
+    "kind": "walk",
+    "length": 5.3
+   },
+   {
+    "a": "f2-STAFF-l0-2",
+    "b": "f2-STAFF-l0-3",
+    "kind": "walk",
+    "length": 0.5
+   },
+   {
+    "a": "f2-STAFF-l0-2",
+    "b": "f2-STAFF-ws-2",
+    "kind": "walk",
+    "length": 2.9
+   },
+   {
+    "a": "f2-STAFF-l0-3",
+    "b": "f2-STAFF-l0-4",
+    "kind": "walk",
+    "length": 2.0
+   },
+   {
+    "a": "f2-STAFF-l0-4",
+    "b": "f2-STAFF-ws-3",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f2-STAFF-l1-1",
+    "b": "f2-STAFF-l1-2",
+    "kind": "walk",
+    "length": 3.5
+   },
+   {
+    "a": "f2-STAFF-l1-1",
+    "b": "f2-STAFF-ws-1",
+    "kind": "walk",
+    "length": 1.2
+   },
+   {
+    "a": "f2-STAFF-l1-2",
+    "b": "f2-STAFF-l1-3",
+    "kind": "walk",
+    "length": 1.1
+   },
+   {
+    "a": "f2-STAFF-l1-3",
+    "b": "f2-STAFF-l1-4",
+    "kind": "walk",
+    "length": 0.93
+   },
+   {
+    "a": "f2-STAFF-l1-4",
+    "b": "f2-STAFF-l1-5",
+    "kind": "walk",
+    "length": 0.94
+   },
+   {
+    "a": "f2-STAFF-l1-5",
+    "b": "f2-STAFF-l1-6",
+    "kind": "walk",
+    "length": 0.93
+   },
+   {
+    "a": "f2-c-1",
+    "b": "f2-c-2",
+    "kind": "walk",
+    "length": 4.0
+   },
+   {
+    "a": "f2-c-2",
+    "b": "f2-c-3",
+    "kind": "walk",
+    "length": 1.0
+   },
+   {
+    "a": "f2-c-3",
+    "b": "f2-c-4",
+    "kind": "walk",
+    "length": 12.0
+   },
+   {
+    "a": "f2-c-4",
+    "b": "f2-c-5",
+    "kind": "walk",
+    "length": 1.0
+   },
+   {
+    "a": "f2-c-5",
+    "b": "f2-c-6",
+    "kind": "walk",
+    "length": 10.0
+   },
+   {
+    "a": "f2-c-6",
+    "b": "f2-c-7",
+    "kind": "walk",
+    "length": 4.5
+   },
+   {
+    "a": "f3-ELEV",
+    "b": "f3-ELEV-door",
+    "kind": "door",
+    "length": 1.5
+   },
+   {
+    "a": "f3-ELEV-door",
+    "b": "f3-ROOF-l0-1",
+    "kind": "door",
+    "length": 1.0
+   },
+   {
+    "a": "f3-HELIPAD",
+    "b": "f3-ROOF-l0-1",
+    "kind": "walk",
+    "length": 6.8
+   }
+  ]
+ }
+}

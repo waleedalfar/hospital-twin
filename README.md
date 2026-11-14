@@ -12,9 +12,14 @@ recorded checkpoint by checkpoint in [CHECKPOINTS.md](CHECKPOINTS.md).
 
 ## Status
 
-Checkpoint CP0 (scaffold) is complete: repo layout, Makefile, Docker database, migrations runner, API with
-`/health`, frontend shell, lint, tests, coverage gates and CI. The simulation, 3D scene, models and agent
-are built in CP1–CP9 as listed in PROMPT.md §14.
+Done so far (details and evidence in [CHECKPOINTS.md](CHECKPOINTS.md)):
+
+- **CP0 Scaffold:** repo layout, Makefile, Docker database, API with `/health`, frontend shell, lint, tests,
+  coverage gates and CI.
+- **CP1 Data layer:** `shared/layout.json` generated from the building tables, the full Tiger Data schema
+  (hypertables, continuous aggregates, compression), and 3,000 Synthea patients for Phoenix.
+
+The simulation, 3D scene, models and agent are built in CP2-CP9 as listed in PROMPT.md §14.
 
 ## Setup on macOS
 
@@ -45,6 +50,15 @@ Tested on Apple Silicon (arm64).
 
    Open http://127.0.0.1:5173. The page shows the backend and database status read live from the API.
    Press Ctrl-C to stop the backend and frontend. `make db-down` stops the database.
+5. Load the patients (once):
+
+   ```sh
+   make seed
+   ```
+
+   This downloads the Synthea 3.3.0 jar (183 MB, checksum verified), generates 3,000 living patients for
+   Phoenix, Arizona with a fixed seed (about 2 minutes, 3.8 GB in `data/synthea/`, not committed) and loads
+   them. Running it again reuses the generated files and takes about 15 seconds.
 
 Ports used on your machine: 5173 (frontend), 8000 (backend), 5433 (development database),
 5434 (test database).
@@ -54,12 +68,12 @@ Ports used on your machine: 5173 (frontend), 8000 (backend), 5433 (development d
 | Command | What it does |
 | --- | --- |
 | `make setup` | Install backend + frontend deps, pull Docker images, copy `.env.example` → `.env` if missing |
-| `make db` | Start TimescaleDB (Docker) and run migrations |
+| `make db` | Start TimescaleDB (Docker), run migrations, copy the building from `shared/layout.json` into the reference tables |
 | `make dev` | Run DB, backend and frontend dev server together |
 | `make test` | Unit + integration tests (integration tests use a real TimescaleDB in Docker) |
 | `make e2e` | Playwright end-to-end tests against the running stack |
 | `make verify` | Lint, type checks, all tests, coverage gates, skipped-test check, placeholder check |
-| `make seed` | Generate Synthea patients and load them (built in CP1) |
+| `make seed` | Generate Synthea patients and load them; prints the number loaded |
 | `make train` | Train and evaluate the models (built in CP5) |
 | `make demo` | Start the stack with the demo scenario (built in CP9) |
 | `make deploy` | Build and deploy to the Vultr VM (built in CP8) |

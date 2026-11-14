@@ -69,10 +69,10 @@ e2e: db ## Playwright end-to-end tests against the running stack
 verify: lint test placeholders ## Everything in CLAUDE.md §3; fails on any problem
 	@echo "make verify: all checks passed"
 
-# The targets below belong to later checkpoints. Until their checkpoint is built they stop with an error
+# `seed` is real from CP1. The other targets below belong to later checkpoints. Until their checkpoint is built they stop with an error
 # instead of pretending to work (approved by the human in the CP0 plan).
-seed: ## Generate Synthea patients and load them (built in CP1)
-	@echo "make seed: the Synthea loader is built in CP1 (PROMPT.md §4.3). Nothing was run." >&2; exit 1
+seed: db ## Generate Synthea patients and load them (reuses existing output; SEED_ARGS=--regenerate forces)
+	$(UV) python -m twin.db.seed $(SEED_ARGS)
 
 train: ## Build the training set and train/evaluate models (built in CP5)
 	@echo "make train: model training is built in CP5 (PROMPT.md §7). Nothing was run." >&2; exit 1

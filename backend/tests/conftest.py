@@ -39,6 +39,25 @@ async def empty_db_url() -> AsyncIterator[str]:
         await admin.close()
 
 
+@pytest.fixture
+async def migrated_db_url(empty_db_url: str) -> str:
+    """A fresh database with every migration applied and the reference tables filled from layout.json."""
+    from twin.db.migrate import migrate_and_sync
+
+    await migrate_and_sync(empty_db_url)
+    return empty_db_url
+
+
+@pytest.fixture
+async def db(migrated_db_url: str) -> AsyncIterator[asyncpg.Connection]:
+    """A connection to a fresh, fully migrated database."""
+    conn = await asyncpg.connect(migrated_db_url)
+    try:
+        yield conn
+    finally:
+        await conn.close()
+
+
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     """Fail the run if any test did not actually run (CLAUDE.md §2: zero skipped tests)."""
     reporter = session.config.pluginmanager.get_plugin("terminalreporter")

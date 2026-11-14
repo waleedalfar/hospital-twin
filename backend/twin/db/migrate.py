@@ -16,6 +16,8 @@ import asyncpg
 
 from twin.common.config import get_settings
 from twin.common.logging import configure_logging
+from twin.db.reference import ReferenceCounts, sync_reference
+from twin.sim.layout_model import load_layout
 
 logger = logging.getLogger(__name__)
 
@@ -120,11 +122,30 @@ async def run(dsn: str, directory: Path = MIGRATIONS_DIR) -> list[Migration]:
         await conn.close()
 
 
+async def migrate_and_sync(dsn: str) -> tuple[list[Migration], ReferenceCounts]:
+    """Apply pending migrations, then copy the building from shared/layout.json into the reference tables."""
+    migrations = discover_migrations()
+    conn = await connect_with_retry(dsn)
+    try:
+        applied = await apply_migrations(conn, migrations)
+        counts = await sync_reference(conn, load_layout())
+    finally:
+        await conn.close()
+    return applied, counts
+
+
 def main() -> int:
     settings = get_settings()
     configure_logging(settings.log_level, settings.secret_values())
-    applied = asyncio.run(run(settings.database_url.get_secret_value()))
+    applied, counts = asyncio.run(migrate_and_sync(settings.database_url.get_secret_value()))
     logger.info("Migrations complete: %d applied in this run", len(applied))
+    logger.info(
+        "Reference data synced from layout.json: %d hospitals, %d units, %d rooms, %d beds",
+        counts.hospitals,
+        counts.units,
+        counts.rooms,
+        counts.beds,
+    )
     return 0
 
 
