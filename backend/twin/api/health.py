@@ -37,6 +37,25 @@ async def check_database(pool: Pool) -> HealthResponse:
     )
 
 
+def with_sim(result: HealthResponse, request: Request) -> HealthResponse:
+    """Add the simulation's state. A simulation that could not start makes the service degraded."""
+    runtime = getattr(request.app.state, "runtime", None)
+    error = getattr(request.app.state, "sim_error", None)
+    if runtime is None:
+        if error is None:
+            return result
+        return result.model_copy(update={"status": "degraded", "sim_error": error})
+    if not runtime.ready:
+        sim = "starting"
+    elif runtime.frozen:
+        sim = "frozen"
+    elif runtime.paused:
+        sim = "paused"
+    else:
+        sim = "running"
+    return result.model_copy(update={"sim": sim, "sim_time": runtime.sim.now})
+
+
 @router.get(
     "/health",
     response_model=HealthResponse,
@@ -44,7 +63,7 @@ async def check_database(pool: Pool) -> HealthResponse:
 )
 async def health(request: Request, response: Response) -> HealthResponse:
     pool: Pool = request.app.state.pool
-    result = await check_database(pool)
+    result = with_sim(await check_database(pool), request)
     if result.status != "ok":
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     return result

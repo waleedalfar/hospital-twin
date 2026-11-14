@@ -1,0 +1,1984 @@
+{
+ "$defs": {
+  "ActionEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "action": {
+     "enum": [
+      "divert_ambulances",
+      "expedite_discharge",
+      "move_patient",
+      "call_in_staff",
+      "hold_bed"
+     ],
+     "title": "Action",
+     "type": "string"
+    },
+    "kind": {
+     "const": "action",
+     "default": "action",
+     "title": "Kind",
+     "type": "string"
+    },
+    "params": {
+     "additionalProperties": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       }
+      ]
+     },
+     "title": "Params",
+     "type": "object"
+    },
+    "result": {
+     "title": "Result",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "action",
+    "params",
+    "result"
+   ],
+   "title": "ActionEvent",
+   "type": "object"
+  },
+  "AdmitEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "bed_id": {
+     "title": "Bed Id",
+     "type": "string"
+    },
+    "kind": {
+     "const": "admit",
+     "default": "admit",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "unit": {
+     "title": "Unit",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "unit",
+    "bed_id"
+   ],
+   "title": "AdmitEvent",
+   "type": "object"
+  },
+  "AlertEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "alert",
+     "default": "alert",
+     "title": "Kind",
+     "type": "string"
+    },
+    "level": {
+     "enum": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "title": "Level",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "score": {
+     "title": "Score",
+     "type": "number"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "level",
+    "score"
+   ],
+   "title": "AlertEvent",
+   "type": "object"
+  },
+  "AmbulanceEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "destination": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Destination"
+    },
+    "kind": {
+     "const": "ambulance",
+     "default": "ambulance",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Patient Id"
+    },
+    "slot": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Slot"
+    },
+    "status": {
+     "enum": [
+      "at_base",
+      "to_scene",
+      "on_scene",
+      "to_hospital",
+      "unloading",
+      "returning",
+      "transferring"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "vehicle_id": {
+     "title": "Vehicle Id",
+     "type": "string"
+    },
+    "vehicle_kind": {
+     "enum": [
+      "ambulance",
+      "helicopter"
+     ],
+     "title": "Vehicle Kind",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "vehicle_id",
+    "vehicle_kind",
+    "status",
+    "slot",
+    "destination",
+    "patient_id"
+   ],
+   "title": "AmbulanceEvent",
+   "type": "object"
+  },
+  "Appearance": {
+   "additionalProperties": false,
+   "properties": {
+    "hair": {
+     "maximum": 4,
+     "minimum": 0,
+     "title": "Hair",
+     "type": "integer"
+    },
+    "headscarf": {
+     "title": "Headscarf",
+     "type": "boolean"
+    },
+    "skin": {
+     "maximum": 4,
+     "minimum": 0,
+     "title": "Skin",
+     "type": "integer"
+    },
+    "top": {
+     "default": 0,
+     "maximum": 6,
+     "minimum": 0,
+     "title": "Top",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "skin",
+    "hair",
+    "headscarf"
+   ],
+   "title": "Appearance",
+   "type": "object"
+  },
+  "ArrivalEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "complaint": {
+     "enum": [
+      "respiratory",
+      "cardiac",
+      "trauma",
+      "gi",
+      "neuro",
+      "infection",
+      "other"
+     ],
+     "title": "Complaint",
+     "type": "string"
+    },
+    "encounter_id": {
+     "title": "Encounter Id",
+     "type": "integer"
+    },
+    "esi": {
+     "title": "Esi",
+     "type": "integer"
+    },
+    "kind": {
+     "const": "arrival",
+     "default": "arrival",
+     "title": "Kind",
+     "type": "string"
+    },
+    "mode": {
+     "enum": [
+      "walk_in",
+      "ambulance",
+      "air"
+     ],
+     "title": "Mode",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "mode",
+    "esi",
+    "complaint",
+    "encounter_id"
+   ],
+   "title": "ArrivalEvent",
+   "type": "object"
+  },
+  "BedEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "bed_id": {
+     "title": "Bed Id",
+     "type": "string"
+    },
+    "kind": {
+     "const": "bed",
+     "default": "bed",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Patient Id"
+    },
+    "state": {
+     "enum": [
+      "occupied",
+      "cleaning",
+      "open",
+      "blocked"
+     ],
+     "title": "State",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "bed_id",
+    "patient_id",
+    "state"
+   ],
+   "title": "BedEvent",
+   "type": "object"
+  },
+  "BedInfo": {
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "patient_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Patient Id"
+    },
+    "state": {
+     "enum": [
+      "occupied",
+      "cleaning",
+      "open",
+      "blocked"
+     ],
+     "title": "State",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "patient_id",
+    "state"
+   ],
+   "title": "BedInfo",
+   "type": "object"
+  },
+  "CriticalEvent": {
+   "additionalProperties": false,
+   "description": "Escalation to ICU or a rapid response. These are the deterioration model's labels (\u00a75.4).",
+   "properties": {
+    "kind": {
+     "const": "critical",
+     "default": "critical",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "response": {
+     "enum": [
+      "icu_transfer",
+      "rapid_response"
+     ],
+     "title": "Response",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "unit": {
+     "title": "Unit",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "unit",
+    "response"
+   ],
+   "title": "CriticalEvent",
+   "type": "object"
+  },
+  "DespawnEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "entity_id": {
+     "title": "Entity Id",
+     "type": "string"
+    },
+    "kind": {
+     "const": "despawn",
+     "default": "despawn",
+     "title": "Kind",
+     "type": "string"
+    },
+    "reason": {
+     "enum": [
+      "discharged",
+      "transferred",
+      "left",
+      "off_duty",
+      "boarded_vehicle"
+     ],
+     "title": "Reason",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "entity_id",
+    "reason"
+   ],
+   "title": "DespawnEvent",
+   "type": "object"
+  },
+  "DischargeEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "expedited": {
+     "title": "Expedited",
+     "type": "boolean"
+    },
+    "kind": {
+     "const": "discharge",
+     "default": "discharge",
+     "title": "Kind",
+     "type": "string"
+    },
+    "los_h": {
+     "title": "Los H",
+     "type": "number"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "los_h",
+    "expedited"
+   ],
+   "title": "DischargeEvent",
+   "type": "object"
+  },
+  "Entity": {
+   "additionalProperties": false,
+   "properties": {
+    "appearance": {
+     "$ref": "#/$defs/Appearance"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "kind": {
+     "enum": [
+      "patient",
+      "visitor",
+      "nurse",
+      "doctor",
+      "surgeon",
+      "emt"
+     ],
+     "title": "Kind",
+     "type": "string"
+    },
+    "location": {
+     "$ref": "#/$defs/Location"
+    },
+    "move": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Move"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "pose": {
+     "enum": [
+      "lying",
+      "seated",
+      "standing",
+      "walking"
+     ],
+     "title": "Pose",
+     "type": "string"
+    },
+    "risk": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Risk"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "task": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Task"
+    },
+    "unit": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Unit"
+    },
+    "vitals": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Vitals"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    }
+   },
+   "required": [
+    "id",
+    "kind",
+    "location",
+    "appearance",
+    "pose"
+   ],
+   "title": "Entity",
+   "type": "object"
+  },
+  "ErAdmitEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "bed_id": {
+     "title": "Bed Id",
+     "type": "string"
+    },
+    "kind": {
+     "const": "er_admit",
+     "default": "er_admit",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "wait_min": {
+     "title": "Wait Min",
+     "type": "number"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "bed_id",
+    "wait_min"
+   ],
+   "title": "ErAdmitEvent",
+   "type": "object"
+  },
+  "ErrorMessage": {
+   "additionalProperties": false,
+   "properties": {
+    "message": {
+     "title": "Message",
+     "type": "string"
+    },
+    "type": {
+     "const": "error",
+     "default": "error",
+     "title": "Type",
+     "type": "string"
+    },
+    "v": {
+     "const": 1,
+     "default": 1,
+     "title": "V",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "message"
+   ],
+   "title": "ErrorMessage",
+   "type": "object"
+  },
+  "EventsMessage": {
+   "additionalProperties": false,
+   "properties": {
+    "events": {
+     "items": {
+      "discriminator": {
+       "mapping": {
+        "action": "#/$defs/ActionEvent",
+        "admit": "#/$defs/AdmitEvent",
+        "alert": "#/$defs/AlertEvent",
+        "ambulance": "#/$defs/AmbulanceEvent",
+        "arrival": "#/$defs/ArrivalEvent",
+        "bed": "#/$defs/BedEvent",
+        "critical": "#/$defs/CriticalEvent",
+        "despawn": "#/$defs/DespawnEvent",
+        "discharge": "#/$defs/DischargeEvent",
+        "er_admit": "#/$defs/ErAdmitEvent",
+        "hospital_status": "#/$defs/HospitalStatusEvent",
+        "move": "#/$defs/MoveEvent",
+        "risk": "#/$defs/RiskEvent",
+        "scenario": "#/$defs/ScenarioEvent",
+        "spawn": "#/$defs/SpawnEvent",
+        "staff": "#/$defs/StaffEvent",
+        "surgery": "#/$defs/SurgeryEvent",
+        "transfer": "#/$defs/TransferEvent",
+        "triage": "#/$defs/TriageEvent",
+        "vitals": "#/$defs/VitalsEvent"
+       },
+       "propertyName": "kind"
+      },
+      "oneOf": [
+       {
+        "$ref": "#/$defs/MoveEvent"
+       },
+       {
+        "$ref": "#/$defs/SpawnEvent"
+       },
+       {
+        "$ref": "#/$defs/DespawnEvent"
+       },
+       {
+        "$ref": "#/$defs/VitalsEvent"
+       },
+       {
+        "$ref": "#/$defs/RiskEvent"
+       },
+       {
+        "$ref": "#/$defs/BedEvent"
+       },
+       {
+        "$ref": "#/$defs/ArrivalEvent"
+       },
+       {
+        "$ref": "#/$defs/TriageEvent"
+       },
+       {
+        "$ref": "#/$defs/ErAdmitEvent"
+       },
+       {
+        "$ref": "#/$defs/AdmitEvent"
+       },
+       {
+        "$ref": "#/$defs/SurgeryEvent"
+       },
+       {
+        "$ref": "#/$defs/DischargeEvent"
+       },
+       {
+        "$ref": "#/$defs/TransferEvent"
+       },
+       {
+        "$ref": "#/$defs/CriticalEvent"
+       },
+       {
+        "$ref": "#/$defs/AlertEvent"
+       },
+       {
+        "$ref": "#/$defs/StaffEvent"
+       },
+       {
+        "$ref": "#/$defs/AmbulanceEvent"
+       },
+       {
+        "$ref": "#/$defs/HospitalStatusEvent"
+       },
+       {
+        "$ref": "#/$defs/ScenarioEvent"
+       },
+       {
+        "$ref": "#/$defs/ActionEvent"
+       }
+      ]
+     },
+     "title": "Events",
+     "type": "array"
+    },
+    "frozen": {
+     "title": "Frozen",
+     "type": "boolean"
+    },
+    "kpis": {
+     "$ref": "#/$defs/Kpis"
+    },
+    "paused": {
+     "title": "Paused",
+     "type": "boolean"
+    },
+    "sim_time": {
+     "format": "date-time",
+     "title": "Sim Time",
+     "type": "string"
+    },
+    "speed": {
+     "title": "Speed",
+     "type": "integer"
+    },
+    "type": {
+     "const": "events",
+     "default": "events",
+     "title": "Type",
+     "type": "string"
+    },
+    "v": {
+     "const": 1,
+     "default": 1,
+     "title": "V",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "sim_time",
+    "speed",
+    "paused",
+    "frozen",
+    "events",
+    "kpis"
+   ],
+   "title": "EventsMessage",
+   "type": "object"
+  },
+  "HospitalRef": {
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "name": {
+     "title": "Name",
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "open",
+      "diverting",
+      "offline"
+     ],
+     "title": "Status",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "name",
+    "status"
+   ],
+   "title": "HospitalRef",
+   "type": "object"
+  },
+  "HospitalStatusEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "hospital_status",
+     "default": "hospital_status",
+     "title": "Kind",
+     "type": "string"
+    },
+    "reason": {
+     "title": "Reason",
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "open",
+      "diverting",
+      "offline"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "until": {
+     "anyOf": [
+      {
+       "format": "date-time",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Until"
+    }
+   },
+   "required": [
+    "time",
+    "status",
+    "until",
+    "reason"
+   ],
+   "title": "HospitalStatusEvent",
+   "type": "object"
+  },
+  "Kpis": {
+   "additionalProperties": false,
+   "properties": {
+    "alerts": {
+     "title": "Alerts",
+     "type": "integer"
+    },
+    "capacity": {
+     "title": "Capacity",
+     "type": "integer"
+    },
+    "census": {
+     "title": "Census",
+     "type": "integer"
+    },
+    "er_wait_min": {
+     "title": "Er Wait Min",
+     "type": "number"
+    },
+    "waiting": {
+     "title": "Waiting",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "census",
+    "capacity",
+    "er_wait_min",
+    "waiting",
+    "alerts"
+   ],
+   "title": "Kpis",
+   "type": "object"
+  },
+  "Location": {
+   "additionalProperties": false,
+   "description": "Where an entity is. In a building: floor and room, plus the bed, seat or spot it holds (seat ids are\ngiven in `spot`). In a vehicle: `vehicle` is set and the rest may be empty.",
+   "properties": {
+    "bed": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Bed"
+    },
+    "floor": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Floor"
+    },
+    "room": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Room"
+    },
+    "spot": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Spot"
+    },
+    "vehicle": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Vehicle"
+    }
+   },
+   "required": [
+    "floor",
+    "room"
+   ],
+   "title": "Location",
+   "type": "object"
+  },
+  "Move": {
+   "additionalProperties": false,
+   "description": "A walk along the waypoint graph. `times[i]` is when the walker reaches `path[i]`; a pause between two\nnodes (waiting for the elevator) shows as two equal positions with different times.",
+   "properties": {
+    "arrive": {
+     "format": "date-time",
+     "title": "Arrive",
+     "type": "string"
+    },
+    "depart": {
+     "format": "date-time",
+     "title": "Depart",
+     "type": "string"
+    },
+    "path": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Path",
+     "type": "array"
+    },
+    "times": {
+     "items": {
+      "format": "date-time",
+      "type": "string"
+     },
+     "title": "Times",
+     "type": "array"
+    }
+   },
+   "required": [
+    "path",
+    "times",
+    "depart",
+    "arrive"
+   ],
+   "title": "Move",
+   "type": "object"
+  },
+  "MoveEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "arrive": {
+     "format": "date-time",
+     "title": "Arrive",
+     "type": "string"
+    },
+    "depart": {
+     "format": "date-time",
+     "title": "Depart",
+     "type": "string"
+    },
+    "entity_id": {
+     "title": "Entity Id",
+     "type": "string"
+    },
+    "from": {
+     "$ref": "#/$defs/Location"
+    },
+    "kind": {
+     "const": "move",
+     "default": "move",
+     "title": "Kind",
+     "type": "string"
+    },
+    "path": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Path",
+     "type": "array"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "times": {
+     "items": {
+      "format": "date-time",
+      "type": "string"
+     },
+     "title": "Times",
+     "type": "array"
+    },
+    "to": {
+     "$ref": "#/$defs/Location"
+    }
+   },
+   "required": [
+    "time",
+    "entity_id",
+    "from",
+    "to",
+    "path",
+    "times",
+    "depart",
+    "arrive"
+   ],
+   "title": "MoveEvent",
+   "type": "object"
+  },
+  "NetworkHospital": {
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "kpis": {
+     "$ref": "#/$defs/Kpis"
+    },
+    "lat": {
+     "title": "Lat",
+     "type": "number"
+    },
+    "lon": {
+     "title": "Lon",
+     "type": "number"
+    },
+    "name": {
+     "title": "Name",
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "open",
+      "diverting",
+      "offline"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "status_until": {
+     "anyOf": [
+      {
+       "format": "date-time",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Status Until"
+    }
+   },
+   "required": [
+    "id",
+    "name",
+    "lat",
+    "lon",
+    "status",
+    "status_until",
+    "kpis"
+   ],
+   "title": "NetworkHospital",
+   "type": "object"
+  },
+  "NetworkMessage": {
+   "additionalProperties": false,
+   "properties": {
+    "frozen": {
+     "title": "Frozen",
+     "type": "boolean"
+    },
+    "hospitals": {
+     "items": {
+      "$ref": "#/$defs/NetworkHospital"
+     },
+     "title": "Hospitals",
+     "type": "array"
+    },
+    "paused": {
+     "title": "Paused",
+     "type": "boolean"
+    },
+    "scenarios": {
+     "items": {
+      "$ref": "#/$defs/ScenarioInfo"
+     },
+     "title": "Scenarios",
+     "type": "array"
+    },
+    "sim_time": {
+     "format": "date-time",
+     "title": "Sim Time",
+     "type": "string"
+    },
+    "speed": {
+     "title": "Speed",
+     "type": "integer"
+    },
+    "type": {
+     "const": "network",
+     "default": "network",
+     "title": "Type",
+     "type": "string"
+    },
+    "v": {
+     "const": 1,
+     "default": 1,
+     "title": "V",
+     "type": "integer"
+    },
+    "vehicles": {
+     "items": {
+      "$ref": "#/$defs/NetworkVehicle"
+     },
+     "title": "Vehicles",
+     "type": "array"
+    }
+   },
+   "required": [
+    "sim_time",
+    "speed",
+    "paused",
+    "frozen",
+    "hospitals",
+    "vehicles",
+    "scenarios"
+   ],
+   "title": "NetworkMessage",
+   "type": "object"
+  },
+  "NetworkVehicle": {
+   "additionalProperties": false,
+   "properties": {
+    "destination": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Destination"
+    },
+    "home": {
+     "title": "Home",
+     "type": "string"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "kind": {
+     "enum": [
+      "ambulance",
+      "helicopter"
+     ],
+     "title": "Kind",
+     "type": "string"
+    },
+    "lat": {
+     "title": "Lat",
+     "type": "number"
+    },
+    "lon": {
+     "title": "Lon",
+     "type": "number"
+    },
+    "patient_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Patient Id"
+    },
+    "route": {
+     "items": {
+      "$ref": "#/$defs/RoutePoint"
+     },
+     "title": "Route",
+     "type": "array"
+    },
+    "status": {
+     "enum": [
+      "at_base",
+      "to_scene",
+      "on_scene",
+      "to_hospital",
+      "unloading",
+      "returning",
+      "transferring"
+     ],
+     "title": "Status",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "kind",
+    "home",
+    "status",
+    "destination",
+    "patient_id",
+    "lat",
+    "lon",
+    "route"
+   ],
+   "title": "NetworkVehicle",
+   "type": "object"
+  },
+  "Risk": {
+   "additionalProperties": false,
+   "properties": {
+    "level": {
+     "enum": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "title": "Level",
+     "type": "string"
+    },
+    "model_version": {
+     "title": "Model Version",
+     "type": "string"
+    },
+    "score": {
+     "maximum": 1,
+     "minimum": 0,
+     "title": "Score",
+     "type": "number"
+    },
+    "top_factors": {
+     "items": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array"
+     },
+     "title": "Top Factors",
+     "type": "array"
+    }
+   },
+   "required": [
+    "score",
+    "level",
+    "top_factors",
+    "model_version"
+   ],
+   "title": "Risk",
+   "type": "object"
+  },
+  "RiskEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "risk",
+     "default": "risk",
+     "title": "Kind",
+     "type": "string"
+    },
+    "level": {
+     "enum": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "title": "Level",
+     "type": "string"
+    },
+    "model_version": {
+     "title": "Model Version",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "score": {
+     "title": "Score",
+     "type": "number"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "top_factors": {
+     "items": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array"
+     },
+     "title": "Top Factors",
+     "type": "array"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "score",
+    "level",
+    "top_factors",
+    "model_version"
+   ],
+   "title": "RiskEvent",
+   "type": "object"
+  },
+  "RoutePoint": {
+   "additionalProperties": false,
+   "properties": {
+    "lat": {
+     "title": "Lat",
+     "type": "number"
+    },
+    "lon": {
+     "title": "Lon",
+     "type": "number"
+    },
+    "t": {
+     "format": "date-time",
+     "title": "T",
+     "type": "string"
+    }
+   },
+   "required": [
+    "lat",
+    "lon",
+    "t"
+   ],
+   "title": "RoutePoint",
+   "type": "object"
+  },
+  "ScenarioEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "hospital_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Hospital Id"
+    },
+    "kind": {
+     "const": "scenario",
+     "default": "scenario",
+     "title": "Kind",
+     "type": "string"
+    },
+    "name": {
+     "enum": [
+      "flu_surge",
+      "mass_casualty",
+      "staff_shortage",
+      "hospital_offline"
+     ],
+     "title": "Name",
+     "type": "string"
+    },
+    "params": {
+     "additionalProperties": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       }
+      ]
+     },
+     "title": "Params",
+     "type": "object"
+    },
+    "scenario_id": {
+     "title": "Scenario Id",
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "started",
+      "stopped",
+      "ended"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "scenario_id",
+    "name",
+    "status",
+    "hospital_id",
+    "params"
+   ],
+   "title": "ScenarioEvent",
+   "type": "object"
+  },
+  "ScenarioInfo": {
+   "additionalProperties": false,
+   "properties": {
+    "ends": {
+     "anyOf": [
+      {
+       "format": "date-time",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Ends"
+    },
+    "hospital_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Hospital Id"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "name": {
+     "enum": [
+      "flu_surge",
+      "mass_casualty",
+      "staff_shortage",
+      "hospital_offline"
+     ],
+     "title": "Name",
+     "type": "string"
+    },
+    "started": {
+     "format": "date-time",
+     "title": "Started",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "name",
+    "hospital_id",
+    "started",
+    "ends"
+   ],
+   "title": "ScenarioInfo",
+   "type": "object"
+  },
+  "SnapshotMessage": {
+   "additionalProperties": false,
+   "properties": {
+    "beds": {
+     "items": {
+      "$ref": "#/$defs/BedInfo"
+     },
+     "title": "Beds",
+     "type": "array"
+    },
+    "entities": {
+     "items": {
+      "$ref": "#/$defs/Entity"
+     },
+     "title": "Entities",
+     "type": "array"
+    },
+    "frozen": {
+     "title": "Frozen",
+     "type": "boolean"
+    },
+    "hospital": {
+     "$ref": "#/$defs/HospitalRef"
+    },
+    "kpis": {
+     "$ref": "#/$defs/Kpis"
+    },
+    "paused": {
+     "title": "Paused",
+     "type": "boolean"
+    },
+    "scenarios": {
+     "items": {
+      "$ref": "#/$defs/ScenarioInfo"
+     },
+     "title": "Scenarios",
+     "type": "array"
+    },
+    "sim_time": {
+     "format": "date-time",
+     "title": "Sim Time",
+     "type": "string"
+    },
+    "speed": {
+     "title": "Speed",
+     "type": "integer"
+    },
+    "type": {
+     "const": "snapshot",
+     "default": "snapshot",
+     "title": "Type",
+     "type": "string"
+    },
+    "v": {
+     "const": 1,
+     "default": 1,
+     "title": "V",
+     "type": "integer"
+    },
+    "vehicles": {
+     "items": {
+      "$ref": "#/$defs/VehicleAtHospital"
+     },
+     "title": "Vehicles",
+     "type": "array"
+    }
+   },
+   "required": [
+    "sim_time",
+    "speed",
+    "paused",
+    "frozen",
+    "hospital",
+    "entities",
+    "beds",
+    "vehicles",
+    "scenarios",
+    "kpis"
+   ],
+   "title": "SnapshotMessage",
+   "type": "object"
+  },
+  "SpawnEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "entity": {
+     "$ref": "#/$defs/Entity"
+    },
+    "kind": {
+     "const": "spawn",
+     "default": "spawn",
+     "title": "Kind",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "entity"
+   ],
+   "title": "SpawnEvent",
+   "type": "object"
+  },
+  "StaffEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "change": {
+     "enum": [
+      "on_duty",
+      "off_duty"
+     ],
+     "title": "Change",
+     "type": "string"
+    },
+    "entity_id": {
+     "title": "Entity Id",
+     "type": "string"
+    },
+    "kind": {
+     "const": "staff",
+     "default": "staff",
+     "title": "Kind",
+     "type": "string"
+    },
+    "reason": {
+     "title": "Reason",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "entity_id",
+    "change",
+    "reason"
+   ],
+   "title": "StaffEvent",
+   "type": "object"
+  },
+  "SurgeryEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "surgery",
+     "default": "surgery",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "phase": {
+     "enum": [
+      "start",
+      "end"
+     ],
+     "title": "Phase",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "phase"
+   ],
+   "title": "SurgeryEvent",
+   "type": "object"
+  },
+  "TransferEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "transfer",
+     "default": "transfer",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "to_hospital": {
+     "title": "To Hospital",
+     "type": "string"
+    },
+    "vehicle_id": {
+     "title": "Vehicle Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "to_hospital",
+    "vehicle_id"
+   ],
+   "title": "TransferEvent",
+   "type": "object"
+  },
+  "TriageEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "esi": {
+     "title": "Esi",
+     "type": "integer"
+    },
+    "kind": {
+     "const": "triage",
+     "default": "triage",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "esi"
+   ],
+   "title": "TriageEvent",
+   "type": "object"
+  },
+  "VehicleAtHospital": {
+   "additionalProperties": false,
+   "description": "A vehicle on this hospital's grounds: an ambulance in a bay slot or the helicopter on the roof.",
+   "properties": {
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "kind": {
+     "enum": [
+      "ambulance",
+      "helicopter"
+     ],
+     "title": "Kind",
+     "type": "string"
+    },
+    "slot": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Slot"
+    },
+    "status": {
+     "enum": [
+      "at_base",
+      "to_scene",
+      "on_scene",
+      "to_hospital",
+      "unloading",
+      "returning",
+      "transferring"
+     ],
+     "title": "Status",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "kind",
+    "status",
+    "slot"
+   ],
+   "title": "VehicleAtHospital",
+   "type": "object"
+  },
+  "Vitals": {
+   "additionalProperties": false,
+   "properties": {
+    "dbp": {
+     "title": "Dbp",
+     "type": "number"
+    },
+    "hr": {
+     "title": "Hr",
+     "type": "number"
+    },
+    "rr": {
+     "title": "Rr",
+     "type": "number"
+    },
+    "sbp": {
+     "title": "Sbp",
+     "type": "number"
+    },
+    "spo2": {
+     "title": "Spo2",
+     "type": "number"
+    },
+    "temp": {
+     "title": "Temp",
+     "type": "number"
+    }
+   },
+   "required": [
+    "hr",
+    "spo2",
+    "sbp",
+    "dbp",
+    "temp",
+    "rr"
+   ],
+   "title": "Vitals",
+   "type": "object"
+  },
+  "VitalsEvent": {
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "vitals",
+     "default": "vitals",
+     "title": "Kind",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    },
+    "vitals": {
+     "$ref": "#/$defs/Vitals"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "vitals"
+   ],
+   "title": "VitalsEvent",
+   "type": "object"
+  }
+ },
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "description": "Hospital Twin WebSocket messages, schema version 1",
+ "discriminator": {
+  "mapping": {
+   "error": "#/$defs/ErrorMessage",
+   "events": "#/$defs/EventsMessage",
+   "network": "#/$defs/NetworkMessage",
+   "snapshot": "#/$defs/SnapshotMessage"
+  },
+  "propertyName": "type"
+ },
+ "oneOf": [
+  {
+   "$ref": "#/$defs/SnapshotMessage"
+  },
+  {
+   "$ref": "#/$defs/EventsMessage"
+  },
+  {
+   "$ref": "#/$defs/NetworkMessage"
+  },
+  {
+   "$ref": "#/$defs/ErrorMessage"
+  }
+ ],
+ "title": "ServerMessage"
+}

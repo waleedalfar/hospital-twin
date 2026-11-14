@@ -181,4 +181,70 @@ None that block the checkpoint. One consequence to be aware of:
   compressed chunks in the live demo, the options are a manual `compress_chunk` step in the demo script
   or loading a block of past history; say which you prefer and I will add it to CP9.
 
-**Waiting for "approved CP1" before starting CP2.**
+**Approved by the human on 2026-11-14, with all seven decisions confirmed. Compression in the live demo
+(the known issue above) is still open and will be settled when the data size is known.**
+
+---
+
+## CP2 — Simulation and stream (2026-11-14, hour 1.4 of 48; target hour 11)
+
+Spec: PROMPT.md §5, §6. From this point the human asked to continue without stopping at checkpoints, so
+this entry is a record, not a gate; CLAUDE.md's other rules still apply.
+
+### What was built
+
+| Spec | What | Where |
+| --- | --- | --- |
+| §5.1 | SimPy simulation, 1 tick = 1 sim minute, start 2026-11-14 08:00 Phoenix (15:00 UTC), speeds 1x/4x/8x, pause, freeze, fixed seed, same seed + same actions = identical event stream (tested by hashing the stream) | `backend/twin/sim/engine.py`, `world.py`, `config.py`; `backend/twin/api/runtime.py` |
+| §5.2 | Three hospitals in Phoenix, different staffing and demand (Mercy busiest), 4 ambulances each, helicopter on Mercy's roof, city routes | `sim/config.py`, `sim/vehicles.py` |
+| §5.3 | Walk-in arrivals (non-homogeneous Poisson by hour) and ambulance calls; journey arrive, waiting seat, triage, ER bay, discharge / ward / ICU / surgery -> recovery -> ward / transfer; boarding when a bed is full; cleaning after discharge; visitors in the waiting room; every patient is a Synthea patient | `sim/patients.py`, `arrivals.py`, `visitors.py`, `pools.py` |
+| §5.4 | Hidden severity (mean-reverting random walk plus deterioration episodes, more likely with age, comorbidities, ESI 1-2, flu for respiratory cases), vitals every 5 sim min admitted and 15 waiting, critical event moves to ICU or rapid response. Never exposed (tests scan every payload and every model) | `sim/physiology.py`, `monitoring.py` |
+| §5.5 | Nurse and doctor tasks, doctors round, surgeons go to the OR, EMTs wheel ambulance patients in, breaks in the lounge, prayer room at set times; every move has origin, destination, A* path over the waypoint graph, elevator for floors, duration from path length at 1.3 m/s | `sim/staff.py`, `pathing.py`, `vehicles.py` |
+| §5.6 | Scenarios flu surge, mass casualty (12 trauma arrivals in 20 min plus a helicopter transfer), staff shortage (-30% nurses, 4 h), hospital offline; each writes an event, shows in the snapshot, and can be stopped | `sim/scenarios.py` |
+| §5.7 | Actions divert ambulances, expedite discharge, move patient, call in staff, hold bed; invalid requests change nothing | `sim/actions.py` |
+| §5.8 | Invariants checked every tick in tests and in debug mode (`SIM_DEBUG`) | `sim/invariants.py` |
+| §4.1 | The simulation writes vitals, events, bed snapshots every 5 sim min, encounters and staff to Tiger Data; every control action is audited | `backend/twin/db/sim_writer.py` |
+| §6.1 | WebSocket `/ws?hospital=<id>` (snapshot, then one events message per tick) and `/ws/network`; models in one file; `shared/ws_schema.json` generated from them; frontend types generated from the schema; `make verify` fails if either is stale | `backend/twin/common/ws.py`, `common/schema_gen.py`, `api/routes_ws.py`, `api/hub.py`, `frontend/src/state/wsTypes.ts` |
+| §6.2 (CP2 part) | `GET /health`, `/hospitals`, `/hospitals/{id}/state`, `/patients/{id}`, `/patients/{id}/vitals` (from `vitals_5m`), `/patients/{id}/risk`, `/kpis/{hospital}` (from the continuous aggregates), `POST /sim/speed`, `/sim/pause`, `/sim/freeze`, `POST /scenario`, `DELETE /scenario/{id}` | `backend/twin/api/routes_*.py` |
+
+The agent, governance and models endpoints (`/agent/*`, `/governance/*`, `/models`) belong to CP5 and CP6.
+
+### Commands run and results
+
+| Command | Result |
+| --- | --- |
+| `make verify` | Exit 0. Lint and `mypy --strict` clean (79 Python files). Backend **213 passed, 0 skipped, coverage 96.7%** (gate 85%), 75 s. Frontend 26 passed, coverage 100%. Schema, layout and type files up to date. Placeholder check passed |
+| `make e2e` | Exit 0. 2 passed |
+| 30 sim days headless, invariants checked every tick | Passes, about 8 s |
+| Live API run | warm-up of 72 sim hours takes 1.2 s; snapshot of Mercy has 30 entities and 29 beds; events stream one message per tick |
+
+### Evidence
+
+`docs/evidence/cp2/`: `health.json`, `snapshot_mercy_excerpt.json`, `stream_sample.txt`,
+`scenario_flu_surge.json`, `kpis_mercy.json`, `audit_log.txt`.
+
+### How to check it yourself
+
+1. `make dev`, then `curl -s localhost:8000/health` shows `"sim":"running"` and the sim time.
+2. `curl -s localhost:8000/hospitals/mercy/state | python3 -m json.tool | head -60`
+3. `curl -s -XPOST localhost:8000/scenario -H 'content-type: application/json' -d '{"name":"flu_surge","hospital_id":"mercy"}'`, then watch `curl -s localhost:8000/hospitals` (the waiting count and ER wait for Mercy rise over a few minutes at `-d '{"speed":8}'` to `/sim/speed`).
+4. `curl -s -XPOST localhost:8000/sim/pause -H 'content-type: application/json' -d '{"paused":true}'`
+5. `make verify`.
+
+### Decisions where the spec leaves room
+
+1. **Warm-up:** each backend start simulates 72 sim hours first (1.2 s) so the hospitals are busy at 08:00;
+   the previous run's rows are removed (`SIM_RESET_ON_START`). The visible run starts at 08:00 Phoenix.
+2. **Mass casualty** takes an incident location (lat, lon) and uses the nearest hospital, as agreed.
+3. **Helicopter** flights take at least 3 sim minutes so short hops are visible.
+4. Demand and length-of-stay numbers were tuned so each hospital stays stable over 30 sim days.
+5. `kpis.alerts` is 0 until CP5 (alerts come from the risk model).
+
+### Needed from the human for later checkpoints (PROMPT.md §14.1)
+
+A Gemini API key (CP6), a Tiger Cloud connection string, a Vultr VM with SSH access, and the registered
+domain with DNS access (CP8). Until then the local Docker database and the rules fallback are used.
+
+### Deviations and known issues
+
+None.

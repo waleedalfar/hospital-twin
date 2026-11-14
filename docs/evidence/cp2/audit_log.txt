@@ -1,0 +1,3 @@
+sim_start|system
+scenario_start|user
+scenario_stop|user

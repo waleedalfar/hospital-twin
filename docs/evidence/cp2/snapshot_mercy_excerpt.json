@@ -1,0 +1,179 @@
+{
+ "sim_time": "2026-11-14T15:04:00Z",
+ "speed": 1,
+ "paused": false,
+ "frozen": false,
+ "v": 1,
+ "type": "snapshot",
+ "hospital": {
+  "id": "mercy",
+  "name": "Mercy General",
+  "status": "open"
+ },
+ "entities": [
+  {
+   "id": "D-4",
+   "kind": "doctor",
+   "location": {
+    "floor": 0,
+    "room": "ER",
+    "bed": null,
+    "spot": "ER-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 2,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "standing",
+   "move": null,
+   "task": "rounds",
+   "unit": "ER",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "D-5",
+   "kind": "doctor",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": null,
+    "spot": "WARD_B-ws-7",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 4,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "D-6",
+   "kind": "doctor",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": null,
+    "spot": "ICU-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 3,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "standing",
+   "move": null,
+   "task": "rounds",
+   "unit": "ICU",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-10",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "ADMIN",
+    "bed": null,
+    "spot": "ADMIN-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 0,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": null,
+   "vitals": null
+  }
+ ],
+ "beds": [
+  {
+   "id": "ER-1",
+   "patient_id": "P-2982",
+   "state": "occupied"
+  },
+  {
+   "id": "ER-2",
+   "patient_id": null,
+   "state": "open"
+  },
+  {
+   "id": "ER-3",
+   "patient_id": null,
+   "state": "open"
+  },
+  {
+   "id": "ER-4",
+   "patient_id": null,
+   "state": "open"
+  },
+  {
+   "id": "ER-5",
+   "patient_id": null,
+   "state": "open"
+  },
+  {
+   "id": "ER-6",
+   "patient_id": null,
+   "state": "open"
+  }
+ ],
+ "vehicles": [
+  {
+   "id": "AMB-mercy-1",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-2"
+  },
+  {
+   "id": "AMB-mercy-2",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-1"
+  },
+  {
+   "id": "AMB-mercy-3",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-3"
+  },
+  {
+   "id": "AMB-mercy-4",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-4"
+  },
+  {
+   "id": "HELI-mercy",
+   "kind": "helicopter",
+   "status": "at_base",
+   "slot": null
+  }
+ ],
+ "scenarios": [],
+ "kpis": {
+  "census": 14,
+  "capacity": 29,
+  "er_wait_min": 0.0,
+  "waiting": 0,
+  "alerts": 0
+ }
+}

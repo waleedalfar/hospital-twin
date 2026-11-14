@@ -1,0 +1,10 @@
+{
+    "status": "ok",
+    "db": "ok",
+    "timescaledb_version": "2.17.2",
+    "migrations_applied": 5,
+    "error": null,
+    "sim": "running",
+    "sim_time": "2026-11-14T15:04:00Z",
+    "sim_error": null
+}

@@ -1,8 +1,11 @@
 """asyncpg connection pool."""
 
 import asyncpg
+from asyncpg.pool import PoolConnectionProxy
 
 type Pool = asyncpg.Pool[asyncpg.Record]
+# A plain connection or one borrowed from a pool; both work everywhere a connection is needed.
+type Conn = asyncpg.Connection[asyncpg.Record] | PoolConnectionProxy[asyncpg.Record]
 
 ACQUIRE_TIMEOUT_S = 3.0
 

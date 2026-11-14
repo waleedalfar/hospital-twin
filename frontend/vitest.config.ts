@@ -15,6 +15,8 @@ export default defineConfig({
         'src/main.tsx',
         // Type declarations only; nothing to execute.
         'src/**/*.d.ts',
+        // Generated type declarations from shared/ws_schema.json; contains no executable code.
+        'src/state/wsTypes.ts',
       ],
       reporter: ['text', 'json-summary'],
       thresholds: { lines: 80, statements: 80, functions: 80, branches: 80 },

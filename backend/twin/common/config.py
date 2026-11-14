@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     sim_seed: int = 20261114
     gemini_api_key: SecretStr | None = None
     gemini_model: str | None = None
+    sim_warmup_hours: float = Field(default=72.0, ge=0)
+    sim_speed: int = 1
+    sim_autostart: bool = True
+    sim_reset_on_start: bool = True
+    sim_debug: bool = False
     synthea_java: str | None = None
     synthea_population: int = Field(default=3000, ge=1)
     synthea_seed: int = 20261114

@@ -1,0 +1,38 @@
+{
+    "hospital_id": "mercy",
+    "as_of": "2026-11-14T15:07:00Z",
+    "occupancy": [
+        {
+            "unit": "ER",
+            "bucket": "2026-11-14T15:00:00Z",
+            "occupied_avg": 1.0,
+            "beds": 6
+        },
+        {
+            "unit": "ICU",
+            "bucket": "2026-11-14T15:00:00Z",
+            "occupied_avg": 3.0,
+            "beds": 6
+        },
+        {
+            "unit": "REC",
+            "bucket": "2026-11-14T15:00:00Z",
+            "occupied_avg": 0.0,
+            "beds": 3
+        },
+        {
+            "unit": "WARD",
+            "bucket": "2026-11-14T15:00:00Z",
+            "occupied_avg": 10.0,
+            "beds": 14
+        }
+    ],
+    "er_wait": {
+        "bucket": "2026-11-14T13:45:00Z",
+        "avg_wait_min": 9.8,
+        "p90_wait_min": 9.8,
+        "patients": 1
+    },
+    "arrivals_last_hour": {},
+    "alerts_last_hour": {}
+}

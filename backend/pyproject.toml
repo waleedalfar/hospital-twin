@@ -9,6 +9,7 @@ dependencies = [
     "asyncpg>=0.30",
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
+    "simpy>=4.1",
 ]
 
 [dependency-groups]
@@ -54,8 +55,11 @@ select = ["E", "F", "W", "I", "B", "UP", "N", "S", "BLE", "C4", "SIM", "RUF", "A
 ignore = []
 
 [tool.ruff.lint.per-file-ignores]
-# assert is the point of a test; test DSNs carry a local dummy password.
-"tests/**" = ["S101", "S105", "S106"]
+# Tests: assert is the point; DSNs are local dummies; seeded rngs are fine; combined asserts and zip() over
+# neighbours are readable in tests.
+"tests/**" = ["S101", "S105", "S106", "S311", "PT018", "RUF007"]
+# The simulation needs seeded, reproducible randomness, not cryptographic randomness.
+"twin/sim/**" = ["S311"]
 
 [tool.mypy]
 python_version = "3.12"

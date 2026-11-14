@@ -17,7 +17,7 @@ from twin.db.migrate import MIGRATIONS_DIR, discover_migrations
 @asynccontextmanager
 async def running_client(dsn: str) -> AsyncIterator[httpx.AsyncClient]:
     settings = Settings(_env_file=None, database_url=SecretStr(dsn))
-    app = create_app(settings)
+    app = create_app(settings, simulate=False)
     async with (
         app.router.lifespan_context(app),
         httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client,

@@ -48,6 +48,9 @@ lint: ## ruff, mypy --strict, eslint, tsc --noEmit
 	$(UV) mypy
 	$(NPM) run lint
 	$(NPM) run typecheck
+	$(UV) python -m twin.common.schema_gen --check
+	$(UV) python -m twin.sim.build_layout --check
+	$(NPM) run check:types
 
 test-backend: test-db ## Backend unit + integration tests with the coverage gate (85%)
 	$(UV) pytest --cov --cov-report=term-missing --cov-report=json:coverage.json
