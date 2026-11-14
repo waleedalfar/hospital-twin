@@ -950,7 +950,7 @@
    "unit": "ER",
    "x": -18.0,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ER-ws-1"
   },
@@ -961,7 +961,7 @@
    "unit": "ER",
    "x": -15.4,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ER-ws-2"
   },
@@ -972,7 +972,7 @@
    "unit": "ER",
    "x": -12.8,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ER-ws-3"
   },
@@ -983,7 +983,7 @@
    "unit": "ER",
    "x": -10.2,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ER-ws-4"
   },
@@ -994,7 +994,7 @@
    "unit": "ER",
    "x": -7.6,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ER-ws-5"
   },
@@ -1005,7 +1005,7 @@
    "unit": "ER",
    "x": -5.0,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ER-ws-6"
   },
@@ -1016,7 +1016,7 @@
    "unit": "WARD",
    "x": -18.5,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-1"
   },
@@ -1027,7 +1027,7 @@
    "unit": "WARD",
    "x": -15.6,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-2"
   },
@@ -1038,7 +1038,7 @@
    "unit": "WARD",
    "x": -12.7,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-3"
   },
@@ -1049,7 +1049,7 @@
    "unit": "WARD",
    "x": -9.8,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-4"
   },
@@ -1060,7 +1060,7 @@
    "unit": "WARD",
    "x": -6.9,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-5"
   },
@@ -1071,7 +1071,7 @@
    "unit": "WARD",
    "x": -4.0,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-6"
   },
@@ -1082,7 +1082,7 @@
    "unit": "WARD",
    "x": -1.1,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-7"
   },
@@ -1093,7 +1093,7 @@
    "unit": "WARD",
    "x": 1.8,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "WARD_A-ws-8"
   },
@@ -1104,7 +1104,7 @@
    "unit": "WARD",
    "x": -18.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "WARD_B-ws-1"
   },
@@ -1115,7 +1115,7 @@
    "unit": "WARD",
    "x": -15.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "WARD_B-ws-2"
   },
@@ -1126,7 +1126,7 @@
    "unit": "WARD",
    "x": -12.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "WARD_B-ws-3"
   },
@@ -1137,7 +1137,7 @@
    "unit": "WARD",
    "x": -9.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "WARD_B-ws-4"
   },
@@ -1148,7 +1148,7 @@
    "unit": "WARD",
    "x": -6.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "WARD_B-ws-5"
   },
@@ -1159,7 +1159,7 @@
    "unit": "WARD",
    "x": -3.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "WARD_B-ws-6"
   },
@@ -1170,7 +1170,7 @@
    "unit": "REC",
    "x": 9.0,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "RECOVERY-ws-1"
   },
@@ -1181,7 +1181,7 @@
    "unit": "REC",
    "x": 12.5,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "RECOVERY-ws-2"
   },
@@ -1192,7 +1192,7 @@
    "unit": "REC",
    "x": 16.0,
    "z": 12.4,
-   "rotation": 0.0,
+   "rotation": 3.141593,
    "head": "south",
    "spot": "RECOVERY-ws-3"
   },
@@ -1203,7 +1203,7 @@
    "unit": "ICU",
    "x": -18.5,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ICU-ws-1"
   },
@@ -1214,7 +1214,7 @@
    "unit": "ICU",
    "x": -14.9,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ICU-ws-2"
   },
@@ -1225,7 +1225,7 @@
    "unit": "ICU",
    "x": -11.3,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ICU-ws-3"
   },
@@ -1236,7 +1236,7 @@
    "unit": "ICU",
    "x": -7.7,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ICU-ws-4"
   },
@@ -1247,7 +1247,7 @@
    "unit": "ICU",
    "x": -4.1,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ICU-ws-5"
   },
@@ -1258,7 +1258,7 @@
    "unit": "ICU",
    "x": -0.5,
    "z": -12.4,
-   "rotation": 3.141593,
+   "rotation": 0.0,
    "head": "north",
    "spot": "ICU-ws-6"
   }

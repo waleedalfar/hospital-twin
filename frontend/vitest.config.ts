@@ -13,6 +13,10 @@ export default defineConfig({
       exclude: [
         // Render glue: mounts <App /> into #root. It has no logic of its own; the e2e smoke test covers it.
         'src/main.tsx',
+        // WebGL renderer, render loop and DOM input wiring. jsdom has no WebGL, so this file is exercised by
+        // the Playwright scene tests (e2e/scene.spec.ts) against headless Chrome with SwiftShader. All logic it
+        // calls (camera math, walls, motion, entities, X-ray, picking, labels) is unit tested.
+        'src/engine/engine.ts',
         // Type declarations only; nothing to execute.
         'src/**/*.d.ts',
         // Generated type declarations from shared/ws_schema.json; contains no executable code.

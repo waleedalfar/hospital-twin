@@ -8,6 +8,8 @@ const BACKEND = process.env.VITE_BACKEND_URL ?? 'http://127.0.0.1:8000';
 export default defineConfig({
   plugins: [react()],
   server: {
+    // shared/layout.json lives outside the frontend folder.
+    fs: { allow: ['..'] },
     host: '127.0.0.1',
     port: 5173,
     strictPort: true,

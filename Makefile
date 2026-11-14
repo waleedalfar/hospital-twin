@@ -9,7 +9,7 @@ COMPOSE_TEST := docker compose -f infra/docker-compose.test.yml
 UV := env -u VIRTUAL_ENV uv run --directory backend
 NPM := npm --prefix frontend
 
-.PHONY: help setup db db-down test-db test-db-down dev test test-backend test-frontend lint \
+.PHONY: faceless help setup db db-down test-db test-db-down dev test test-backend test-frontend lint \
         placeholders e2e verify seed train demo deploy record fed-train verify-live
 
 help: ## List the commands
@@ -62,6 +62,9 @@ test-frontend: ## Frontend unit tests with the coverage gate (80%)
 
 test: test-backend test-frontend ## Unit + integration tests
 
+faceless: ## Faceless enforcement test (PROMPT.md §10.4): no character has a facial feature
+	cd frontend && npx vitest run tests/engine/characters.test.ts --reporter=default
+
 placeholders: ## Fail if unfinished-work markers are present in the repo
 	./scripts/check_placeholders.sh
 
@@ -69,7 +72,7 @@ e2e: db ## Playwright end-to-end tests against the running stack
 	cd frontend && npx playwright test
 	node scripts/check_no_skips.mjs playwright frontend/test-results/e2e-report.json
 
-verify: lint test placeholders ## Everything in CLAUDE.md §3; fails on any problem
+verify: lint test faceless placeholders ## Everything in CLAUDE.md §3; fails on any problem
 	@echo "make verify: all checks passed"
 
 # `seed` is real from CP1. The other targets below belong to later checkpoints. Until their checkpoint is built they stop with an error

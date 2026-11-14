@@ -1,0 +1,2107 @@
+{
+ "sim_time": "2026-11-17T23:51:00Z",
+ "speed": 1,
+ "paused": false,
+ "frozen": true,
+ "v": 1,
+ "type": "snapshot",
+ "hospital": {
+  "id": "mercy",
+  "name": "Mercy General",
+  "status": "open"
+ },
+ "entities": [
+  {
+   "id": "D-4",
+   "kind": "doctor",
+   "location": {
+    "floor": 0,
+    "room": "ER",
+    "bed": null,
+    "spot": "ER-ws-7",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 3,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "D-5",
+   "kind": "doctor",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": null,
+    "spot": "WARD_B-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 0,
+    "headscarf": false,
+    "top": 4
+   },
+   "pose": "standing",
+   "move": null,
+   "task": "rounds",
+   "unit": "WARD",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "D-6",
+   "kind": "doctor",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": null,
+    "spot": "ICU-ws-7",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 2,
+    "headscarf": false,
+    "top": 4
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "ICU",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-10",
+   "kind": "nurse",
+   "location": {
+    "floor": 0,
+    "room": "ER",
+    "bed": null,
+    "spot": "ER-ws-8",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 1,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-11",
+   "kind": "nurse",
+   "location": {
+    "floor": 0,
+    "room": "TRIAGE",
+    "bed": null,
+    "spot": "TRIAGE-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 3,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "TRIAGE",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-12",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "STAFF",
+    "bed": null,
+    "spot": "LOUNGE-2",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 2,
+    "headscarf": false,
+    "top": 2
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-13",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "STAFF",
+    "bed": null,
+    "spot": "LOUNGE-3",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 3,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "seated",
+   "move": null,
+   "task": "break",
+   "unit": "WARD",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-14",
+   "kind": "nurse",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": null,
+    "spot": "WARD_A-ws-9",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 4,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-15",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": null,
+    "spot": "ICU-ws-4",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 2,
+    "headscarf": true,
+    "top": 1
+   },
+   "pose": "standing",
+   "move": null,
+   "task": "vitals",
+   "unit": "ICU",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-16",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": null,
+    "spot": "ICU-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 4,
+    "headscarf": false,
+    "top": 6
+   },
+   "pose": "standing",
+   "move": null,
+   "task": "meds",
+   "unit": "ICU",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-17",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "STAFF",
+    "bed": null,
+    "spot": "STAFF-ws-2",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 1,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "ICU",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-18",
+   "kind": "nurse",
+   "location": {
+    "floor": 1,
+    "room": "RECOVERY",
+    "bed": null,
+    "spot": "RECOVERY-ws-4",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 1,
+    "headscarf": false,
+    "top": 2
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "REC",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-19",
+   "kind": "nurse",
+   "location": {
+    "floor": 1,
+    "room": "RECOVERY",
+    "bed": null,
+    "spot": "RECOVERY-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 1,
+    "headscarf": false,
+    "top": 4
+   },
+   "pose": "standing",
+   "move": null,
+   "task": "vitals",
+   "unit": "REC",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "N-9",
+   "kind": "nurse",
+   "location": {
+    "floor": 2,
+    "room": "STAFF",
+    "bed": null,
+    "spot": "STAFF-ws-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 4,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "standing",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "P-0006",
+   "kind": "patient",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": "ICU-4",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 2,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ICU",
+   "risk": {
+    "score": 0.12,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 92.0,
+    "spo2": 96.0,
+    "sbp": 122.0,
+    "dbp": 70.0,
+    "temp": 37.1,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0053",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 3,
+    "headscarf": true,
+    "top": 5
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": null,
+   "risk": null,
+   "vitals": {
+    "hr": 90.0,
+    "spo2": 97.0,
+    "sbp": 126.0,
+    "dbp": 80.0,
+    "temp": 36.9,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0096",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-4",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 4,
+    "headscarf": true,
+    "top": 0
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.18,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 87.0,
+    "spo2": 95.0,
+    "sbp": 127.0,
+    "dbp": 78.0,
+    "temp": 37.3,
+    "rr": 16.0
+   }
+  },
+  {
+   "id": "P-0115",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": "WARD-14",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 1,
+    "headscarf": false,
+    "top": 6
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.52,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 84.0,
+    "spo2": 97.0,
+    "sbp": 125.0,
+    "dbp": 73.0,
+    "temp": 37.0,
+    "rr": 19.0
+   }
+  },
+  {
+   "id": "P-0119",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "OR",
+    "bed": null,
+    "spot": "OR-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 1,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "walking",
+   "move": {
+    "path": [
+     "f0-ER-ws-6",
+     "f0-ER-l0-9",
+     "f0-ER-l0-8",
+     "f0-ER-l0-7",
+     "f0-ER-l0-6",
+     "f0-ER-l0-5",
+     "f0-ER-l0-4",
+     "f0-ER-door-1",
+     "f0-c-2",
+     "f0-c-3",
+     "f0-c-4",
+     "f0-c-5",
+     "f0-c-6",
+     "f0-c-7",
+     "f0-ELEV-door",
+     "f0-ELEV",
+     "f0-ELEV",
+     "f1-ELEV",
+     "f1-ELEV-door",
+     "f1-c-5",
+     "f1-c-4",
+     "f1-OR-door-1",
+     "f1-OR-l0-1",
+     "f1-OR-l0-2",
+     "f1-OR-l0-3",
+     "f1-OR-1"
+    ],
+    "times": [
+     "2026-11-17T23:50:52.640295Z",
+     "2026-11-17T23:50:54.640295Z",
+     "2026-11-17T23:50:55.063371Z",
+     "2026-11-17T23:50:56.217218Z",
+     "2026-11-17T23:50:56.640295Z",
+     "2026-11-17T23:50:58.640295Z",
+     "2026-11-17T23:50:58.909525Z",
+     "2026-11-17T23:51:04.755679Z",
+     "2026-11-17T23:51:06.294141Z",
+     "2026-11-17T23:51:15.909525Z",
+     "2026-11-17T23:51:16.294141Z",
+     "2026-11-17T23:51:23.986448Z",
+     "2026-11-17T23:51:25.332602Z",
+     "2026-11-17T23:51:27.447987Z",
+     "2026-11-17T23:51:28.217218Z",
+     "2026-11-17T23:51:29.371064Z",
+     "2026-11-17T23:51:32.486448Z",
+     "2026-11-17T23:51:46.486448Z",
+     "2026-11-17T23:51:47.640295Z",
+     "2026-11-17T23:51:48.409525Z",
+     "2026-11-17T23:51:51.871064Z",
+     "2026-11-17T23:51:53.409525Z",
+     "2026-11-17T23:51:55.332602Z",
+     "2026-11-17T23:51:55.640295Z",
+     "2026-11-17T23:51:56.486448Z",
+     "2026-11-17T23:51:59.178756Z"
+    ],
+    "depart": "2026-11-17T23:50:52.640295Z",
+    "arrive": "2026-11-17T23:51:59.178756Z"
+   },
+   "task": null,
+   "unit": "OR",
+   "risk": null,
+   "vitals": {
+    "hr": 76.0,
+    "spo2": 97.0,
+    "sbp": 121.0,
+    "dbp": 81.0,
+    "temp": 37.2,
+    "rr": 16.0
+   }
+  },
+  {
+   "id": "P-0135",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-7",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 2,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": null,
+   "risk": null,
+   "vitals": {
+    "hr": 91.0,
+    "spo2": 94.0,
+    "sbp": 127.0,
+    "dbp": 76.0,
+    "temp": 37.0,
+    "rr": 20.0
+   }
+  },
+  {
+   "id": "P-0173",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": "WARD-10",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 4,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.23,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 72.0,
+    "spo2": 96.0,
+    "sbp": 131.0,
+    "dbp": 72.0,
+    "temp": 37.2,
+    "rr": 14.0
+   }
+  },
+  {
+   "id": "P-0174",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-1",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 1,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.64,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 102.0,
+    "spo2": 92.0,
+    "sbp": 121.0,
+    "dbp": 75.0,
+    "temp": 37.5,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0175",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-6",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 0,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": null,
+   "risk": null,
+   "vitals": {
+    "hr": 84.0,
+    "spo2": 97.0,
+    "sbp": 117.0,
+    "dbp": 80.0,
+    "temp": 36.8,
+    "rr": 17.0
+   }
+  },
+  {
+   "id": "P-0219",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-6",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 4,
+    "headscarf": false,
+    "top": 2
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.31,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 77.0,
+    "spo2": 96.0,
+    "sbp": 99.0,
+    "dbp": 70.0,
+    "temp": 37.3,
+    "rr": 16.0
+   }
+  },
+  {
+   "id": "P-0246",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "RECOVERY",
+    "bed": "REC-2",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 1,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "walking",
+   "move": {
+    "path": [
+     "f1-OR-1",
+     "f1-OR-l0-3",
+     "f1-OR-l0-2",
+     "f1-OR-l0-1",
+     "f1-OR-door-1",
+     "f1-c-4",
+     "f1-RECOVERY-door-1",
+     "f1-RECOVERY-l0-2",
+     "f1-RECOVERY-l0-3",
+     "f1-RECOVERY-ws-2"
+    ],
+    "times": [
+     "2026-11-17T23:50:52.640295Z",
+     "2026-11-17T23:50:55.332602Z",
+     "2026-11-17T23:50:56.178756Z",
+     "2026-11-17T23:50:56.486448Z",
+     "2026-11-17T23:50:58.409525Z",
+     "2026-11-17T23:50:59.947987Z",
+     "2026-11-17T23:51:01.486448Z",
+     "2026-11-17T23:51:07.332602Z",
+     "2026-11-17T23:51:08.832602Z",
+     "2026-11-17T23:51:10.832602Z"
+    ],
+    "depart": "2026-11-17T23:50:52.640295Z",
+    "arrive": "2026-11-17T23:51:10.832602Z"
+   },
+   "task": null,
+   "unit": "OR",
+   "risk": {
+    "score": 0.15,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 94.0,
+    "spo2": 94.0,
+    "sbp": 131.0,
+    "dbp": 74.0,
+    "temp": 37.4,
+    "rr": 19.0
+   }
+  },
+  {
+   "id": "P-0277",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "ER",
+    "bed": "ER-2",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 2,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": {
+    "score": 0.47,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 75.0,
+    "spo2": 97.0,
+    "sbp": 127.0,
+    "dbp": 78.0,
+    "temp": 37.0,
+    "rr": 21.0
+   }
+  },
+  {
+   "id": "P-0291",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": "WARD-13",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 1,
+    "headscarf": true,
+    "top": 2
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.12,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 91.0,
+    "spo2": 96.0,
+    "sbp": 111.0,
+    "dbp": 67.0,
+    "temp": 37.9,
+    "rr": 17.0
+   }
+  },
+  {
+   "id": "P-0303",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-3",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 3,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.18,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 87.0,
+    "spo2": 96.0,
+    "sbp": 121.0,
+    "dbp": 75.0,
+    "temp": 37.0,
+    "rr": 17.0
+   }
+  },
+  {
+   "id": "P-0321",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": "WARD-11",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 3,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.52,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 78.0,
+    "spo2": 96.0,
+    "sbp": 121.0,
+    "dbp": 68.0,
+    "temp": 37.9,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0347",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-8",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 1,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.23,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 101.0,
+    "spo2": 94.0,
+    "sbp": 118.0,
+    "dbp": 73.0,
+    "temp": 37.6,
+    "rr": 21.0
+   }
+  },
+  {
+   "id": "P-0349",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-5",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 1,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": null,
+   "risk": null,
+   "vitals": {
+    "hr": 77.0,
+    "spo2": 96.0,
+    "sbp": 138.0,
+    "dbp": 80.0,
+    "temp": 37.4,
+    "rr": 19.0
+   }
+  },
+  {
+   "id": "P-0378",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-7",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 3,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.64,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 81.0,
+    "spo2": 96.0,
+    "sbp": 125.0,
+    "dbp": 81.0,
+    "temp": 37.2,
+    "rr": 19.0
+   }
+  },
+  {
+   "id": "P-0384",
+   "kind": "patient",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": "ICU-5",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 2,
+    "headscarf": false,
+    "top": 6
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ICU",
+   "risk": {
+    "score": 0.31,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 89.0,
+    "spo2": 97.0,
+    "sbp": 129.0,
+    "dbp": 80.0,
+    "temp": 37.5,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0388",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": "WARD-12",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 1,
+    "hair": 2,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.15,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 97.0,
+    "spo2": 95.0,
+    "sbp": 132.0,
+    "dbp": 81.0,
+    "temp": 37.3,
+    "rr": 17.0
+   }
+  },
+  {
+   "id": "P-0402",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "RECOVERY",
+    "bed": "REC-1",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 2,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "REC",
+   "risk": {
+    "score": 0.47,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 86.0,
+    "spo2": 95.0,
+    "sbp": 94.0,
+    "dbp": 67.0,
+    "temp": 37.0,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0412",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-5",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 4,
+    "headscarf": false,
+    "top": 0
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.12,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 110.0,
+    "spo2": 91.0,
+    "sbp": 107.0,
+    "dbp": 59.0,
+    "temp": 37.9,
+    "rr": 21.0
+   }
+  },
+  {
+   "id": "P-0433",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_A",
+    "bed": "WARD-2",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 1,
+    "headscarf": false,
+    "top": 4
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.18,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 81.0,
+    "spo2": 97.0,
+    "sbp": 114.0,
+    "dbp": 70.0,
+    "temp": 37.1,
+    "rr": 16.0
+   }
+  },
+  {
+   "id": "P-0440",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-4",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 3,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": null,
+   "risk": null,
+   "vitals": {
+    "hr": 77.0,
+    "spo2": 98.0,
+    "sbp": 117.0,
+    "dbp": 71.0,
+    "temp": 37.5,
+    "rr": 19.0
+   }
+  },
+  {
+   "id": "P-0461",
+   "kind": "patient",
+   "location": {
+    "floor": 1,
+    "room": "WARD_B",
+    "bed": "WARD-9",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 2,
+    "hair": 2,
+    "headscarf": false,
+    "top": 4
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "WARD",
+   "risk": {
+    "score": 0.52,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 82.0,
+    "spo2": 96.0,
+    "sbp": 120.0,
+    "dbp": 71.0,
+    "temp": 37.3,
+    "rr": 17.0
+   }
+  },
+  {
+   "id": "P-0470",
+   "kind": "patient",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": "ICU-3",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 2,
+    "headscarf": false,
+    "top": 3
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ICU",
+   "risk": {
+    "score": 0.81,
+    "level": "high",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 90.0,
+    "spo2": 97.0,
+    "sbp": 107.0,
+    "dbp": 65.0,
+    "temp": 37.1,
+    "rr": 15.0
+   }
+  },
+  {
+   "id": "P-0510",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "ER",
+    "bed": "ER-1",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 1,
+    "headscarf": false,
+    "top": 6
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": {
+    "score": 0.64,
+    "level": "medium",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 76.0,
+    "spo2": 95.0,
+    "sbp": 124.0,
+    "dbp": 86.0,
+    "temp": 37.5,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0535",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "ER",
+    "bed": "ER-3",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 2,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ER",
+   "risk": {
+    "score": 0.31,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 86.0,
+    "spo2": 97.0,
+    "sbp": 114.0,
+    "dbp": 77.0,
+    "temp": 37.4,
+    "rr": 17.0
+   }
+  },
+  {
+   "id": "P-0558",
+   "kind": "patient",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-2",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 2,
+    "headscarf": true,
+    "top": 5
+   },
+   "pose": "seated",
+   "move": null,
+   "task": null,
+   "unit": null,
+   "risk": null,
+   "vitals": {
+    "hr": 75.0,
+    "spo2": 97.0,
+    "sbp": 119.0,
+    "dbp": 77.0,
+    "temp": 36.9,
+    "rr": 18.0
+   }
+  },
+  {
+   "id": "P-0563",
+   "kind": "patient",
+   "location": {
+    "floor": 2,
+    "room": "ICU",
+    "bed": "ICU-1",
+    "spot": null,
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 3,
+    "hair": 3,
+    "headscarf": true,
+    "top": 2
+   },
+   "pose": "lying",
+   "move": null,
+   "task": null,
+   "unit": "ICU",
+   "risk": {
+    "score": 0.15,
+    "level": "low",
+    "top_factors": [
+     [
+      "SpO2 drop, 2h",
+      0.21
+     ],
+     [
+      "HR trend",
+      0.14
+     ],
+     [
+      "Resp. rate",
+      0.09
+     ]
+    ],
+    "model_version": "fixture"
+   },
+   "vitals": {
+    "hr": 87.0,
+    "spo2": 97.0,
+    "sbp": 127.0,
+    "dbp": 81.0,
+    "temp": 37.3,
+    "rr": 16.0
+   }
+  },
+  {
+   "id": "S-3",
+   "kind": "surgeon",
+   "location": {
+    "floor": 2,
+    "room": "STAFF",
+    "bed": null,
+    "spot": "LOUNGE-1",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 3,
+    "headscarf": true,
+    "top": 2
+   },
+   "pose": "walking",
+   "move": {
+    "path": [
+     "f1-OR-ws-1",
+     "f1-OR-l0-2",
+     "f1-OR-l0-1",
+     "f1-OR-door-1",
+     "f1-c-4",
+     "f1-c-5",
+     "f1-ELEV-door",
+     "f1-ELEV",
+     "f2-ELEV",
+     "f2-ELEV-door",
+     "f2-c-7",
+     "f2-c-6",
+     "f2-c-5",
+     "f2-c-4",
+     "f2-c-3",
+     "f2-STAFF-door-1",
+     "f2-STAFF-l0-3",
+     "f2-STAFF-l0-2",
+     "f2-STAFF-l0-1",
+     "f2-STAFF-l1-2",
+     "f2-STAFF-l1-3",
+     "f2-LOUNGE-1"
+    ],
+    "times": [
+     "2026-11-17T23:50:52.640295Z",
+     "2026-11-17T23:50:55.332602Z",
+     "2026-11-17T23:50:55.640295Z",
+     "2026-11-17T23:50:57.563371Z",
+     "2026-11-17T23:50:59.101833Z",
+     "2026-11-17T23:51:02.563371Z",
+     "2026-11-17T23:51:03.332602Z",
+     "2026-11-17T23:51:04.486448Z",
+     "2026-11-17T23:51:18.486448Z",
+     "2026-11-17T23:51:19.640295Z",
+     "2026-11-17T23:51:20.409525Z",
+     "2026-11-17T23:51:23.871064Z",
+     "2026-11-17T23:51:31.563371Z",
+     "2026-11-17T23:51:32.332602Z",
+     "2026-11-17T23:51:41.563371Z",
+     "2026-11-17T23:51:43.101833Z",
+     "2026-11-17T23:51:45.409525Z",
+     "2026-11-17T23:51:45.794141Z",
+     "2026-11-17T23:51:47.717218Z",
+     "2026-11-17T23:51:51.794141Z",
+     "2026-11-17T23:51:52.640295Z",
+     "2026-11-17T23:51:53.486448Z"
+    ],
+    "depart": "2026-11-17T23:50:52.640295Z",
+    "arrive": "2026-11-17T23:51:53.486448Z"
+   },
+   "task": null,
+   "unit": "OR",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "S-4",
+   "kind": "surgeon",
+   "location": {
+    "floor": 2,
+    "room": "STAFF",
+    "bed": null,
+    "spot": "LOUNGE-4",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 0,
+    "hair": 1,
+    "headscarf": false,
+    "top": 5
+   },
+   "pose": "walking",
+   "move": {
+    "path": [
+     "f1-OR-ws-2",
+     "f1-OR-l0-4",
+     "f1-OR-l0-3",
+     "f1-OR-l0-2",
+     "f1-OR-l0-1",
+     "f1-OR-door-1",
+     "f1-c-4",
+     "f1-c-5",
+     "f1-ELEV-door",
+     "f1-ELEV",
+     "f1-ELEV",
+     "f2-ELEV",
+     "f2-ELEV-door",
+     "f2-c-7",
+     "f2-c-6",
+     "f2-c-5",
+     "f2-c-4",
+     "f2-c-3",
+     "f2-STAFF-door-1",
+     "f2-STAFF-l0-3",
+     "f2-STAFF-l0-2",
+     "f2-STAFF-l0-1",
+     "f2-STAFF-l1-2",
+     "f2-STAFF-l1-3",
+     "f2-STAFF-l1-4",
+     "f2-STAFF-l1-5",
+     "f2-STAFF-l1-6",
+     "f2-LOUNGE-4"
+    ],
+    "times": [
+     "2026-11-17T23:50:52.640295Z",
+     "2026-11-17T23:50:55.640295Z",
+     "2026-11-17T23:50:56.486448Z",
+     "2026-11-17T23:50:57.332602Z",
+     "2026-11-17T23:50:57.640295Z",
+     "2026-11-17T23:50:59.563371Z",
+     "2026-11-17T23:51:01.101833Z",
+     "2026-11-17T23:51:04.563371Z",
+     "2026-11-17T23:51:05.332602Z",
+     "2026-11-17T23:51:06.486448Z",
+     "2026-11-17T23:51:18.486448Z",
+     "2026-11-17T23:51:32.486448Z",
+     "2026-11-17T23:51:33.640295Z",
+     "2026-11-17T23:51:34.409525Z",
+     "2026-11-17T23:51:37.871064Z",
+     "2026-11-17T23:51:45.563371Z",
+     "2026-11-17T23:51:46.332602Z",
+     "2026-11-17T23:51:55.563371Z",
+     "2026-11-17T23:51:57.101833Z",
+     "2026-11-17T23:51:59.409525Z",
+     "2026-11-17T23:51:59.794141Z",
+     "2026-11-17T23:52:01.717218Z",
+     "2026-11-17T23:52:05.794141Z",
+     "2026-11-17T23:52:06.640295Z",
+     "2026-11-17T23:52:07.355679Z",
+     "2026-11-17T23:52:08.078756Z",
+     "2026-11-17T23:52:08.794141Z",
+     "2026-11-17T23:52:09.640295Z"
+    ],
+    "depart": "2026-11-17T23:50:52.640295Z",
+    "arrive": "2026-11-17T23:52:09.640295Z"
+   },
+   "task": null,
+   "unit": "OR",
+   "risk": null,
+   "vitals": null
+  },
+  {
+   "id": "V-47",
+   "kind": "visitor",
+   "location": {
+    "floor": 0,
+    "room": "WAITING",
+    "bed": null,
+    "spot": "W-3",
+    "vehicle": null
+   },
+   "appearance": {
+    "skin": 4,
+    "hair": 4,
+    "headscarf": false,
+    "top": 1
+   },
+   "pose": "seated",
+   "move": null,
+   "task": "visiting",
+   "unit": null,
+   "risk": null,
+   "vitals": null
+  }
+ ],
+ "beds": [
+  {
+   "id": "ER-1",
+   "patient_id": "P-0510",
+   "state": "occupied"
+  },
+  {
+   "id": "ER-2",
+   "patient_id": "P-0277",
+   "state": "occupied"
+  },
+  {
+   "id": "ER-3",
+   "patient_id": "P-0535",
+   "state": "occupied"
+  },
+  {
+   "id": "ER-4",
+   "patient_id": null,
+   "state": "cleaning"
+  },
+  {
+   "id": "ER-5",
+   "patient_id": null,
+   "state": "cleaning"
+  },
+  {
+   "id": "ER-6",
+   "patient_id": null,
+   "state": "cleaning"
+  },
+  {
+   "id": "WARD-1",
+   "patient_id": "P-0174",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-2",
+   "patient_id": "P-0433",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-3",
+   "patient_id": "P-0303",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-4",
+   "patient_id": "P-0096",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-5",
+   "patient_id": "P-0412",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-6",
+   "patient_id": "P-0219",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-7",
+   "patient_id": "P-0378",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-8",
+   "patient_id": "P-0347",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-9",
+   "patient_id": "P-0461",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-10",
+   "patient_id": "P-0173",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-11",
+   "patient_id": "P-0321",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-12",
+   "patient_id": "P-0388",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-13",
+   "patient_id": "P-0291",
+   "state": "occupied"
+  },
+  {
+   "id": "WARD-14",
+   "patient_id": "P-0115",
+   "state": "occupied"
+  },
+  {
+   "id": "REC-1",
+   "patient_id": "P-0402",
+   "state": "occupied"
+  },
+  {
+   "id": "REC-2",
+   "patient_id": "P-0246",
+   "state": "occupied"
+  },
+  {
+   "id": "REC-3",
+   "patient_id": null,
+   "state": "open"
+  },
+  {
+   "id": "ICU-1",
+   "patient_id": "P-0563",
+   "state": "occupied"
+  },
+  {
+   "id": "ICU-2",
+   "patient_id": null,
+   "state": "open"
+  },
+  {
+   "id": "ICU-3",
+   "patient_id": "P-0470",
+   "state": "occupied"
+  },
+  {
+   "id": "ICU-4",
+   "patient_id": "P-0006",
+   "state": "occupied"
+  },
+  {
+   "id": "ICU-5",
+   "patient_id": "P-0384",
+   "state": "occupied"
+  },
+  {
+   "id": "ICU-6",
+   "patient_id": null,
+   "state": "open"
+  }
+ ],
+ "vehicles": [
+  {
+   "id": "AMB-mercy-1",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-2"
+  },
+  {
+   "id": "AMB-mercy-2",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-4"
+  },
+  {
+   "id": "AMB-mercy-3",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-1"
+  },
+  {
+   "id": "AMB-mercy-4",
+   "kind": "ambulance",
+   "status": "at_base",
+   "slot": "AMB-slot-3"
+  },
+  {
+   "id": "HELI-mercy",
+   "kind": "helicopter",
+   "status": "at_base",
+   "slot": null
+  }
+ ],
+ "scenarios": [],
+ "kpis": {
+  "census": 23,
+  "capacity": 29,
+  "er_wait_min": 81.2,
+  "waiting": 6,
+  "alerts": 0
+ }
+}

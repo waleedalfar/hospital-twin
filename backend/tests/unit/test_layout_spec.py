@@ -105,7 +105,8 @@ def test_beds_match_the_spec(layout: Layout) -> None:
             assert bed.x == pytest.approx(x0 + dx * i, abs=1e-9), bed_id
             assert bed.z == z, bed_id
             assert bed.head == head, bed_id
-            assert bed.rotation == pytest.approx(math.pi if head == "north" else 0.0, abs=1e-5), bed_id
+            # the head end is local -z: rotation 0 = head north, pi = head south
+            assert bed.rotation == pytest.approx(0.0 if head == "north" else math.pi, abs=1e-5), bed_id
             assert layout.rooms[room].rect.contains(bed.x, bed.z), bed_id
     assert [bed.id for bed in layout.beds] == expected_ids
 

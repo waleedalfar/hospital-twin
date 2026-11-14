@@ -248,3 +248,66 @@ domain with DNS access (CP8). Until then the local Docker database and the rules
 ### Deviations and known issues
 
 None.
+
+---
+
+## CP3 — 3D scene (2026-11-14, hour 1.9 of 48; target hour 16)
+
+Spec: PROMPT.md §10.2-§10.5, §10.4, §10.6 (debug API). Recorded as a log, not a gate (the human asked to
+continue without stopping at checkpoints).
+
+### What was built (`frontend/src/engine/`)
+
+| Spec | What | File |
+| --- | --- | --- |
+| §10.2 | Palette, the three styles (`iso`, `classic`, `neon`; `gameboy` not ported), toon gradient (NearestFilter), outlines, 16 px floor textures, pixel factor 2 (1 to 4), canvas at 1/factor resolution upscaled with `image-rendering: pixelated`, antialias off | `palette.ts`, `materials.ts`, `engine.ts` |
+| §3, §10.2 | Building read from `shared/layout.json`: slabs, room floors, interior walls derived from rooms and door gaps (equal to the prototype's hardcoded walls, tested), exterior walls with window bands and the entrance gap, stairs, glass elevator shaft and car, furniture, beds, roof with helipad and helicopter, street, ambulance bay, parking, trees | `building.ts`, `walls.ts`, `furniture.ts`, `beds.ts`, `scenery.ts`, `layout.ts` |
+| §10.2 | Room labels (512 x 128 canvases) with live counts ("ICU 4/6"), entrance sign with the hospital name from the data | `labels.ts`, `labelsLive.ts` |
+| §10.3, §10.4 | Faceless voxel characters (13 allowed parts), role colors, walking / standing / seated / lying poses, bedside monitor with risk color, blinking and "!" for high risk; `characterFactory` exposes its part names; `auditFace()` checks every character | `characters.ts`, `beds.ts` |
+| §10.5 | Isometric orthographic (azimuth 45, elevation 26.565 degrees) and free-fly perspective cameras, WASD / E / Q / Shift / wheel / drag on the canvas (not the window), 9 presets eased over 1.2 s, floor cutaway, exploded (6 m gap), X-ray (walls 7%, floors 55%, outlines faint, shell stops casting shadows, floors spread 3.5 m, markers always visible), night mode, picking | `camera.ts`, `xray.ts`, `picking.ts`, `engine.ts` |
+| §10.6 | Live binding: entity layer creates, updates and removes characters from entities, moves them along server paths (`motion.ts`), riders in the elevator, `window.__TWIN_DEBUG__` with `entities()`, `counts()`, `beds()`, `view()`, `xray()`, `selected()`, `faceAudit()`, `frameStats()` | `entities.ts`, `motion.ts`, `debug.ts` |
+| §10.5 pitfalls | Each has a regression test: negative frame delta, ASCII preset ids with separate labels, X-ray spread and 7% walls, pixel factor 2, 512 x 128 labels, shell materials `depthWrite: false` | `tests/engine/*`, `e2e/scene.spec.ts` |
+
+The scene is rendered from `frontend/tests/fixtures/snapshot_mercy.json`, a snapshot recorded from the real
+simulation by `backend/tests/record_fixture.py` (tests only; risk scores in it are fixed fake values because
+the models come in CP5). The product app does not load the fixture; the test page is
+`frontend/tests/harness/`.
+
+### Bug found and fixed on the way
+
+The layout generator rotated beds 180 degrees compared with the prototype (head north must be rotation 0).
+Found by comparing the render with the reference; fixed in `layout_parts.py`, with the layout test updated.
+
+### Commands run and results
+
+| Command | Result |
+| --- | --- |
+| `make verify` | Exit 0. Backend 213 passed, coverage 96.7%. Frontend **97 passed, 0 skipped, coverage 97.6%** (gate 80%; `engine.ts` is excluded because jsdom has no WebGL, see `vitest.config.ts`; its behavior is covered by the Playwright tests). Faceless test step passed. Lint, `mypy --strict`, eslint, tsc clean |
+| `make e2e` | Exit 0. **14 passed, 0 skipped** (2 smoke + 12 scene tests) in headless Chrome with SwiftShader |
+
+### Evidence
+
+- `docs/evidence/cp3/parity/side-by-side-*.png`: our render next to the matching `reference/screens` image
+  for all 12 reference screens (same camera presets and style, `?freeze=1`).
+- `docs/evidence/cp3/outside.png`, `ground-floor.png`, `xray-icu-closeup.png`: the three required screenshots.
+
+### How to check it yourself
+
+1. Open `docs/evidence/cp3/parity/side-by-side-11-isometric-floor2-default-view.png` (default view) and a few others.
+2. `make verify` (includes the faceless test) and `make e2e`.
+3. For a live look: `cd frontend && npm run dev`, open
+   http://127.0.0.1:5173/tests/harness/index.html?preset=floor2 (iso) or `&cam=free&xray=1&night=1`.
+   Drag to rotate, WASD to pan, wheel to zoom (click the scene first so it has focus).
+
+### Decisions where the spec leaves room
+
+1. Room-label count colors: green under 60% full, amber 60-85%, red above (the prototype's were hand-picked).
+2. The moving car on the street is a plain civilian car; ambulances and the helicopter come from live vehicle
+   data (CP4), not from scenery.
+3. Bedded patients whose risk is not scored yet show a dark monitor and a neutral gray marker.
+4. Bed `rotation` in `layout.json`: 0 = head at the north end, pi = head at the south end.
+
+### Deviations and known issues
+
+None. Visual differences from the references are limited to people and furniture states that come from
+live data (the references had hand-placed demo people), and the missing ambulance at the bay (CP4).

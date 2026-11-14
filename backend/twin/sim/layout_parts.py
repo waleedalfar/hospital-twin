@@ -5,6 +5,9 @@ import math
 from twin.sim import layout_tables as t
 from twin.sim.layout_model import Bed, Facing, Rect, Room, Spot
 
+# A bed's head end is local -z. Rotation 0 puts the head at the north end, pi at the south end (as in the
+# prototype). People and chairs use ROTATION below: the direction they face.
+BED_ROTATION: dict[Facing, float] = {"north": 0.0, "south": round(math.pi, 6), "east": 0.0, "west": 0.0}
 ROTATION: dict[Facing, float] = {
     "south": 0.0,
     "north": round(math.pi, 6),
@@ -122,7 +125,7 @@ def build_beds_and_bedsides() -> tuple[list[Bed], list[Spot]]:
                     unit=units[row.room],
                     x=x,
                     z=row.z,
-                    rotation=ROTATION[row.head],
+                    rotation=BED_ROTATION[row.head],
                     head=row.head,
                     spot=spot_id,
                 )
