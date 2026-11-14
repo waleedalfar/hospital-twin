@@ -1,0 +1,2 @@
+{"status":"degraded","db":"error","timescaledb_version":null,"migrations_applied":null,"error":"ConnectionRefusedError: [Errno 61] Connection refused"}
+HTTP 503

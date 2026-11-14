@@ -1,0 +1,35 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.json
+htmlcov/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/test-results/
+frontend/playwright-report/
+
+# Generated data and model binaries
+synthea/
+data/
+models/**/*.bin
+models/**/*.pkl
+models/**/*.pt
+*.parquet
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

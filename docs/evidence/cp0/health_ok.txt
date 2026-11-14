@@ -1,0 +1,2 @@
+{"status":"ok","db":"ok","timescaledb_version":"2.17.2","migrations_applied":1,"error":null}
+HTTP 200

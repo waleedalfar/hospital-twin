@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse 3D · X-ray · isometric</title>
+<script src="./support.js"></script>
+<script src="/_blob/9ee0c215302bbfc46c463c81452cc66d"></script>
+<script src="/_blob/ff6a94fd92d4e6e9021d778b81e5686b"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&amp;family=VT323&amp;family=Silkscreen:wght@400;700&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#e0735a}a:hover{color:#3b3350}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #f4efe4; font-family: 'Pixelify Sans', system-ui, sans-serif; font-size: 14px; color: #3b3350">
+
+<div style="position: absolute; left: 0; top: 0; width: 1280px; height: 56px; box-sizing: border-box; padding: 0 20px; display: flex; align-items: center; gap: 16px; background: #f4efe4; border-bottom: 4px solid #3b3350">
+<svg width="24" height="24" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" y="0" width="2" height="8" fill="#e0735a"/><rect x="0" y="3" width="8" height="2" fill="#e0735a"/></svg>
+<span style="font-family: 'Silkscreen', monospace; font-size: 24px; font-weight: 700; letter-spacing: 2px">PULSE</span>
+<span style="font-size: 14px; color: #5e5672">Mercy General · 3 floors · X-ray · isometric</span>
+<div style="flex-grow: 1"></div>
+<span style="font-family: 'VT323', monospace; font-size: 24px; color: #e0735a">DAY 2 · {{clock}}</span>
+<button onClick="{{toggleXray}}" aria-pressed="{{xrayOn}}" style="font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; min-height: 40px; background: {{xrayBg}}; color: {{xrayInk}}; border: 3px solid #3b3350; cursor: pointer">{{xrayLabel}}</button>
+<button style="font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; min-height: 40px; background: #e0735a; color: #ffffff; border: 3px solid #3b3350; box-shadow: 3px 3px 0 #3b3350; cursor: pointer">Trigger flu surge</button>
+</div>
+
+<div style="position: absolute; left: 0; top: 56px; width: 1280px; height: 744px; background: #f4efe4">
+<canvas ref="{{setCanvas}}" tabIndex="0" aria-label="3D view of a three-floor hospital. Drag to look around, W A S D to move, click a patient to inspect." onKeyDown="{{onKeyDown}}" onKeyUp="{{onKeyUp}}" onBlur="{{onBlur}}" onPointerDown="{{onPointerDown}}" onPointerMove="{{onPointerMove}}" onPointerUp="{{onPointerUp}}" onWheel="{{onWheel}}" style="display: block; width: 1280px; height: 744px; image-rendering: pixelated; cursor: grab; outline: none; touch-action: none"></canvas>
+
+<sc-if value="{{notReady}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 0; top: 0; width: 1280px; height: 744px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #3b3350">Loading the 3D hospital…</div>
+</sc-if>
+
+<div style="position: absolute; left: 16px; top: 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; gap: 16px; padding: 8px 14px; background: #fffaf2; color: #3b3350; border: 3px solid #3b3350; font-family: 'VT323', monospace; font-size: 20px">
+<span>CENSUS 22/29</span>
+<span>ER WAIT 41m</span>
+<span>WAITING 7</span>
+<span>ALERTS 1</span>
+</div>
+<div style="align-self: flex-start; padding: 4px 10px; background: #fffaf2; color: #3b3350; border: 2px solid #3b3350; font-size: 12px">Viewing: {{viewLabel}} · simulated data</div>
+<div style="width: 340px; box-sizing: border-box; padding: 8px 10px; background: #fffaf2; color: #3b3350; border: 2px solid #3b3350; display: flex; flex-direction: column; gap: 3px">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 1px">LIVE FEED · WEBSOCKET</div>
+<sc-for list="{{feed}}" as="f" hint-placeholder-count="5">
+<div style="display: flex; gap: 8px; align-items: center; font-family: 'VT323', monospace; font-size: 17px; opacity: {{f.op}}">
+<span style="width: 8px; height: 8px; flex-shrink: 0; background: {{f.c}}; border: 1px solid #3b3350"></span>
+<span>{{f.t}}</span><span style="font-weight: 700">{{f.who}}</span><span>{{f.what}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="position: absolute; right: 16px; top: 16px; width: 300px; box-sizing: border-box; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: rgba(255,250,242,0.97); color: #3b3350; border: 3px solid #3b3350; box-shadow: 4px 4px 0 #3b3350">
+<div style="font-size: 12px; color: #5e5672; letter-spacing: 1px">PATIENT · CLICK ANY BED</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-family: 'Silkscreen', monospace; font-size: 20px; font-weight: 700">{{sel.id}}</span>
+<span style="font-size: 12px; color: #5e5672">{{sel.bed}} · age {{sel.age}}</span>
+</div>
+<div style="display: flex; align-items: baseline; gap: 8px">
+<span style="font-family: 'VT323', monospace; font-size: 34px; line-height: 1">{{sel.score}}</span>
+<span style="font-size: 12px; font-weight: 700; padding: 2px 6px; background: {{sel.pill}}; color: {{sel.pillInk}}">{{sel.level}} RISK</span>
+<span style="font-size: 12px; color: #5e5672">{{sel.note}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{sel.vitals}}" as="v" hint-placeholder-count="6">
+<div style="padding: 4px 6px; border: 2px solid #3b3350; display: flex; flex-direction: column">
+<span style="font-size: 12px; color: #5e5672">{{v.k}}</span>
+<span style="font-family: 'VT323', monospace; font-size: 19px">{{v.v}}{{v.flag}}</span>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; font-weight: 700">Why the model flagged this</div>
+<sc-for list="{{sel.why}}" as="w" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px">
+<span style="width: 100px">{{w.k}}</span>
+<div style="height: 10px; width: {{w.px}}px; background: {{sel.pill}}; border: 1px solid #3b3350"></div>
+<span style="font-family: 'VT323', monospace; font-size: 16px">{{w.v}}</span>
+</div>
+</sc-for>
+<button onClick="{{flyToSel}}" style="font-family: inherit; font-size: 14px; font-weight: 600; padding: 6px 10px; min-height: 40px; background: #fffaf2; color: #3b3350; border: 2px solid #3b3350; cursor: pointer">Fly to this bed</button>
+</div>
+
+<div style="position: absolute; left: 16px; bottom: 16px; display: flex; gap: 6px; flex-wrap: wrap; max-width: 800px">
+<sc-for list="{{presets}}" as="p" hint-placeholder-count="7">
+<button onClick="{{p.go}}" style="font-family: inherit; font-size: 14px; padding: 6px 12px; min-height: 40px; background: {{p.bg}}; color: {{p.ink}}; border: 2px solid #3b3350; box-shadow: 3px 3px 0 #3b3350; cursor: pointer">{{p.label}}</button>
+</sc-for>
+</div>
+
+<div style="position: absolute; right: 16px; bottom: 16px; padding: 8px 12px; background: #fffaf2; color: #3b3350; border: 2px solid #3b3350; font-size: 12px; line-height: 1.5">
+<sc-if value="{{xrayOn}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 6px">
+<span style="display: flex; align-items: center; gap: 4px"><span style="width: 10px; height: 10px; background: #2fa39a; border: 1px solid #3b3350"></span>Nurse</span>
+<span style="display: flex; align-items: center; gap: 4px"><span style="width: 10px; height: 10px; background: #ffffff; border: 1px solid #3b3350"></span>Doctor</span>
+<span style="display: flex; align-items: center; gap: 4px"><span style="width: 10px; height: 10px; background: #4f9c7a; border: 1px solid #3b3350"></span>Surgeon</span>
+<span style="display: flex; align-items: center; gap: 4px"><span style="width: 10px; height: 10px; background: #e58a2e; border: 1px solid #3b3350"></span>EMT</span>
+<span style="display: flex; align-items: center; gap: 4px"><span style="width: 10px; height: 10px; background: #b48ead; border: 1px solid #3b3350"></span>Visitor</span>
+<span>Patients in beds = risk color</span>
+</div></sc-if>Orthographic iso camera · pastel · thin outlines<br>Drag to look · W A S D move · E up, Q down<br>Shift = faster · scroll to zoom · click a patient
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"pixel":{"editor":"enum","options":[1,2,3,4,5,6],"default":2,"section":"Look"},"xray":{"editor":"boolean","default":true,"section":"Look"},"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.iv = setInterval(() => { if (!this.dead) this.setState({ sec: ((this.state && this.state.sec) || 0) + 1 }); }, 1000);
+  }
+  componentWillUnmount() { this.dead = true; clearInterval(this.iv); if (this.api) this.api.dispose(); }
+  componentDidUpdate() { if (this.api) this.api.setPixel(this.props.pixel ?? 2); }
+  mountEngine(cv) {
+    if (this.api || !window.Pulse3D) return;
+    this.api = window.Pulse3D.mount(cv, {
+      style: 'iso', width: 1280, height: 744, pixel: this.props.pixel ?? 2, font: '"Silkscreen", monospace', selected: 'ICU-3',
+      xray: this.props.xray ?? true, preset: 'Outside',
+      onPick: (code) => { if (!this.dead) this.setState({ sel: code }); },
+      onView: (v) => { if (!this.dead) this.setState({ v }); }
+    });
+    this.setState({ ready: true, active: 'Outside', xray: this.props.xray ?? true });
+  }
+  renderVals() {
+    const st = this.state || {};
+    if (!this._h) {
+      const call = (name) => (e) => { if (this.api) this.api.input[name](e); };
+      this._h = {
+        setCanvas: (el) => { if (el) this.mountEngine(el); },
+        onKeyDown: call('keyDown'), onKeyUp: call('keyUp'), onBlur: call('blur'),
+        onPointerDown: call('pointerDown'), onPointerMove: call('pointerMove'), onPointerUp: call('pointerUp'), onWheel: call('wheel'),
+        toggleXray: () => { const on = !(this.state && this.state.xray); if (this.api) this.api.setXray(on); this.setState({ xray: on }); },
+        flyToSel: () => { if (this.api) { this.api.select(this.state && this.state.sel || 'ICU-3'); this.api.focusSelected(); this.setState({ active: null }); } }
+      };
+    }
+    const names = ['Outside', 'Ground floor', 'Floor 2 · Wards', 'Floor 3 · ICU', 'Exploded', 'Side view', 'ICU close-up', 'Helipad', 'Front door'];
+    const presets = names.map((label) => {
+      const on = st.active === label;
+      return { label, bg: on ? '#3b3350' : '#fffaf2', ink: on ? '#fffaf2' : '#3b3350',
+        go: () => { if (this.api) this.api.preset(label); this.setState({ active: label }); } };
+    });
+    const RISK = {"HIGH": ["#c8423a", "#ffffff"], "MEDIUM": ["#e0a03a", "#3b3350"], "LOW": ["#4f9c7a", "#ffffff"]};
+    const pats = (window.Pulse3D && window.Pulse3D.patients) || {};
+    const p = pats[st.sel || 'ICU-3'] || pats['ICU-3'] || { id: 'P-0412', bed: 'ICU-3', age: 67, note: '', score: 0.81, vitals: [], why: [] };
+    const level = p.score >= 0.7 ? 'HIGH' : p.score >= 0.45 ? 'MEDIUM' : 'LOW';
+    const sel = {
+      id: p.id, bed: p.bed, age: p.age, note: p.note, score: p.score.toFixed(2), level,
+      pill: RISK[level][0], pillInk: RISK[level][1],
+      vitals: p.vitals.map(([k, v, bad]) => ({ k, v, flag: bad ? ' !' : '' })),
+      why: p.why.map(([k, v]) => ({ k, v: '+' + v.toFixed(2), px: Math.max(4, Math.round(v * 420)) }))
+    };
+    const v = st.v || { view: 'all', exploded: false };
+    const viewLabel = v.exploded ? 'all floors, exploded' : v.view === 'all' ? 'outside' : ['ground floor', 'floor 2', 'floor 3'][v.view];
+    const mins = 14 * 60 + 32 + (st.sec || 0);
+    const clock = String(Math.floor(mins / 60) % 24).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0');
+    const EV = [['P-0412', 'SpO2 87% · risk 0.83 up', 'HIGH'], ['P-1187', 'HR 114 · risk 0.65 up', 'MEDIUM'], ['ER', 'AMB-07 arrived · queue 8', null], ['P-0930', 'BP 86/52 · risk 0.60 up', 'MEDIUM'], ['WARD-3', 'bed cleaned · open', null], ['P-0777', 'pain 5/10 · risk 0.45 down', 'LOW'], ['ICU', '5/6 · full in ~3.6h', null], ['N-14', 'moved WARD A to ICU', null]];
+    const sec = st.sec || 0, step = Math.floor(sec / 3);
+    const feed = [0, 1, 2, 3, 4].map((k) => {
+      const n = step - k, e = EV[((n % EV.length) + EV.length) % EV.length];
+      const m = 14 * 60 + 32 + Math.max(0, n * 3);
+      return { t: String(Math.floor(m / 60) % 24).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'), who: e[0], what: e[1], c: e[2] ? RISK[e[2]][0] : '#3b3350', op: String(1 - k * 0.15) };
+    });
+    const xrayOn = !!st.xray;
+    return { ...this._h, clock, presets, sel, viewLabel, feed, xrayOn, xrayLabel: xrayOn ? 'X-ray on' : 'X-ray off', xrayBg: xrayOn ? '#3b3350' : 'transparent', xrayInk: xrayOn ? '#fffaf2' : '#3b3350', notReady: !st.ready };
+  }
+}
+</script>
+</body>
+</html>

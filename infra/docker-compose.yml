@@ -1,0 +1,21 @@
+# Local development database (PROMPT.md §4.3). Production uses Tiger Cloud via DATABASE_URL.
+name: hospital-twin
+services:
+  db:
+    image: timescale/timescaledb:2.17.2-pg16
+    environment:
+      POSTGRES_USER: twin
+      POSTGRES_PASSWORD: twin
+      POSTGRES_DB: twin
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - twin-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U twin -d twin"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  twin-db:

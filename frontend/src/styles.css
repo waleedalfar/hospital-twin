@@ -1,0 +1,79 @@
+/* Colors and fonts follow reference/mockups (Pixelify Sans, VT323, ink #1d1a2c, panel #f6f8fb). */
+:root {
+  --ink: #1d1a2c;
+  --panel: #f6f8fb;
+  --header: #20324a;
+  --white: #ffffff;
+  --ok: #2b8a5e;
+  --pending: #55657c;
+  --error: #d93a40;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--panel);
+  color: var(--ink);
+  font-family: 'Pixelify Sans', system-ui, sans-serif;
+}
+
+.app__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: var(--header);
+  color: var(--white);
+  border-bottom: 3px solid var(--ink);
+}
+
+.app__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.app__badge {
+  padding: 2px 8px;
+  background: var(--white);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+}
+
+.app__main {
+  padding: 16px;
+}
+
+.backend-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 10px;
+  background: var(--white);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+}
+
+.backend-status__dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--ink);
+  background: var(--pending);
+}
+
+.backend-status--ok .backend-status__dot {
+  background: var(--ok);
+}
+
+.backend-status--error .backend-status__dot {
+  background: var(--error);
+}

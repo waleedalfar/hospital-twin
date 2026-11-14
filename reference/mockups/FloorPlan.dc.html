@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse · Floor plan and patient inspector</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&amp;family=VT323&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2453b0}a:hover{color:#163a80}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #f6f8fb; font-family: 'Pixelify Sans', system-ui, sans-serif; color: #20324a">
+
+<!-- Top bar -->
+<div style="position: absolute; left: 0; top: 0; width: 1280px; height: 56px; box-sizing: border-box; padding: 0 20px; display: flex; align-items: center; gap: 16px; background: #20324a; color: #f6f8fb">
+<svg width="24" height="24" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" y="0" width="2" height="8" fill="#ff6b70"/><rect x="0" y="3" width="8" height="2" fill="#ff6b70"/></svg>
+<span style="font-size: 24px; font-weight: 700; letter-spacing: 2px">PULSE</span>
+<span style="font-size: 14px; color: #b8c4d6">Mercy General · Floor 1</span>
+<div style="flex-grow: 1"></div>
+<span style="font-family: 'VT323', monospace; font-size: 24px; color: #9de0c4">DAY 2 · {{clock}}</span>
+</div>
+
+<!-- Floor plan -->
+<div style="position: absolute; left: 0; top: 56px; width: 880px; height: 664px; overflow: hidden; background-color: #eef2f6; background-image: linear-gradient(#dde3ea 2px, transparent 2px), linear-gradient(90deg, #dde3ea 2px, transparent 2px); background-size: 32px 32px">
+
+<sc-for list="{{rooms}}" as="r" hint-placeholder-count="4">
+<div style="position: absolute; left: {{r.x}}px; top: {{r.y}}px; width: 400px; height: 240px; box-sizing: border-box; border: 8px solid #20324a; background: {{r.bg}}"></div>
+<div style="position: absolute; left: {{r.doorX}}px; top: {{r.doorY}}px; width: 56px; height: 8px; background: #eef2f6"></div>
+<div style="position: absolute; left: {{r.tagX}}px; top: {{r.tagY}}px; padding: 2px 8px; background: #20324a; color: #ffffff; display: flex; gap: 8px; align-items: baseline">
+<span style="font-size: 13px; font-weight: 700">{{r.label}}</span>
+<span style="font-family: 'VT323', monospace; font-size: 17px; color: {{r.statInk}}">{{r.stat}}</span>
+</div>
+</sc-for>
+
+<!-- Nurse station -->
+<div style="position: absolute; left: 380px; top: 300px; width: 120px; height: 60px; box-sizing: border-box; background: #c9a77a; border: 4px solid #7a5a36; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #3a2a18">STATION</div>
+
+<!-- Waiting chairs -->
+<sc-for list="{{chairs}}" as="c" hint-placeholder-count="12">
+<div style="position: absolute; left: {{c.x}}px; top: {{c.y}}px; width: 28px; height: 24px; background: #9aa7bd; border-top: 6px solid #6b7890; box-sizing: border-box"></div>
+</sc-for>
+
+<!-- Beds -->
+<sc-for list="{{beds}}" as="b" hint-placeholder-count="20">
+<button aria-label="{{b.aria}}" onClick="{{b.pick}}" style="position: absolute; left: {{b.x}}px; top: {{b.y}}px; width: 44px; height: 62px; padding: 0; margin: 0; box-sizing: border-box; background: transparent; border: 3px solid {{b.ring}}; outline: {{b.outline}}; outline-offset: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg width="30" height="48" viewBox="0 0 10 16" shape-rendering="crispEdges" aria-hidden="true">
+<rect x="0" y="0" width="10" height="16" fill="#8a93aa"/>
+<rect x="1" y="1" width="8" height="14" fill="#ffffff"/>
+<rect x="2" y="1" width="6" height="2" fill="#e4e8f0"/>
+<rect x="3" y="1" width="4" height="3" fill="{{b.hair}}"/>
+<rect x="2" y="4" width="6" height="2" fill="{{b.shoulder}}"/>
+<rect x="1" y="6" width="8" height="8" fill="{{b.blanket}}"/>
+<rect x="1" y="8" width="8" height="1" fill="{{b.fold}}"/>
+</svg>
+<sc-if value="{{b.flag}}" hint-placeholder-val="{{ false }}">
+<span style="position: absolute; right: -12px; top: -12px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; background: #d93a40; border: 2px solid #ffffff; font-size: 13px; font-weight: 700; color: #ffffff">!</span>
+</sc-if>
+</button>
+</sc-for>
+
+<!-- People (top-down) -->
+<sc-for list="{{people}}" as="p" hint-placeholder-count="14">
+<div style="position: absolute; left: {{p.x}}px; top: {{p.y}}px; width: 24px; height: 24px; pointer-events: none">
+<svg width="24" height="24" viewBox="0 0 6 6" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="2" width="6" height="3" fill="{{p.body}}"/><rect x="0" y="{{p.handL}}" width="1" height="1" fill="{{p.skin}}"/><rect x="5" y="{{p.handR}}" width="1" height="1" fill="{{p.skin}}"/><rect x="1" y="0" width="4" height="4" fill="{{p.head}}"/></svg>
+</div>
+</sc-for>
+</div>
+
+<!-- Bottom HUD -->
+<div style="position: absolute; left: 0; top: 720px; width: 880px; height: 80px; box-sizing: border-box; padding: 0 20px; display: flex; align-items: center; gap: 12px; background: #20324a; color: #f6f8fb">
+<div style="display: flex; gap: 4px">
+<button style="font-family: inherit; font-size: 13px; padding: 4px 10px; min-height: 36px; background: transparent; color: #b8c4d6; border: 2px solid #3e5577">1x</button>
+<button style="font-family: inherit; font-size: 13px; padding: 4px 10px; min-height: 36px; background: #3e5577; color: #ffffff; border: 2px solid #6d88b0">4x</button>
+<button style="font-family: inherit; font-size: 13px; padding: 4px 10px; min-height: 36px; background: transparent; color: #b8c4d6; border: 2px solid #3e5577">8x</button>
+</div>
+<div style="width: 2px; height: 40px; background: #3e5577"></div>
+<button style="font-family: inherit; font-size: 13px; font-weight: 600; padding: 6px 10px; min-height: 40px; background: #ff6b70; color: #20324a; border: 2px solid #ffffff">Flu surge</button>
+<button style="font-family: inherit; font-size: 13px; padding: 6px 10px; min-height: 40px; background: transparent; color: #f6f8fb; border: 2px solid #6d88b0">Mass casualty</button>
+<button style="font-family: inherit; font-size: 13px; padding: 6px 10px; min-height: 40px; background: transparent; color: #f6f8fb; border: 2px solid #6d88b0">Staff shortage</button>
+<div style="flex-grow: 1"></div>
+<div style="display: flex; gap: 18px; font-family: 'VT323', monospace; font-size: 20px">
+<span>CENSUS <span style="color: #9de0c4">15/20</span></span>
+<span>ER WAIT <span style="color: #ffcf6b">41m</span></span>
+<span>ALERTS <span style="color: #ff8f93">1</span></span>
+</div>
+</div>
+
+<!-- Inspector -->
+<div style="position: absolute; left: 880px; top: 56px; width: 400px; height: 744px; box-sizing: border-box; padding: 18px; display: flex; flex-direction: column; gap: 14px; background: #ffffff; border-left: 4px solid #20324a">
+<div style="font-size: 12px; color: #55657c; letter-spacing: 1px">PATIENT INSPECTOR · CLICK ANY BED</div>
+
+<div style="display: flex; gap: 14px; align-items: center">
+<div style="width: 72px; height: 88px; display: flex; align-items: center; justify-content: center; background: #eef2f6; border: 3px solid #20324a">
+<svg width="48" height="72" viewBox="0 0 8 12" shape-rendering="crispEdges" aria-hidden="true">
+<rect x="2" y="1" width="4" height="3" fill="{{sel.skin}}"/>
+<rect x="2" y="0" width="4" height="2" fill="{{sel.hair}}"/>
+<rect x="1" y="4" width="6" height="5" fill="#9cc3e6"/>
+<rect x="0" y="5" width="1" height="3" fill="#9cc3e6"/>
+<rect x="7" y="5" width="1" height="3" fill="#9cc3e6"/>
+<rect x="0" y="8" width="1" height="1" fill="{{sel.skin}}"/>
+<rect x="7" y="8" width="1" height="1" fill="{{sel.skin}}"/>
+<rect x="2" y="9" width="1" height="3" fill="#9cc3e6"/>
+<rect x="5" y="9" width="1" height="3" fill="#9cc3e6"/>
+</svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 22px; font-weight: 700">{{sel.id}}</div>
+<div style="font-size: 14px; color: #55657c">{{sel.bed}} · age {{sel.age}} · {{sel.note}}</div>
+<div style="display: flex; align-items: baseline; gap: 8px; margin-top: 4px">
+<span style="font-family: 'VT323', monospace; font-size: 36px; line-height: 1; color: {{sel.ink}}">{{sel.score}}</span>
+<span style="font-size: 12px; font-weight: 700; padding: 2px 6px; background: {{sel.c}}; color: {{sel.pillInk}}">{{sel.level}} RISK</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 13px; font-weight: 700">Risk, last 6 hours</div>
+<div style="display: flex; align-items: flex-end; gap: 4px; height: 56px; padding: 6px; background: #eef2f6; border: 2px solid #20324a">
+<sc-for list="{{sel.hist}}" as="h" hint-placeholder-count="12">
+<div style="flex-grow: 1; height: {{h.px}}px; background: {{h.c}}"></div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{sel.vitals}}" as="v" hint-placeholder-count="6">
+<div style="padding: 6px 8px; border: 2px solid #20324a; display: flex; flex-direction: column">
+<span style="font-size: 11px; color: #55657c">{{v.k}}</span>
+<span style="font-family: 'VT323', monospace; font-size: 22px; color: {{v.ink}}">{{v.v}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 13px; font-weight: 700">Why the model flagged this</div>
+<sc-for list="{{sel.why}}" as="w" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 12px">
+<span style="width: 110px">{{w.k}}</span>
+<div style="height: 12px; width: {{w.px}}px; background: {{w.c}}"></div>
+<span style="font-family: 'VT323', monospace; font-size: 16px">{{w.v}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; gap: 8px">
+<button style="font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 12px; min-height: 44px; background: #d93a40; color: #ffffff; border: 3px solid #20324a; box-shadow: 3px 3px 0 #20324a; cursor: pointer">Page rapid response</button>
+<button style="font-family: inherit; font-size: 14px; padding: 8px 12px; min-height: 44px; background: #ffffff; color: #20324a; border: 3px solid #20324a; cursor: pointer">Snooze 30m</button>
+</div>
+
+<div style="flex-grow: 1"></div>
+<div style="font-size: 11px; color: #55657c; line-height: 1.4">Source: FHIR Patient/{{sel.num}} · vitals hypertable · model v12. Simulated data.</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate":{"editor":"boolean","default":true},"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.iv = setInterval(() => {
+      if (this.props.animate === false) return;
+      this.setState({ tick: ((this.state && this.state.tick) || 0) + 1 });
+    }, 160);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const st = this.state || {};
+    const t = st.tick || 0;
+    const selId = st.sel || 'P-0412';
+    const pp = (a, b, sp, off) => { const r = b - a; const p = (t * sp + off) % (2 * r); return a + (p < r ? p : 2 * r - p); };
+    const LOW = '#3f9b6b', MED = '#e09a1f', HIGH = '#d93a40';
+    const skins = ['#e8b98f', '#c68a5e', '#8d5a3b', '#f1cfae', '#a86b45'];
+    const hairs = ['#2b1d14', '#5a3a22', '#111111', '#8c6a3f', '#5c4a8a'];
+    const rooms = [
+      { label: 'ICU', stat: '5/6', statInk: '#ffcf6b', x: 24, y: 24, bg: 'rgba(217,58,64,0.05)', doorX: 200, doorY: 256 },
+      { label: 'WARD', stat: '6/8', statInk: '#9de0c4', x: 456, y: 24, bg: 'transparent', doorX: 632, doorY: 256 },
+      { label: 'ER', stat: '4/6', statInk: '#ff8f93', x: 24, y: 400, bg: 'transparent', doorX: 200, doorY: 400 },
+      { label: 'WAITING', stat: '7', statInk: '#ff8f93', x: 456, y: 400, bg: 'transparent', doorX: 632, doorY: 400 }
+    ].map(r => ({ ...r, tagX: r.x + 12, tagY: r.y + 12 }));
+    const layout = [];
+    [[56, 60], [176, 60], [296, 60], [56, 166], [176, 166], [296, 166]].forEach(([x, y], i) => layout.push({ code: 'ICU-' + (i + 1), x, y }));
+    [[488, 60], [576, 60], [664, 60], [752, 60], [488, 166], [576, 166], [664, 166], [752, 166]].forEach(([x, y], i) => layout.push({ code: 'WARD-' + (i + 1), x, y }));
+    [[56, 440], [176, 440], [296, 440], [56, 546], [176, 546], [296, 546]].forEach(([x, y], i) => layout.push({ code: 'ER-' + (i + 1), x, y }));
+    const special = {
+      'ICU-3': { id: 'P-0412', score: 0.81, age: 67, note: 'pneumonia, day 2', vitals: [['HR', '118', 1], ['SpO2', '88%', 1], ['BP', '104/66', 0], ['Temp', '38.4', 1], ['RR', '24', 1], ['Lactate', '2.6', 1]], why: [['SpO2 drop, 2h', 0.21], ['HR trend', 0.14], ['Resp. rate', 0.09], ['Age', 0.05]], hist: [0.32, 0.35, 0.33, 0.4, 0.44, 0.48, 0.52, 0.58, 0.63, 0.7, 0.76, 0.81] },
+      'ICU-4': { id: 'P-0288', score: 0.52, age: 54, note: 'post-op, day 1', vitals: [['HR', '98', 0], ['SpO2', '94%', 0], ['BP', '96/60', 1], ['Temp', '37.6', 0], ['RR', '19', 0], ['Lactate', '1.8', 0]], why: [['Low BP', 0.16], ['Post-op day', 0.08], ['HR trend', 0.05], ['Age', 0.03]], hist: [0.4, 0.42, 0.45, 0.44, 0.47, 0.5, 0.49, 0.5, 0.52, 0.51, 0.53, 0.52] },
+      'WARD-5': { id: 'P-1187', score: 0.64, age: 72, note: 'CHF, day 4', vitals: [['HR', '112', 1], ['SpO2', '92%', 0], ['BP', '142/90', 1], ['Temp', '37.1', 0], ['RR', '21', 0], ['Weight', '+1.8kg', 1]], why: [['HR rising', 0.18], ['Weight gain', 0.12], ['Age', 0.07], ['BP', 0.05]], hist: [0.3, 0.31, 0.35, 0.38, 0.4, 0.45, 0.47, 0.52, 0.55, 0.58, 0.61, 0.64] },
+      'ER-2': { id: 'P-0930', score: 0.58, age: 41, note: 'fever, in triage', vitals: [['HR', '108', 1], ['SpO2', '95%', 0], ['BP', '88/54', 1], ['Temp', '38.9', 1], ['RR', '22', 1], ['Lactate', '—', 0]], why: [['Low BP', 0.19], ['Fever', 0.11], ['HR', 0.08], ['Resp. rate', 0.04]], hist: [0.2, 0.22, 0.26, 0.3, 0.33, 0.38, 0.42, 0.47, 0.5, 0.53, 0.56, 0.58] }
+    };
+    const empty = { 'ICU-6': 1, 'WARD-3': 1, 'WARD-7': 1, 'ER-3': 1, 'ER-6': 1 };
+    const pats = {};
+    layout.forEach((b, i) => {
+      if (empty[b.code]) return;
+      const s = special[b.code];
+      const num = String(1000 + i * 37).slice(-4);
+      pats[b.code] = s ? { ...s, bed: b.code, i } : { id: 'P-' + num, bed: b.code, i, score: 0.1 + (i % 4) * 0.05, age: 30 + (i * 7) % 50, note: 'stable', vitals: [['HR', String(72 + i % 9), 0], ['SpO2', '98%', 0], ['BP', '122/78', 0], ['Temp', '36.9', 0], ['RR', '15', 0], ['Pain', '2/10', 0]], why: [['Stable vitals', 0.06], ['Age', 0.03], ['Labs normal', 0.02], ['Mobility', 0.01]], hist: [0.12, 0.13, 0.12, 0.14, 0.13, 0.12, 0.12, 0.13, 0.12, 0.12, 0.13, 0.12].map(v => v + (i % 4) * 0.05) };
+    });
+    const lvl = s => s >= 0.7 ? HIGH : s >= 0.45 ? MED : LOW;
+    const selP = Object.values(pats).find(p => p.id === selId) || pats['ICU-3'];
+    const beds = layout.map(b => {
+      const p = pats[b.code];
+      const c = p ? lvl(p.score) : '#b8c4d6';
+      const high = p && c === HIGH;
+      const selected = p && p.id === selP.id;
+      return {
+        x: b.x, y: b.y,
+        aria: p ? b.code + ', ' + p.id + ', risk ' + p.score.toFixed(2) : b.code + ', empty bed',
+        pick: () => { if (p) this.setState({ sel: p.id }); },
+        ring: high && t % 6 < 3 ? '#ffb3b6' : c,
+        outline: selected ? '3px solid #2453b0' : '0 solid transparent',
+        hair: p ? hairs[p.i % 5] : '#ffffff', shoulder: p ? '#9cc3e6' : '#ffffff',
+        blanket: p ? '#c9dcef' : '#f1f3f7', fold: p ? '#9cc3e6' : '#e4e8f0',
+        flag: !!high
+      };
+    });
+    const c = lvl(selP.score);
+    const sel = {
+      id: selP.id, num: selP.id.slice(2), bed: selP.bed, age: selP.age, note: selP.note,
+      score: selP.score.toFixed(2), c, ink: c === MED ? '#9a6410' : c, pillInk: c === MED ? '#20324a' : '#ffffff',
+      level: c === HIGH ? 'HIGH' : c === MED ? 'MEDIUM' : 'LOW',
+      skin: skins[selP.i % 5], hair: hairs[selP.i % 5],
+      hist: selP.hist.map((v, k) => ({ px: Math.max(3, Math.round(v * 44)), c: k === 11 && t % 4 < 2 ? '#20324a' : lvl(v) })),
+      vitals: selP.vitals.map(([k, v, bad]) => ({ k, v, ink: bad ? HIGH : '#20324a' })),
+      why: selP.why.map(([k, v]) => ({ k, v: '+' + v.toFixed(2), px: Math.max(4, Math.round(v * 600)), c: v >= 0.15 ? HIGH : v >= 0.07 ? MED : '#8a93aa' }))
+    };
+    const role = { nurse: '#2fa39a', doc: '#f4f6fa', emt: '#e58a2e' };
+    const walker = (body, head, x, y, i) => { const f = (Math.floor(t / 2) + i) % 2; return { body, head, skin: skins[i % 5], x: Math.round(x), y, handL: f ? 3 : 4, handR: f ? 4 : 3 }; };
+    const queueBodies = ['#7a5cc2', '#c25c8a', '#5c8ac2', '#8ac25c', '#c29a5c', '#5cc2b4', '#c25c5c'];
+    const chairs = [];
+    for (let r = 0; r < 2; r++) for (let k = 0; k < 6; k++) chairs.push({ x: 496 + k * 56, y: 470 + r * 90 });
+    const people = [
+      walker(role.nurse, '#5c4a8a', pp(40, 840, 6, 0), 268, 0),
+      walker(role.doc, hairs[1], pp(40, 840, 4, 500), 372, 1),
+      walker(role.nurse, hairs[2], pp(40, 840, 5, 900), 372, 2),
+      walker(role.nurse, '#2d6a5a', 428, 330, 3),
+      walker(role.nurse, hairs[3], pp(48, 400, 4, 0), 132, 4),
+      walker(role.doc, '#5c4a8a', pp(48, 400, 3, 300), 132, 0),
+      walker(role.nurse, hairs[0], pp(480, 830, 5, 100), 132, 1),
+      walker(role.doc, hairs[2], pp(48, 400, 4, 200), 508, 2),
+      walker(role.emt, hairs[4], pp(220, 400, 3, 0), 600, 3),
+      ...queueBodies.map((b, k) => { const ch = chairs[k]; return walker(b, k === 2 ? '#2d6a5a' : hairs[(k + 2) % 5], ch.x + 2 + ((t + k) % 8 === 0 ? 1 : 0), ch.y - 2, k); })
+    ];
+    const mins = 14 * 60 + 32 + Math.floor(t / 4);
+    const clock = String(Math.floor(mins / 60) % 24).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0');
+    return { clock, rooms, beds, chairs, people, sel };
+  }
+}
+</script>
+</body>
+</html>
