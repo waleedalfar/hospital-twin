@@ -561,3 +561,14 @@ Built and checked locally; the parts that need your accounts are not done yet.
   `make record` (Playwright performs the demo and saves `docs/demo.webm`; recorded once, 1.8 min, 30 MB so it is
   gitignored), README with screenshots, commands, architecture and the four prize-track sections, team.
   **Not done:** a clean-clone `make verify` and `make e2e`, and final evidence once deployed.
+
+### Deployed (CP8 and CP9 close-out)
+
+- Live at https://hospital-twin.us (Vultr VM, Caddy HTTPS, Tiger Cloud database with 3,000 Synthea patients); `www`
+  redirects to the main address. `make deploy` smoke check: health, page and a WebSocket snapshot all pass.
+- Gemini works on the live site for both the agent and Ask (a list of models in `GEMINI_MODEL`, tried in order, with
+  the rules engine and the intent parser as labelled fallbacks).
+- The 3D view opens in free-fly (W A S D fly through the building); the Isometric camera button gives the top-down view.
+- CI is green on a clean runner: verify, `make seed` (3,000 patients), `make train`, and 29 end-to-end tests.
+- Evidence of the live site: `docs/evidence/cp8/live-*.png` (made by `frontend/record/live-screenshots.mjs`).
+- Not done: a clean-clone run on this machine (CI covers it), and `docs/demo.webm` is kept out of git (30 MB).
