@@ -62,6 +62,8 @@ class World:
         self._streams: dict[tuple[str, ...], Any] = {}
         self.vehicles: dict[str, Vehicle] = {}
         self.staff: dict[str, Person] = {}
+        self.nurse_alerts: dict[str, Any] = {}  # alert id -> sim.nurses.NurseAlert
+        self.alert_counter = 0
         self.scenarios: dict[str, Scenario] = {}
 
     # ---- time and randomness --------------------------------------------------------------------------

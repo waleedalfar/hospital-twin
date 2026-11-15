@@ -1053,3 +1053,52 @@ select:focus-visible {
   align-items: center;
   font-size: 12px;
 }
+
+/* ---------- nurse alert pop-ups ---------- */
+.toasts {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 15;
+  width: 360px;
+}
+
+.toast {
+  background: #3b0d11;
+  color: var(--white);
+  border: 3px solid #ff5a5f;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: toast-pulse 1.6s ease-in-out infinite;
+}
+
+.toast__title {
+  font-size: 16px;
+}
+
+.toast__score {
+  color: #ffb3b6;
+  font-size: 13px;
+}
+
+.toast__why {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
+@keyframes toast-pulse {
+  0%,
+  100% {
+    border-color: #ff5a5f;
+  }
+  50% {
+    border-color: #ffd166;
+  }
+}

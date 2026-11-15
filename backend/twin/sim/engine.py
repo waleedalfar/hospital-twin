@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from twin.common.ws import ActionName, NetworkMessage, ScenarioName, SnapshotMessage
 from twin.ml.inference import InferenceEngine
-from twin.sim import actions, scenarios
+from twin.sim import actions, nurses, scenarios
 from twin.sim.arrivals import walk_ins
 from twin.sim.config import DEFAULT_WARMUP, SIM_START, TICK_MIN
 from twin.sim.entities import PatientProfile
@@ -56,6 +56,7 @@ class Simulation:
         world.env.run(until=world.now + TICK_MIN)
         if self.debug:
             check(world)
+        nurses.assign_nurses(world)
         emitted = world.drain()
         if self.ml is not None:
             self.ml.after_tick(emitted)

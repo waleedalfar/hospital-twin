@@ -7,7 +7,7 @@ from datetime import timedelta
 from twin.common.ws import DespawnEvent, EntityKind, SpawnEvent, StaffEvent
 from twin.sim import config as c
 from twin.sim.config import LOCAL_TZ
-from twin.sim.entities import Place, Staff
+from twin.sim.entities import Patient, Place, Staff
 from twin.sim.hospital import HospitalState
 from twin.sim.snapshot import entity_model
 from twin.sim.world import SimGen, World
@@ -123,6 +123,18 @@ def staff_loop(world: World, hospital: HospitalState, staff: Staff) -> SimGen:
     rng = world.rng("staff-loop", staff.id)
     visit = 0
     while staff.on_duty:
+        if staff.dispatch is not None:
+            # Sent to a high-risk patient: go to the bedside and stay a few minutes.
+            patient_id, staff.dispatch = staff.dispatch, None
+            target = hospital.people.get(patient_id)
+            bedside = bedside_of(hospital, target.place.bed) if isinstance(target, Patient) else None
+            if bedside is not None:
+                yield from timed_stay(world, hospital, staff, bedside, "responding", rng.uniform(*c.ALERT_RESPONSE_MIN))
+            elif isinstance(target, Patient) and target.place.bed is not None and world.now < staff.dispatch_until:
+                # Someone is already at the bedside: wait a little and try again.
+                staff.dispatch = patient_id
+                yield from world.wait_for(staff, 2.0)
+            continue
         if staff.kind == "surgeon" and staff.assignment == "OR":
             spot = hospital.first_free(["OR-ws-1", "OR-ws-2", "OR-ws-3", "OR-ws-4"])
             if spot is not None:
@@ -157,6 +169,8 @@ def staff_loop(world: World, hospital: HospitalState, staff: Staff) -> SimGen:
             continue
         if staff.kind == "doctor":
             for patient in patients:
+                if staff.dispatch is not None:
+                    break  # sent to a high-risk patient: the loop answers that first
                 bedside = bedside_of(hospital, patient.place.bed)
                 if bedside is not None and staff.on_duty:
                     yield from timed_stay(world, hospital, staff, bedside, "rounds", rng.uniform(*c.DOCTOR_VISIT_MIN))

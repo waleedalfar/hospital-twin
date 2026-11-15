@@ -759,6 +759,18 @@
      ],
      "default": null
     },
+    "nurse_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Nurse Id"
+    },
     "pose": {
      "enum": [
       "lying",
@@ -910,6 +922,7 @@
         "hospital_status": "#/$defs/HospitalStatusEvent",
         "los": "#/$defs/LosEvent",
         "move": "#/$defs/MoveEvent",
+        "nurse_alert": "#/$defs/NurseAlertEvent",
         "risk": "#/$defs/RiskEvent",
         "scenario": "#/$defs/ScenarioEvent",
         "spawn": "#/$defs/SpawnEvent",
@@ -969,6 +982,9 @@
        },
        {
         "$ref": "#/$defs/AlertEvent"
+       },
+       {
+        "$ref": "#/$defs/NurseAlertEvent"
        },
        {
         "$ref": "#/$defs/StaffEvent"
@@ -1628,6 +1644,143 @@
     "route"
    ],
    "title": "NetworkVehicle",
+   "type": "object"
+  },
+  "NurseAlertEvent": {
+   "additionalProperties": false,
+   "description": "A nurse alert was raised, or its status changed.",
+   "properties": {
+    "alert": {
+     "$ref": "#/$defs/NurseAlertModel"
+    },
+    "kind": {
+     "const": "nurse_alert",
+     "default": "nurse_alert",
+     "title": "Kind",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "alert"
+   ],
+   "title": "NurseAlertEvent",
+   "type": "object"
+  },
+  "NurseAlertModel": {
+   "additionalProperties": false,
+   "description": "A high-risk alert addressed to the nurse responsible for the patient (extra X1).",
+   "properties": {
+    "bed": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Bed"
+    },
+    "created": {
+     "format": "date-time",
+     "title": "Created",
+     "type": "string"
+    },
+    "hospital_id": {
+     "title": "Hospital Id",
+     "type": "string"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "nurse_id": {
+     "title": "Nurse Id",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "responded": {
+     "anyOf": [
+      {
+       "format": "date-time",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Responded"
+    },
+    "score": {
+     "title": "Score",
+     "type": "number"
+    },
+    "seconds_to_ack": {
+     "anyOf": [
+      {
+       "type": "number"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Seconds To Ack"
+    },
+    "status": {
+     "enum": [
+      "pending",
+      "acknowledged",
+      "escalated"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "top_factors": {
+     "items": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "type": "array"
+     },
+     "title": "Top Factors",
+     "type": "array"
+    },
+    "unit": {
+     "title": "Unit",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "hospital_id",
+    "patient_id",
+    "nurse_id",
+    "unit",
+    "bed",
+    "score",
+    "top_factors",
+    "status",
+    "created"
+   ],
+   "title": "NurseAlertModel",
    "type": "object"
   },
   "Risk": {

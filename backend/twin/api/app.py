@@ -21,6 +21,7 @@ from twin.api.routes_federated import router as federated_router
 from twin.api.routes_governance import router as governance_router
 from twin.api.routes_hospitals import router as hospitals_router
 from twin.api.routes_ml import router as ml_router
+from twin.api.routes_nurses import router as nurses_router
 from twin.api.routes_patients import router as patients_router
 from twin.api.routes_sim import router as sim_router
 from twin.api.routes_ws import router as ws_router
@@ -148,6 +149,7 @@ def create_app(settings: Settings | None = None, *, simulate: bool = True) -> Fa
         federated_router,
         agent_router,
         governance_router,
+        nurses_router,
         ws_router,
     ):
         app.include_router(router)

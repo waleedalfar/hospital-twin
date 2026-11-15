@@ -105,6 +105,7 @@ class Patient(Person):
     er_bed_at: float | None = None
     risk: Risk | None = None
     expected_discharge_h: float | None = None
+    nurse_id: str | None = None  # the nurse responsible for this patient while they have a bed
 
 
 @dataclass
@@ -116,6 +117,8 @@ class Staff(Person):
     prayed: set[tuple[int, int]] = field(default_factory=set)
     assignment: str | None = None
     vehicle_id: str | None = None
+    dispatch: str | None = None  # a patient id this person has been sent to (a high-risk alert)
+    dispatch_until: float = 0.0  # sim minute after which an unanswered dispatch is dropped
 
 
 @dataclass

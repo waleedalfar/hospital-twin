@@ -139,3 +139,6 @@ SHORTAGE_SHARE = 0.30
 SHORTAGE_DURATION_MIN = 240.0
 
 DEFAULT_WARMUP = timedelta(days=3)
+
+# How long a nurse or doctor stays at the bedside after a high-risk alert (sim minutes).
+ALERT_RESPONSE_MIN = (6.0, 12.0)

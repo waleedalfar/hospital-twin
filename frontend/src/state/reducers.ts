@@ -3,7 +3,7 @@
  * applies the snapshot, then events. These functions are pure; they never mutate their input.
  */
 import { feedItem } from './feed';
-import type { AgentRecModel, Entity, EventsMessage, FeedItem, HospitalData, SimEvent, SnapshotMessage } from './types';
+import type { AgentRecModel, Entity, NurseAlertModel, EventsMessage, FeedItem, HospitalData, SimEvent, SnapshotMessage } from './types';
 import { FEED_LIMIT } from './types';
 
 export function fromSnapshot(msg: SnapshotMessage): HospitalData {
@@ -114,4 +114,20 @@ export function mergeRecs(current: AgentRecModel[], incoming: AgentRecModel[]): 
 
 export function recsIn(msg: EventsMessage): AgentRecModel[] {
   return msg.events.flatMap((e) => (e.kind === 'agent_rec' ? [e.rec] : []));
+}
+
+/** Newest first; an alert that arrives again (it was acknowledged or escalated) replaces the old copy. */
+export function mergeAlerts(current: NurseAlertModel[], incoming: NurseAlertModel[]): NurseAlertModel[] {
+  const byId = new Map(current.map((a) => [a.id, a]));
+  for (const a of incoming) byId.set(a.id, a);
+  return [...byId.values()].sort((a, b) => b.created.localeCompare(a.created) || b.id.localeCompare(a.id, undefined, { numeric: true }));
+}
+
+export function alertsIn(msg: EventsMessage): NurseAlertModel[] {
+  return msg.events.flatMap((e) => (e.kind === 'nurse_alert' ? [e.alert] : []));
+}
+
+/** What the 3D view should ring and mark: the entities an answer is about and the nurses with a pending alert. */
+export function highlightTargets(highlightIds: readonly string[], alerts: readonly NurseAlertModel[]): string[] {
+  return [...new Set([...highlightIds, ...alerts.filter((a) => a.status === 'pending').map((a) => a.nurse_id)])];
 }

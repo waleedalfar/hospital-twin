@@ -31,6 +31,7 @@ from twin.ml.model import RiskModel
 from twin.ml.observe import Observer
 from twin.ml.rollback import Proposal, propose
 from twin.sim.config import SIM_START
+from twin.sim.nurses import raise_alert
 from twin.sim.scenarios import flu_active
 from twin.sim.world import Emitted, World
 
@@ -155,6 +156,7 @@ class InferenceEngine:
                     hospital.id,
                     AlertEvent(time=self.world.time(), patient_id=patient.id, level="high", score=risk.score),
                 )
+                raise_alert(self.world, hospital, patient)
                 self.audit(
                     "system",
                     "risk_alert",

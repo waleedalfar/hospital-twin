@@ -84,6 +84,7 @@ class Entity(Msg):
     risk: Risk | None = None
     # Predicted hours until discharge (length-of-stay model), for admitted patients.
     expected_discharge_h: float | None = None
+    nurse_id: str | None = None
     vitals: Vitals | None = None
 
 
@@ -254,6 +255,33 @@ class AlertEvent(Ev):
     score: float
 
 
+NurseAlertStatus = Literal["pending", "acknowledged", "escalated"]
+
+
+class NurseAlertModel(Msg):
+    """A high-risk alert addressed to the nurse responsible for the patient (extra X1)."""
+
+    id: str
+    hospital_id: str
+    patient_id: str
+    nurse_id: str
+    unit: str
+    bed: str | None
+    score: float
+    top_factors: list[tuple[str, float]]
+    status: NurseAlertStatus
+    created: datetime
+    responded: datetime | None = None
+    seconds_to_ack: float | None = None
+
+
+class NurseAlertEvent(Ev):
+    """A nurse alert was raised, or its status changed."""
+
+    kind: Literal["nurse_alert"] = "nurse_alert"
+    alert: NurseAlertModel
+
+
 class StaffEvent(Ev):
     kind: Literal["staff"] = "staff"
     entity_id: str
@@ -345,6 +373,7 @@ SimEvent = Annotated[
     | TransferEvent
     | CriticalEvent
     | AlertEvent
+    | NurseAlertEvent
     | StaffEvent
     | AmbulanceEvent
     | HospitalStatusEvent

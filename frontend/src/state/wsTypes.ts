@@ -25,6 +25,7 @@ export type Arrive = string;
 export type Depart = string;
 export type Path = string[];
 export type Times = string[];
+export type NurseId = string | null;
 export type Pose = 'lying' | 'seated' | 'standing' | 'walking';
 export type Level = 'low' | 'medium' | 'high';
 export type ModelVersion = string;
@@ -142,52 +143,66 @@ export type Level2 = 'low' | 'medium' | 'high';
 export type PatientId13 = string;
 export type Score2 = number;
 export type Time15 = string;
+export type Bed1 = string | null;
+export type Created = string;
+export type HospitalId1 = string;
+export type Id5 = string;
+export type NurseId1 = string;
+export type PatientId14 = string;
+export type Responded = string | null;
+export type Score3 = number;
+export type SecondsToAck = number | null;
+export type Status2 = 'pending' | 'acknowledged' | 'escalated';
+export type TopFactors2 = [unknown, unknown][];
+export type Unit3 = string;
+export type Kind18 = 'nurse_alert';
+export type Time16 = string;
 export type Change = 'on_duty' | 'off_duty';
 export type EntityId2 = string;
-export type Kind18 = 'staff';
+export type Kind19 = 'staff';
 export type Reason1 = string;
-export type Time16 = string;
-export type Destination = string | null;
-export type Kind19 = 'ambulance';
-export type PatientId14 = string | null;
-export type Slot1 = string | null;
-export type Status2 = 'at_base' | 'to_scene' | 'on_scene' | 'to_hospital' | 'unloading' | 'returning' | 'transferring';
 export type Time17 = string;
+export type Destination = string | null;
+export type Kind20 = 'ambulance';
+export type PatientId15 = string | null;
+export type Slot1 = string | null;
+export type Status3 = 'at_base' | 'to_scene' | 'on_scene' | 'to_hospital' | 'unloading' | 'returning' | 'transferring';
+export type Time18 = string;
 export type VehicleId1 = string;
 export type VehicleKind = 'ambulance' | 'helicopter';
-export type Kind20 = 'hospital_status';
+export type Kind21 = 'hospital_status';
 export type Reason2 = string;
-export type Status3 = 'open' | 'diverting' | 'offline';
-export type Time18 = string;
+export type Status4 = 'open' | 'diverting' | 'offline';
+export type Time19 = string;
 export type Until = string | null;
-export type HospitalId1 = string | null;
-export type Kind21 = 'scenario';
+export type HospitalId2 = string | null;
+export type Kind22 = 'scenario';
 export type Name2 = 'flu_surge' | 'mass_casualty' | 'staff_shortage' | 'hospital_offline';
 export type ScenarioId = string;
-export type Status4 = 'started' | 'stopped' | 'ended';
-export type Time19 = string;
-export type Action = 'divert_ambulances' | 'expedite_discharge' | 'move_patient' | 'call_in_staff' | 'hold_bed';
-export type Kind22 = 'action';
-export type Result = string;
+export type Status5 = 'started' | 'stopped' | 'ended';
 export type Time20 = string;
-export type Feature = string;
-export type Kind23 = 'drift_alert';
-export type Psi = number;
+export type Action = 'divert_ambulances' | 'expedite_discharge' | 'move_patient' | 'call_in_staff' | 'hold_bed';
+export type Kind23 = 'action';
+export type Result = string;
 export type Time21 = string;
-export type Kind24 = 'agent_rec';
+export type Feature = string;
+export type Kind24 = 'drift_alert';
+export type Psi = number;
+export type Time22 = string;
+export type Kind25 = 'agent_rec';
 export type Action1 = 'divert_ambulances' | 'expedite_discharge' | 'move_patient' | 'call_in_staff' | 'hold_bed';
 export type Name3 = string;
 export type Value = number;
 export type CitedMetrics = CitedMetric[];
-export type Created = string;
-export type HospitalId2 = string;
-export type Id5 = string;
+export type Created1 = string;
+export type HospitalId3 = string;
+export type Id6 = string;
 export type Label = string | null;
 export type Rationale = string;
 export type Source = 'gemini' | 'rules';
-export type Status5 = 'pending' | 'approved' | 'dismissed' | 'expired';
+export type Status6 = 'pending' | 'approved' | 'dismissed' | 'expired';
 export type Targets = string[];
-export type Time22 = string;
+export type Time23 = string;
 export type Events = (
   | MoveEvent
   | SpawnEvent
@@ -205,6 +220,7 @@ export type Events = (
   | TransferEvent
   | CriticalEvent
   | AlertEvent
+  | NurseAlertEvent
   | StaffEvent
   | AmbulanceEvent
   | HospitalStatusEvent
@@ -220,11 +236,11 @@ export type Speed1 = number;
 export type Type1 = 'events';
 export type V1 = 1;
 export type Frozen2 = boolean;
-export type Id6 = string;
+export type Id7 = string;
 export type Lat = number;
 export type Lon = number;
 export type Name4 = string;
-export type Status6 = 'open' | 'diverting' | 'offline';
+export type Status7 = 'open' | 'diverting' | 'offline';
 export type StatusUntil = string | null;
 export type Hospitals = NetworkHospital[];
 export type Paused2 = boolean;
@@ -235,16 +251,16 @@ export type Type2 = 'network';
 export type V2 = 1;
 export type Destination1 = string | null;
 export type Home = string;
-export type Id7 = string;
-export type Kind25 = 'ambulance' | 'helicopter';
+export type Id8 = string;
+export type Kind26 = 'ambulance' | 'helicopter';
 export type Lat1 = number;
 export type Lon1 = number;
-export type PatientId15 = string | null;
+export type PatientId16 = string | null;
 export type Lat2 = number;
 export type Lon2 = number;
 export type T = string;
 export type Route = RoutePoint[];
-export type Status7 = 'at_base' | 'to_scene' | 'on_scene' | 'to_hospital' | 'unloading' | 'returning' | 'transferring';
+export type Status8 = 'at_base' | 'to_scene' | 'on_scene' | 'to_hospital' | 'unloading' | 'returning' | 'transferring';
 export type Vehicles1 = NetworkVehicle[];
 export type Message = string;
 export type Type3 = 'error';
@@ -252,7 +268,7 @@ export type V3 = 1;
 export type Error = string | null;
 export type Round = number;
 export type Rounds = number;
-export type Status8 = 'idle' | 'running' | 'done' | 'failed';
+export type Status9 = 'idle' | 'running' | 'done' | 'failed';
 export type Type4 = 'federated';
 export type V4 = 1;
 export type ValAuroc = number[];
@@ -283,6 +299,7 @@ export interface Entity {
   kind: Kind;
   location: Location;
   move?: Move | null;
+  nurse_id?: NurseId;
   pose: Pose;
   risk?: Risk | null;
   task?: Task;
@@ -488,48 +505,73 @@ export interface AlertEvent {
   score: Score2;
   time: Time15;
 }
+/**
+ * A nurse alert was raised, or its status changed.
+ */
+export interface NurseAlertEvent {
+  alert: NurseAlertModel;
+  kind?: Kind18;
+  time: Time16;
+}
+/**
+ * A high-risk alert addressed to the nurse responsible for the patient (extra X1).
+ */
+export interface NurseAlertModel {
+  bed: Bed1;
+  created: Created;
+  hospital_id: HospitalId1;
+  id: Id5;
+  nurse_id: NurseId1;
+  patient_id: PatientId14;
+  responded?: Responded;
+  score: Score3;
+  seconds_to_ack?: SecondsToAck;
+  status: Status2;
+  top_factors: TopFactors2;
+  unit: Unit3;
+}
 export interface StaffEvent {
   change: Change;
   entity_id: EntityId2;
-  kind?: Kind18;
+  kind?: Kind19;
   reason: Reason1;
-  time: Time16;
+  time: Time17;
 }
 export interface AmbulanceEvent {
   destination: Destination;
-  kind?: Kind19;
-  patient_id: PatientId14;
+  kind?: Kind20;
+  patient_id: PatientId15;
   slot: Slot1;
-  status: Status2;
-  time: Time17;
+  status: Status3;
+  time: Time18;
   vehicle_id: VehicleId1;
   vehicle_kind: VehicleKind;
 }
 export interface HospitalStatusEvent {
-  kind?: Kind20;
+  kind?: Kind21;
   reason: Reason2;
-  status: Status3;
-  time: Time18;
+  status: Status4;
+  time: Time19;
   until: Until;
 }
 export interface ScenarioEvent {
-  hospital_id: HospitalId1;
-  kind?: Kind21;
+  hospital_id: HospitalId2;
+  kind?: Kind22;
   name: Name2;
   params: Params;
   scenario_id: ScenarioId;
-  status: Status4;
-  time: Time19;
+  status: Status5;
+  time: Time20;
 }
 export interface Params {
   [k: string]: string | number;
 }
 export interface ActionEvent {
   action: Action;
-  kind?: Kind22;
+  kind?: Kind23;
   params: Params1;
   result: Result;
-  time: Time20;
+  time: Time21;
 }
 export interface Params1 {
   [k: string]: string | number | string[];
@@ -539,29 +581,29 @@ export interface Params1 {
  */
 export interface DriftAlertEvent {
   feature: Feature;
-  kind?: Kind23;
+  kind?: Kind24;
   psi: Psi;
-  time: Time21;
+  time: Time22;
 }
 /**
  * A new or updated recommendation from the operations agent.
  */
 export interface AgentRecEvent {
-  kind?: Kind24;
+  kind?: Kind25;
   rec: AgentRecModel;
-  time: Time22;
+  time: Time23;
 }
 export interface AgentRecModel {
   action: Action1;
   cited_metrics: CitedMetrics;
-  created: Created;
-  hospital_id: HospitalId2;
-  id: Id5;
+  created: Created1;
+  hospital_id: HospitalId3;
+  id: Id6;
   label?: Label;
   params: Params2;
   rationale: Rationale;
   source: Source;
-  status: Status5;
+  status: Status6;
   targets: Targets;
 }
 export interface CitedMetric {
@@ -583,24 +625,24 @@ export interface NetworkMessage {
   vehicles: Vehicles1;
 }
 export interface NetworkHospital {
-  id: Id6;
+  id: Id7;
   kpis: Kpis;
   lat: Lat;
   lon: Lon;
   name: Name4;
-  status: Status6;
+  status: Status7;
   status_until: StatusUntil;
 }
 export interface NetworkVehicle {
   destination: Destination1;
   home: Home;
-  id: Id7;
-  kind: Kind25;
+  id: Id8;
+  kind: Kind26;
   lat: Lat1;
   lon: Lon1;
-  patient_id: PatientId15;
+  patient_id: PatientId16;
   route: Route;
-  status: Status7;
+  status: Status8;
 }
 export interface RoutePoint {
   lat: Lat2;
@@ -619,7 +661,7 @@ export interface FederatedMessage {
   error?: Error;
   round: Round;
   rounds: Rounds;
-  status: Status8;
+  status: Status9;
   type?: Type4;
   v?: V4;
   val_auroc: ValAuroc;

@@ -340,3 +340,41 @@ async def test_fairness_is_available_for_each_hospital_and_rejects_unknown_ones(
         assert all(r["available"] and "groups" in r for r in per.values())
         assert sum(r["rows"] for r in per.values()) == everyone["rows"]  # the hospitals add up to the network
         assert (await client.get("/governance/fairness?hospital=atlantis")).status_code == 404
+
+
+async def test_nurse_alerts_can_be_listed_acknowledged_and_escalated_and_response_times_are_audited(migrated_db_url: str) -> None:
+    from twin.common.ws import Risk
+    from twin.sim import nurses
+
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (client, rt, _app):
+        for _ in range(60):
+            await rt.step()
+        world = rt.sim.world
+        picked = [(h, p) for h in world.hospitals.values() for p in h.bedded("WARD") if p.nurse_id]
+        assert len(picked) >= 2
+        made = []
+        for hospital, patient in picked[:2]:
+            patient.risk = Risk(score=0.8, level="high", top_factors=[("SpO2 drop, 2h", 0.3), ("HR trend", 0.2), ("Age", 0.1)], model_version="t")
+            alert = nurses.raise_alert(world, hospital, patient)
+            assert alert is not None
+            made.append(alert)
+        await rt.publish_now()
+        listed = (await client.get("/nurse-alerts")).json()
+        assert {a["id"] for a in listed} >= {a.id for a in made} and all(a["status"] == "pending" for a in listed)
+        first, second = made
+        for _ in range(3):
+            await rt.step()
+        acked = await client.post(f"/nurse-alerts/{first.id}/acknowledge")
+        assert acked.status_code == 200 and acked.json()["status"] == "acknowledged" and acked.json()["seconds_to_ack"] > 0
+        assert (await client.post(f"/nurse-alerts/{first.id}/acknowledge")).status_code == 409
+        escalated = await client.post(f"/nurse-alerts/{second.id}/escalate")
+        assert escalated.status_code == 200 and escalated.json()["status"] == "escalated"
+        assert (await client.post("/nurse-alerts/NA-999/acknowledge")).status_code == 404
+        assert [a["id"] for a in (await client.get("/nurse-alerts?status=acknowledged")).json()] == [first.id]
+        assert (await client.get("/nurse-alerts?hospital=atlantis")).status_code == 404
+        actions = await audit_actions(migrated_db_url)
+        assert "nurse_alert_acknowledged" in actions and "nurse_alert_escalated" in actions
+        stats = (await client.get("/governance/nurse-response")).json()
+        assert stats["raised"] >= 2 and stats["acknowledged"] == 1 and stats["escalated"] == 1
+        assert stats["mean_seconds_to_ack"] > 0 and stats["median_seconds_to_ack"] > 0

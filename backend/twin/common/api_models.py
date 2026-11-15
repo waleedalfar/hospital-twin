@@ -232,3 +232,12 @@ class ProposalResponse(Api):
     validation_auroc: float | None
     active: str | None
     available: list[str]
+
+
+class NurseResponseStats(Api):
+    raised: int
+    pending: int
+    acknowledged: int
+    escalated: int
+    mean_seconds_to_ack: float | None
+    median_seconds_to_ack: float | None

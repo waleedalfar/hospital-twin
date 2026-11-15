@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Engine } from '../../engine/engine';
 import type { CameraMode } from '../../engine/camera';
 import { MAX_PIXEL_FACTOR, MIN_PIXEL_FACTOR } from '../../engine/palette';
+import { highlightTargets } from '../../state/reducers';
 import { useTwin } from '../../state/store';
 import { Banners, ScenarioMenu, SimClock, SpeedControls } from '../common';
 import { go } from '../route';
@@ -10,6 +11,7 @@ import { FloorPlan } from './FloorPlan';
 import { GovernanceButton } from '../governance/Governance';
 import { AgentPanel } from './AgentPanel';
 import { AskPanel } from './AskPanel';
+import { NurseAlerts } from './NurseAlerts';
 import { Inspector } from './Inspector';
 import { ForecastPanel, ModelBadge } from './MlPanels';
 import { KpiStrip, Legend, LiveFeed, PresetBar } from './Panels';
@@ -55,7 +57,7 @@ function useEngine(canvas: React.RefObject<HTMLCanvasElement | null>, box: React
         eng.setVehicles(s.data.vehicles);
       }
       if (s.selectedId !== prev.selectedId) eng.select(s.selectedId);
-      if (s.highlightIds !== prev.highlightIds) eng.highlight(s.highlightIds);
+      if (s.highlightIds !== prev.highlightIds || s.nurseAlerts !== prev.nurseAlerts) eng.highlight(highlightTargets(s.highlightIds, s.nurseAlerts));
     });
     const now = useTwin.getState();
     if (now.data) {
@@ -173,6 +175,7 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
               <AgentPanel />
               <Inspector entity={entity} onFly={() => engine?.focusSelected()} />
             </div>
+            <NurseAlerts />
             <div className="hud hud--bl">
               <PresetBar active={preset} onPick={(id) => engine?.preset(id)} />
               <div className="chip" data-testid="controls-hint">

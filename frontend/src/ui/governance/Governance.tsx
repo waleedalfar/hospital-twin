@@ -4,6 +4,7 @@ import type { AuditEntry, AuditFilter, DriftReport, FairnessReport } from '../..
 import { api } from '../common';
 import { FederatedPanel } from './Federated';
 import { ModelsPanel } from './Models';
+import { NurseResponsePanel } from './NurseResponse';
 
 export const GOVERNANCE_POLL_MS = 5000;
 const NOISE = ['risk_alert', 'inference_batch'];
@@ -154,13 +155,14 @@ export function AuditList() {
   );
 }
 
-type Tab = 'drift' | 'fairness' | 'audit' | 'federated' | 'models';
+type Tab = 'drift' | 'fairness' | 'audit' | 'federated' | 'models' | 'nurses';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'drift', label: 'Drift' },
   { id: 'fairness', label: 'Fairness' },
   { id: 'audit', label: 'Audit log' },
   { id: 'federated', label: 'Federated training' },
   { id: 'models', label: 'Models' },
+  { id: 'nurses', label: 'Nurse response' },
 ];
 
 /** Governance drawer (PROMPT.md §8): drift heatmap, fairness, audit log, and the model card. */
@@ -186,6 +188,7 @@ export function GovernanceDrawer({ onClose }: { onClose: () => void }) {
         {tab === 'audit' && <AuditList />}
         {tab === 'federated' && <FederatedPanel />}
         {tab === 'models' && <ModelsPanel />}
+        {tab === 'nurses' && <NurseResponsePanel />}
       </div>
     </aside>
   );

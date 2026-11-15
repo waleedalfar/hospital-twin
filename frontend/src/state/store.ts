@@ -7,9 +7,9 @@ import { create, type StoreApi, type UseBoundStore } from 'zustand';
 
 import { Api } from './api';
 import { initialClock, onMessage as clockOnMessage, simNow, type ClockState } from './clock';
-import { applyEvents, fromSnapshot, mergeRecs, recsIn } from './reducers';
+import { alertsIn, applyEvents, fromSnapshot, mergeAlerts, mergeRecs, recsIn } from './reducers';
 import { WsClient, type ConnectionStatus, type WsOptions } from './socket';
-import type { AgentRecModel, HospitalData, NetworkMessage } from './types';
+import type { AgentRecModel, HospitalData, NetworkMessage, NurseAlertModel } from './types';
 import type { FederatedMessage, ServerMessage } from './wsTypes';
 
 export interface ClientLike {
@@ -19,7 +19,7 @@ export interface ClientLike {
 
 export interface StoreDeps {
   createClient: (opts: WsOptions) => ClientLike;
-  api: Pick<Api, 'setFrozen' | 'recs'>;
+  api: Pick<Api, 'setFrozen' | 'recs' | 'nurseAlerts'>;
   now: () => number;
   wsUrl: (path: string) => string;
 }
@@ -30,6 +30,8 @@ export interface TwinState {
   data: HospitalData | null;
   /** The operations agent's recommendations for this hospital, newest first. */
   recs: AgentRecModel[];
+  /** High-risk alerts addressed to nurses at this hospital (extra X1), newest first. */
+  nurseAlerts: NurseAlertModel[];
   clock: ClockState;
   network: NetworkMessage | null;
   /** Progress of the federated training run, pushed over the network stream. */
@@ -72,6 +74,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     connection: 'closed',
     data: null,
     recs: [],
+    nurseAlerts: [],
     clock: initialClock(),
     network: null,
     federated: null,
@@ -84,7 +87,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
 
     connectHospital: (id) => {
       hospitalClient?.stop();
-      set({ hospitalId: id, data: null, recs: [], connection: 'connecting', selectedId: null, highlightIds: [], clock: initialClock() });
+      set({ hospitalId: id, data: null, recs: [], nurseAlerts: [], connection: 'connecting', selectedId: null, highlightIds: [], clock: initialClock() });
       hospitalClient = deps.createClient({
         url: () => deps.wsUrl(`/ws?hospital=${encodeURIComponent(id)}`),
         onStatus: (connection) => { set({ connection }); },
@@ -93,6 +96,10 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
           if (msg.type === 'snapshot') {
             const data = fromSnapshot(msg);
             set({ data, clock: clockOnMessage(msg.sim_time, msg.speed, msg.paused, msg.frozen, deps.now()) });
+            deps.api.nurseAlerts(id).then(
+              (list) => { set((s) => ({ nurseAlerts: mergeAlerts(s.nurseAlerts, list) })); },
+              (e: unknown) => { set({ problem: `Could not load the nurse alerts: ${String(e)}` }); },
+            );
             // Recommendations are not part of the snapshot: load the stored ones, and keep up through events.
             deps.api.recs(id).then(
               (list) => { set((s) => ({ recs: mergeRecs(s.recs, list) })); },
@@ -107,9 +114,11 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
             const next = applyEvents(data, msg, feedKey);
             feedKey += msg.events.length;
             const fresh = recsIn(msg);
+            const freshAlerts = alertsIn(msg);
             set((s) => ({
               data: next,
               recs: fresh.length > 0 ? mergeRecs(s.recs, fresh) : s.recs,
+              nurseAlerts: freshAlerts.length > 0 ? mergeAlerts(s.nurseAlerts, freshAlerts) : s.nurseAlerts,
               clock: clockOnMessage(msg.sim_time, msg.speed, msg.paused, msg.frozen, deps.now()),
             }));
           }
@@ -121,7 +130,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     disconnectHospital: () => {
       hospitalClient?.stop();
       hospitalClient = null;
-      set({ hospitalId: null, data: null, recs: [], connection: 'closed', selectedId: null, highlightIds: [] });
+      set({ hospitalId: null, data: null, recs: [], nurseAlerts: [], connection: 'closed', selectedId: null, highlightIds: [] });
     },
 
     connectNetwork: () => {

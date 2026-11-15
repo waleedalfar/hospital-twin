@@ -13,6 +13,7 @@ function harness(freeze = false) {
   const clients: { opts: WsOptions; started: boolean; stopped: boolean }[] = [];
   const setFrozen = vi.fn().mockResolvedValue({});
   const recs = vi.fn().mockResolvedValue([]);
+  const nurseAlerts = vi.fn().mockResolvedValue([]);
   let now = 1000;
   const store = createTwinStore({
     createClient: (opts): ClientLike => {
@@ -23,12 +24,12 @@ function harness(freeze = false) {
         stop: () => (c.stopped = true),
       };
     },
-    api: { setFrozen, recs },
+    api: { setFrozen, recs, nurseAlerts },
     now: () => now,
     wsUrl: (p) => `ws://test${p}`,
   });
   store.getState().setFreeze(freeze);
-  return { store, clients, setFrozen, recs, setNow: (n: number) => (now = n) };
+  return { store, clients, setFrozen, recs, nurseAlerts, setNow: (n: number) => (now = n) };
 }
 
 const events = (time: string, list: object[]): EventsMessage => ({
@@ -165,5 +166,28 @@ describe('federated progress', () => {
     const msg = { v: 1 as const, type: 'federated' as const, status: 'running' as const, round: 3, rounds: 25, val_auroc: [0.8], error: null };
     clients[0]?.opts.onMessage(msg);
     expect(store.getState().federated).toEqual(msg);
+  });
+});
+
+describe('nurse alerts in the store', () => {
+  const pending = { id: 'NA-1', hospital_id: 'mercy', patient_id: 'P-1', nurse_id: 'N-14', unit: 'ICU', bed: 'ICU-3', score: 0.8, top_factors: [['a', 0.1]], status: 'pending', created: '2026-11-14T18:00:00Z', responded: null, seconds_to_ack: null };
+  it('loads the stored alerts after the snapshot and follows them through events', async () => {
+    const { store, clients, nurseAlerts } = harness();
+    nurseAlerts.mockResolvedValue([pending]);
+    store.getState().connectHospital('mercy');
+    clients[0]?.opts.onMessage(snap);
+    await vi.waitFor(() => { expect(store.getState().nurseAlerts.map((a) => a.id)).toEqual(['NA-1']); });
+    expect(nurseAlerts).toHaveBeenCalledWith('mercy');
+    clients[0]?.opts.onMessage(events(snap.sim_time, [{ kind: 'nurse_alert', time: snap.sim_time, alert: { ...pending, status: 'acknowledged' } }]));
+    expect(store.getState().nurseAlerts[0]?.status).toBe('acknowledged');
+    store.getState().disconnectHospital();
+    expect(store.getState().nurseAlerts).toEqual([]);
+  });
+  it('shows a problem when the alerts cannot be loaded', async () => {
+    const { store, clients, nurseAlerts } = harness();
+    nurseAlerts.mockRejectedValue(new Error('down'));
+    store.getState().connectHospital('mercy');
+    clients[0]?.opts.onMessage(snap);
+    await vi.waitFor(() => { expect(store.getState().problem).toContain('Could not load the nurse alerts'); });
   });
 });

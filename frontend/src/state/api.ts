@@ -1,5 +1,5 @@
 /** Typed REST client for the backend (`/api/*` in the browser; PROMPT.md §6.2). */
-import type { AgentRecModel, TopFactor } from './types';
+import type { AgentRecModel, NurseAlertModel, TopFactor } from './types';
 import type { FederatedMessage } from './wsTypes';
 
 export class ApiError extends Error {
@@ -86,6 +86,14 @@ export interface RollbackProposal {
   validation_auroc: number | null;
   active: string | null;
   available: string[];
+}
+export interface NurseResponseStats {
+  raised: number;
+  pending: number;
+  acknowledged: number;
+  escalated: number;
+  mean_seconds_to_ack: number | null;
+  median_seconds_to_ack: number | null;
 }
 export interface ActiveModel {
   active_deterioration: string;
@@ -224,6 +232,18 @@ export class Api {
   }
   runFederated(): Promise<FederatedMessage> {
     return this.call('/federated/run', { method: 'POST' });
+  }
+  nurseAlerts(hospitalId: string | null = null): Promise<NurseAlertModel[]> {
+    return this.call(hospitalId ? `/nurse-alerts?hospital=${encodeURIComponent(hospitalId)}` : '/nurse-alerts');
+  }
+  acknowledgeAlert(id: string): Promise<NurseAlertModel> {
+    return this.call(`/nurse-alerts/${encodeURIComponent(id)}/acknowledge`, { method: 'POST' });
+  }
+  escalateAlert(id: string): Promise<NurseAlertModel> {
+    return this.call(`/nurse-alerts/${encodeURIComponent(id)}/escalate`, { method: 'POST' });
+  }
+  nurseResponse(): Promise<NurseResponseStats> {
+    return this.call('/governance/nurse-response');
   }
   rollbackProposal(): Promise<RollbackProposal> {
     return this.call('/models/proposal');

@@ -36,6 +36,8 @@ export function feedItem(event: SimEvent, key: number): FeedItem | null {
       return make('Model drift', `${event.feature} PSI ${event.psi.toFixed(2)}`, 'med');
     case 'agent_rec':
       return event.rec.status === 'pending' ? make('Agent', `recommends ${event.rec.action.replaceAll('_', ' ')}`, 'info') : null;
+    case 'nurse_alert':
+      return event.alert.status === 'pending' ? make(event.alert.nurse_id, `alerted for ${event.alert.patient_id}${event.alert.bed ? ` in ${event.alert.bed}` : ''}`, 'high') : null;
     case 'action':
       return make('Action', event.result, 'info');
     default:

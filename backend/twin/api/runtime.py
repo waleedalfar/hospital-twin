@@ -11,6 +11,7 @@ from twin.api.hub import Hub
 from twin.common.ws import ActionName, EventsMessage, ScenarioName
 from twin.db.pool import Pool
 from twin.db.sim_writer import SimWriter, reset_run, write_audit
+from twin.sim import nurses
 from twin.sim.config import SPEEDS
 from twin.sim.engine import Simulation
 from twin.sim.entities import PatientProfile
@@ -212,6 +213,23 @@ class SimRuntime:
         await self._publish_now()
         await self.audit("scenario_stop", {"id": scenario.id, "name": scenario.name})
         return scenario
+
+    async def nurse_response(self, alert_id: str, action: str, actor: str) -> nurses.NurseAlert:
+        """Acknowledge or escalate a nurse alert; the time taken is audited."""
+        alert = nurses.respond(self.sim.world, alert_id, action)
+        await self._publish_now()
+        await self.audit(
+            "nurse_alert_acknowledged" if action == "acknowledge" else "nurse_alert_escalated",
+            {
+                "id": alert.id,
+                "nurse_id": alert.nurse_id,
+                "patient_id": alert.patient_id,
+                "hospital_id": alert.hospital_id,
+                "seconds_to_ack": alert.seconds_to_ack,
+            },
+            actor=actor,
+        )
+        return alert
 
     async def apply_action(self, action: ActionName, params: dict[str, Any], actor: str) -> str:
         result = self.sim.apply_action(action, params)

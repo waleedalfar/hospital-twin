@@ -1,6 +1,7 @@
 /** Convenience types over the generated WebSocket types (src/state/wsTypes.ts). */
 import type {
   AgentRecModel,
+  NurseAlertModel,
   BedInfo,
   Entity,
   EventsMessage,
@@ -12,7 +13,7 @@ import type {
   VehicleAtHospital,
 } from './wsTypes';
 
-export type { AgentRecModel, BedInfo, Entity, EventsMessage, HospitalRef, Kpis, NetworkMessage, ScenarioInfo, SnapshotMessage, VehicleAtHospital };
+export type { AgentRecModel, NurseAlertModel, BedInfo, Entity, EventsMessage, HospitalRef, Kpis, NetworkMessage, ScenarioInfo, SnapshotMessage, VehicleAtHospital };
 export type SimEvent = EventsMessage['events'][number];
 
 /** The model's top factors arrive as [name, weight] pairs (the generated type loses the tuple). */
