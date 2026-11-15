@@ -327,3 +327,16 @@ async def test_malformed_json_twice_falls_back_and_is_audited(migrated_db_url: s
         output, source = await agent.produce(busy_summary(), "test")
         assert source == "rules" and output.recommendations
         assert "agent_validation_failed" in await audit_actions(migrated_db_url)
+
+
+async def test_fairness_is_available_for_each_hospital_and_rejects_unknown_ones(migrated_db_url: str) -> None:
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (client, rt, _app):
+        for _ in range(125):
+            await rt.step()
+        everyone = (await client.get("/governance/fairness")).json()
+        assert everyone["available"] is True
+        per = {h: (await client.get(f"/governance/fairness?hospital={h}")).json() for h in ("mercy", "stlukes", "desert")}
+        assert all(r["available"] and "groups" in r for r in per.values())
+        assert sum(r["rows"] for r in per.values()) == everyone["rows"]  # the hospitals add up to the network
+        assert (await client.get("/governance/fairness?hospital=atlantis")).status_code == 404

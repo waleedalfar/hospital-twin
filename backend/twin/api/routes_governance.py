@@ -3,7 +3,7 @@
 import json
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import PlainTextResponse
 
 from twin.api.deps import pool, runtime
@@ -44,10 +44,12 @@ async def drift(rt: Runtime, db: DbPool) -> DriftReport:
 
 
 @router.get("/governance/fairness")
-async def fairness(rt: Runtime) -> FairnessReport:
-    """AUROC and calibration by age band and sex on the most recent labeled window."""
+async def fairness(rt: Runtime, hospital: str | None = None) -> FairnessReport:
+    """AUROC and calibration by age band and sex on the most recent labeled window; network-wide, or for one hospital."""
     ml = rt.sim.ml
-    report: dict[str, Any] | None = ml.latest_fairness if ml else None
+    if hospital is not None and hospital not in rt.sim.world.hospitals:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Unknown hospital {hospital}")
+    report: dict[str, Any] | None = (ml.latest_fairness if hospital is None else ml.latest_fairness_by_hospital.get(hospital)) if ml else None
     if report is None:
         return FairnessReport(
             available=False,

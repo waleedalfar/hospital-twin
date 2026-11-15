@@ -74,13 +74,30 @@ export function DriftHeatmap() {
   );
 }
 
+const HOSPITAL_CHOICES: { id: string; label: string }[] = [
+  { id: '', label: 'Whole network' },
+  { id: 'mercy', label: 'Mercy General' },
+  { id: 'stlukes', label: "St. Luke's" },
+  { id: 'desert', label: 'Desert Valley' },
+];
+
 export function FairnessTable() {
-  const { value: f, error } = useLoaded<FairnessReport>(() => api.fairness(), 'fairness');
+  const [hospital, setHospital] = useState('');
+  const { value: f, error } = useLoaded<FairnessReport>(() => api.fairness(hospital || null), `fairness-${hospital}`);
+  const picker = (
+    <label className="fair__filter">
+      Hospital{' '}
+      <select value={hospital} aria-label="Fairness by hospital" onChange={(e) => { setHospital(e.target.value); }}>
+        {HOSPITAL_CHOICES.map((h) => <option key={h.id} value={h.id}>{h.label}</option>)}
+      </select>
+    </label>
+  );
   if (error && !f) return <div className="error">Fairness unavailable: {error}</div>;
   if (!f) return <div className="muted">Loading fairness…</div>;
-  if (!f.available || !f.groups) return <div className="muted">{f.reason ?? 'No fairness report yet.'}</div>;
+  if (!f.available || !f.groups) return <div>{picker}<div className="muted">{f.reason ?? 'No fairness report yet.'}</div></div>;
   return (
     <div data-testid="fairness">
+      {picker}
       <div className={f.flagged ? 'error' : 'muted'} data-testid="fairness-flag">
         Largest AUROC gap {(f.max_auroc_gap ?? 0).toFixed(3)} (flag above {f.threshold}){f.flagged ? ' — FLAGGED' : ''} · {f.rows} rows, {f.positives} events
       </div>

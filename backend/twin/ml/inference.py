@@ -76,6 +76,7 @@ class InferenceEngine:
     fairness: FairnessMonitor = field(default_factory=FairnessMonitor)
     latest_drift: list[DriftReading] = field(default_factory=list)
     latest_fairness: dict[str, Any] | None = None
+    latest_fairness_by_hospital: dict[str, dict[str, Any]] = field(default_factory=dict)
     # Predicted remaining hours of the admitted patients, per hospital and unit (length-of-stay model).
     remaining: dict[str, dict[str, list[float]]] = field(default_factory=dict)
     batches: int = 0
@@ -124,7 +125,7 @@ class InferenceEngine:
         for (hospital, patient), s, features in zip(targets, scored, rows, strict=True):
             per_hospital.setdefault(hospital.id, {})[patient.id] = features
             if round(now) % 30 == 0 and patient.profile is not None:
-                self.fairness.add(ScoredRow(now, patient.id, patient.profile.age, patient.profile.sex == "male", s.score))
+                self.fairness.add(ScoredRow(now, patient.id, patient.profile.age, patient.profile.sex == "male", s.score, hospital.id))
             risk = Risk(
                 score=round(s.score, 4),
                 level=s.level,
@@ -192,7 +193,11 @@ class InferenceEngine:
 
     def check_fairness(self) -> None:
         report = self.fairness.report(self.world.now, self.observer.criticals)
-        self.latest_fairness = {**report, "as_of": self.world.time().isoformat()}
+        as_of = self.world.time().isoformat()
+        self.latest_fairness = {**report, "as_of": as_of}
+        self.latest_fairness_by_hospital = {
+            h: {**self.fairness.report(self.world.now, self.observer.criticals, h), "as_of": as_of} for h in sorted(self.world.hospitals)
+        }
         self.audit(
             "system",
             "fairness_report",

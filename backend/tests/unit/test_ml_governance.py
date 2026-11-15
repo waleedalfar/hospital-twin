@@ -231,3 +231,24 @@ def test_the_fairness_report_and_audit_rows_appear_as_the_simulation_runs(
     drift_rows = ml.drain_drift()
     assert drift_rows and {r.feature for r in drift_rows} == set(FEATURE_NAMES)
     assert ml.drain_drift() == []
+
+
+def test_fairness_can_be_computed_for_one_hospital_only() -> None:
+    rng = np.random.default_rng(4)
+    mon = FairnessMonitor()
+    criticals: list[tuple[float, str, int]] = []
+    for i in range(900):
+        hospital = ("mercy", "desert", "stlukes")[i % 3]
+        bad = rng.random() < 0.25
+        # the model separates outcomes well at Mercy and is random at Desert Valley
+        informative = hospital == "mercy"
+        score = float(np.clip((0.75 if bad else 0.2) + rng.normal(0, 0.1), 0, 1)) if informative else float(rng.random())
+        minute = 100.0 + i
+        mon.add(ScoredRow(minute, f"P{i}", int(rng.integers(18, 90)), bool(i % 2), score, hospital))
+        if bad:
+            criticals.append((minute + 60, f"P{i}", 1))
+    now = 100.0 + 900 + 7 * 60
+    everyone, mercy, desert = mon.report(now, criticals), mon.report(now, criticals, "mercy"), mon.report(now, criticals, "desert")
+    assert everyone["rows"] == 900 and mercy["rows"] == 300 and desert["rows"] == 300
+    assert mercy["groups"]["male"]["auroc"] > 0.9 and desert["groups"]["male"]["auroc"] < 0.7
+    assert mon.report(now, criticals, "nowhere")["rows"] == 0

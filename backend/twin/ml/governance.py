@@ -167,6 +167,7 @@ class ScoredRow:
     age: int
     male: bool
     score: float
+    hospital: str = ""
 
 
 @dataclass
@@ -178,9 +179,14 @@ class FairnessMonitor:
         while self.rows and self.rows[0].minute < row.minute - FAIRNESS_WINDOW_MIN - LABEL_DELAY_MIN:
             self.rows.popleft()
 
-    def report(self, now: float, criticals: list[tuple[float, str, int]]) -> dict[str, Any]:
-        """Fairness on rows scored 6 to 30 sim hours ago, labeled from the critical events since."""
-        window = [r for r in self.rows if now - FAIRNESS_WINDOW_MIN - LABEL_DELAY_MIN <= r.minute <= now - LABEL_DELAY_MIN]
+    def report(self, now: float, criticals: list[tuple[float, str, int]], hospital: str | None = None) -> dict[str, Any]:
+        """Fairness on rows scored 6 to 30 sim hours ago, labeled from the critical events since. With `hospital`,
+        only that hospital's rows count (network-wide otherwise)."""
+        window = [
+            r
+            for r in self.rows
+            if now - FAIRNESS_WINDOW_MIN - LABEL_DELAY_MIN <= r.minute <= now - LABEL_DELAY_MIN and (hospital is None or r.hospital == hospital)
+        ]
         times: dict[str, list[float]] = {}
         for minute, patient_id, _ in criticals:
             times.setdefault(patient_id, []).append(minute)

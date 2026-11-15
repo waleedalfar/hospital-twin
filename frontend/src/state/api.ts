@@ -198,8 +198,8 @@ export class Api {
   drift(): Promise<DriftReport> {
     return this.call('/governance/drift');
   }
-  fairness(): Promise<FairnessReport> {
-    return this.call('/governance/fairness');
+  fairness(hospitalId: string | null = null): Promise<FairnessReport> {
+    return this.call(hospitalId ? `/governance/fairness?hospital=${encodeURIComponent(hospitalId)}` : '/governance/fairness');
   }
   audit(filter: AuditFilter = {}): Promise<AuditEntry[]> {
     const q = new URLSearchParams();

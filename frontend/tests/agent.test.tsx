@@ -209,6 +209,19 @@ describe('governance', () => {
     render(<FairnessTable />);
     await waitFor(() => { expect(screen.getByText('No model is scoring yet')).toBeTruthy(); });
   });
+  it('filters fairness by hospital', async () => {
+    const report = { available: true, reason: null, as_of: 't', rows: 100, positives: 5, flagged: false, max_auroc_gap: 0.01, threshold: 0.05, groups: { male: { n: 50, positives: 2, auroc: 0.9, calibration_gap: 0.01 } } };
+    const f = reply({ '/governance/fairness': report });
+    vi.stubGlobal('fetch', f);
+    render(<FairnessTable />);
+    await waitFor(() => { expect(screen.getByTestId('fairness')).toBeTruthy(); });
+    fireEvent.change(screen.getByLabelText('Fairness by hospital'), { target: { value: 'desert' } });
+    await waitFor(() => {
+      const urls = (f as unknown as ReturnType<typeof vi.fn>).mock.calls.map((c) => String(c[0]));
+      expect(urls.some((u) => u.endsWith('/governance/fairness?hospital=desert'))).toBe(true);
+      expect(urls[0]).toBe('/api/governance/fairness');
+    });
+  });
   it('lists the audit log and filters it', async () => {
     const rows = [
       { time: '2026-11-14T18:00:00Z', actor: 'user', action: 'agent_rec_approved', payload: { id: 'REC-1', result: { ok: 1 } } },
