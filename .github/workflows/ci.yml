@@ -37,7 +37,7 @@ jobs:
       - name: make verify
         run: make verify
 
-      - name: make seed (the full 3,000 patients: the model quality gates are measured on this pool)
+      - name: make seed (the full 3,000 patients, the pool the model quality gates are measured on)
         run: make seed
 
       - name: make train (the federated e2e test needs the saved training rows)
