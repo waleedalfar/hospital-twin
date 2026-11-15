@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from twin.agent.ask import AskService
 from twin.agent.ask_llm import make_ask_llm
 from twin.agent.llm import make_client
+from twin.agent.model_chain import ModelChain
 from twin.agent.service import AgentService
 from twin.api.federated import FederatedService
 from twin.api.health import router as health_router
@@ -76,6 +77,7 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
         attach_models(app, sim)
     runtime = SimRuntime(sim, app.state.pool, Hub(), settings.sim_speed)
     app.state.runtime = runtime
+    gemini_chain = ModelChain.parse(settings.gemini_model)  # one chain: both features learn which models are down
     app.state.federated = FederatedService(runtime.hub, runtime.audit)
     app.state.ask = AskService(
         sim,
@@ -83,6 +85,7 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
         make_ask_llm(
             settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None,
             settings.gemini_model,
+            gemini_chain,
         ),
     )
     if settings.agent_enabled:
@@ -92,6 +95,7 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
             make_client(
                 settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None,
                 settings.gemini_model,
+                gemini_chain,
             ),
             runtime.apply_action,
             runtime.publish_now,

@@ -6,11 +6,15 @@ import logging
 from collections.abc import Awaitable, Callable
 from typing import Any, Protocol
 
+from google.genai.errors import APIError
+
 from twin.agent.grounding import AskOutput
+from twin.agent.model_chain import ModelChain
 from twin.agent.tools import TOOL_SPECS
 
 logger = logging.getLogger(__name__)
-TIMEOUT_S = 20.0
+TIMEOUT_S = 12.0  # per model; the chain tries at most MAX_ASK_TRIES of them
+MAX_ASK_TRIES = 3
 MAX_TURNS = 5
 
 SYSTEM = (
@@ -43,16 +47,19 @@ def parse_answer(text: str) -> AskOutput:
 
 
 class GeminiAsk:
-    def __init__(self, api_key: str, model: str) -> None:
+    def __init__(self, api_key: str, chain: ModelChain) -> None:
         from google import genai
 
         self._client = genai.Client(api_key=api_key)
-        self._model = model
+        self.chain = chain
 
     async def ask(self, question: str, hospital_id: str, call: ToolCall, errors: list[str] | None = None) -> AskOutput:
-        return await asyncio.wait_for(self._run(question, hospital_id, call, errors), timeout=TIMEOUT_S)
+        async def one(model: str) -> AskOutput:
+            return await asyncio.wait_for(self._run(model, question, hospital_id, call, errors), timeout=TIMEOUT_S)
 
-    async def _run(self, question: str, hospital_id: str, call: ToolCall, errors: list[str] | None) -> AskOutput:
+        return await self.chain.run(one, (APIError, TimeoutError, OSError, AskError), max_tries=MAX_ASK_TRIES)
+
+    async def _run(self, model: str, question: str, hospital_id: str, call: ToolCall, errors: list[str] | None) -> AskOutput:
         from google.genai import types
 
         config = types.GenerateContentConfig(
@@ -66,7 +73,7 @@ class GeminiAsk:
             prompt += "\nYour previous answer was rejected for these reasons; fix them:\n- " + "\n- ".join(errors)
         contents: list[Any] = [types.Content(role="user", parts=[types.Part(text=prompt)])]
         for _ in range(MAX_TURNS):
-            response = await self._client.aio.models.generate_content(model=self._model, contents=contents, config=config)
+            response = await self._client.aio.models.generate_content(model=model, contents=contents, config=config)
             calls = response.function_calls or []
             if not calls:
                 if not response.text:
@@ -82,7 +89,8 @@ class GeminiAsk:
         raise AskError("Gemini kept calling tools without answering")
 
 
-def make_ask_llm(api_key: str | None, model: str | None) -> AskLLM | None:
-    if not api_key or not model:
+def make_ask_llm(api_key: str | None, models: str | None, chain: ModelChain | None = None) -> AskLLM | None:
+    chain = chain or ModelChain.parse(models)
+    if not api_key or not chain.models:
         return None
-    return GeminiAsk(api_key, model)
+    return GeminiAsk(api_key, chain)

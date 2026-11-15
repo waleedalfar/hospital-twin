@@ -7,6 +7,9 @@ import json
 import logging
 from typing import Protocol
 
+from google.genai.errors import APIError
+
+from twin.agent.model_chain import ModelChain
 from twin.agent.schema import AgentOutput
 from twin.agent.summary import Summary, flat_metrics
 
@@ -40,32 +43,37 @@ def build_prompt(s: Summary, errors: list[str] | None = None) -> str:
 
 
 class GeminiClient:
-    def __init__(self, api_key: str, model: str) -> None:
+    def __init__(self, api_key: str, chain: ModelChain) -> None:
         from google import genai
 
         self._client = genai.Client(api_key=api_key)
-        self._model = model
+        self.chain = chain
 
     async def generate(self, prompt: str) -> str:
         from google.genai import types
 
-        response = await asyncio.wait_for(
-            self._client.aio.models.generate_content(
-                model=self._model,
-                contents=prompt,
-                config=types.GenerateContentConfig(response_mime_type="application/json", response_schema=AgentOutput, temperature=0.2),
-            ),
-            timeout=TIMEOUT_S,
-        )
-        if not response.text:
-            raise ValueError("Gemini returned no text")
-        return response.text
+        async def one(model: str) -> str:
+            response = await asyncio.wait_for(
+                self._client.aio.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(response_mime_type="application/json", response_schema=AgentOutput, temperature=0.2),
+                ),
+                timeout=TIMEOUT_S,
+            )
+            if not response.text:
+                raise ValueError("Gemini returned no text")
+            return response.text
+
+        return await self.chain.run(one, (APIError, TimeoutError, OSError, ValueError))
 
 
-def make_client(api_key: str | None, model: str | None) -> LLMClient | None:
-    """A Gemini client if both the key and the model name are configured, else None (rules engine only)."""
-    if not api_key or not model:
-        if api_key and not model:
+def make_client(api_key: str | None, models: str | None, chain: ModelChain | None = None) -> LLMClient | None:
+    """A Gemini client if the key and at least one model are configured, else None (rules engine only). `models` is
+    one name or a comma-separated list, tried in order."""
+    chain = chain or ModelChain.parse(models)
+    if not api_key or not chain.models:
+        if api_key and not chain.models:
             logger.warning("GEMINI_API_KEY is set but GEMINI_MODEL is not; using the rules engine")
         return None
-    return GeminiClient(api_key, model)
+    return GeminiClient(api_key, chain)

@@ -1,5 +1,9 @@
 # {$DOMAIN} is the public host name; Caddy gets and renews its certificate by itself. For a local test use
 # DOMAIN=localhost (Caddy then uses its own local certificate).
+www.{$DOMAIN} {
+	redir https://{$DOMAIN}{uri} permanent
+}
+
 {$DOMAIN} {
 	encode gzip
 
