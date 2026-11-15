@@ -2,7 +2,7 @@
 times out or fails validation twice. Every number it cites comes from the input summary."""
 
 from twin.agent.schema import AgentOutput, CitedMetric, Recommendation
-from twin.agent.summary import Summary, flat_metrics
+from twin.agent.summary import PatientSummary, Summary, flat_metrics
 
 ER_FULL_HOURS = 2.0
 ER_WAIT_MIN = 30.0
@@ -15,6 +15,11 @@ ICU_RESERVE_OCCUPIED = 5
 
 def cite(metrics: dict[str, float], *names: str) -> list[CitedMetric]:
     return [CitedMetric(name=n, value=metrics[n]) for n in names if n in metrics]
+
+
+def describe_stay(p: PatientSummary) -> str:
+    left = f", ~{p.expected_discharge_h:.1f} h left" if p.expected_discharge_h is not None else ""
+    return f"{p.id} {p.hours_in_hospital:.1f} h in hospital{left}"
 
 
 def recommend(s: Summary) -> AgentOutput:
@@ -61,10 +66,16 @@ def recommend(s: Summary) -> AgentOutput:
                 targets=[p.id for p in picks],
                 params={},
                 rationale=(
-                    f"Wards are at {ward.occupied}/{ward.capacity}. These {len(picks)} low-risk patients have been in hospital longest "
-                    f"({', '.join(f'{p.id} {p.hours_in_hospital:.1f} h' for p in picks)}); discharging them frees beds."
+                    f"Wards are at {ward.occupied}/{ward.capacity}. These {len(picks)} low-risk patients are expected to go home soonest "
+                    f"({', '.join(describe_stay(p) for p in picks)}); discharging them frees beds."
                 ),
-                cited_metrics=cite(m, "WARD.occupied", "WARD.capacity", *[f"patient.{p.id}.hours_in_hospital" for p in picks]),
+                cited_metrics=cite(
+                    m,
+                    "WARD.occupied",
+                    "WARD.capacity",
+                    *[f"patient.{p.id}.hours_in_hospital" for p in picks],
+                    *[f"patient.{p.id}.expected_discharge_h" for p in picks if p.expected_discharge_h is not None],
+                ),
             )
         )
     for st in s.staffing:

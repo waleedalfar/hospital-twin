@@ -36,6 +36,7 @@ class PatientSummary(BaseModel):
     level: str
     top_factors: list[tuple[str, float]]
     hours_in_hospital: float
+    expected_discharge_h: float | None = None
 
 
 class StaffSummary(BaseModel):
@@ -105,6 +106,8 @@ def flat_metrics(s: Summary) -> dict[str, float]:
     for p in [*s.high_risk, *s.expedite_candidates]:
         out[f"patient.{p.id}.score"] = round(p.score, 2)
         out[f"patient.{p.id}.hours_in_hospital"] = r1(p.hours_in_hospital)
+        if p.expected_discharge_h is not None:
+            out[f"patient.{p.id}.expected_discharge_h"] = r1(p.expected_discharge_h)
     return out
 
 
@@ -119,6 +122,7 @@ def _patient(world: World, hospital: HospitalState, p: Patient) -> PatientSummar
         level=risk.level if risk else "low",
         top_factors=list(risk.top_factors) if risk else [],
         hours_in_hospital=max(0.0, (world.now - p.arrived_at) / 60.0),
+        expected_discharge_h=p.expected_discharge_h,
     )
 
 
@@ -143,7 +147,8 @@ def build_summary(world: World, ml: InferenceEngine | None, hospital_id: str, fo
     )
     candidates = sorted(
         (p for p in scored if p.phase == "inpatient" and p.unit in ("WARD", "REC") and p.risk and p.risk.level == "low"),
-        key=lambda p: p.arrived_at,
+        # Closest to going home first, by the length-of-stay model; without predictions, longest in hospital first.
+        key=lambda p: (p.expected_discharge_h if p.expected_discharge_h is not None else float("inf"), p.arrived_at),
     )
     nurses = {u: sum(1 for s in hospital.staff() if s.kind == "nurse" and s.unit == u and s.on_duty) for u in STAFF_UNITS}
     staffing = [

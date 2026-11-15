@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 from twin.common.ws import BedEvent
-from twin.ml.features import FEATURE_NAMES
+from twin.ml.features import COMPLAINT_CODES, FEATURE_NAMES
 from twin.ml.observe import Observer
 from twin.sim.engine import Simulation
 from twin.sim.entities import PatientProfile
@@ -30,6 +30,8 @@ DEFAULT_DAYS = 30
 FLU_SURGES = 3
 BED_UNITS = ("ER", "WARD", "ICU", "REC")
 META = ("minute", "hospital", "patient_id", "encounter_id", "label")
+# Public chart fields the length-of-stay model uses besides the deterioration features.
+EXTRA = ("complaint", "exit_minute")
 
 
 @dataclass
@@ -121,10 +123,16 @@ def build_dataset(
                             "hospital": hospital.id,
                             "patient_id": patient.id,
                             "encounter_id": chart.encounter_id,
+                            "complaint": COMPLAINT_CODES[patient.complaint],
+                            "hours_in_unit": observer.hours_in_unit(patient.id, now),
                             **features,
                         }
                     )
-    rows = pd.DataFrame.from_records(records, columns=[*META[:4], *FEATURE_NAMES])
+    rows = pd.DataFrame.from_records(records, columns=[*META[:4], "complaint", "hours_in_unit", *FEATURE_NAMES])
+    exits = observer.exits
+    rows["exit_minute"] = [
+        exits[(p, e)] - start if (p, e) in exits else np.nan for p, e in zip(rows["patient_id"], rows["encounter_id"], strict=True)
+    ]
     rows["label"] = _label(rows, [(m - start, p, e) for m, p, e in observer.criticals])
     arrivals_total = sum(1 for m, _, _ in observer.arrivals if m >= start)
     arrivals = _hourly_arrivals(observer.arrivals, start, total, hospital_ids, [(h, a - start, b - start) for h, a, b in surge_spans])

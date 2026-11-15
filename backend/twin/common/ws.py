@@ -82,6 +82,8 @@ class Entity(Msg):
     task: str | None = None
     unit: str | None = None
     risk: Risk | None = None
+    # Predicted hours until discharge (length-of-stay model), for admitted patients.
+    expected_discharge_h: float | None = None
     vitals: Vitals | None = None
 
 
@@ -168,6 +170,15 @@ class RiskEvent(Ev):
     score: float
     level: RiskLevel
     top_factors: list[tuple[str, float]]
+    model_version: str
+
+
+class LosEvent(Ev):
+    """The length-of-stay model's latest prediction of the hours until a patient goes home."""
+
+    kind: Literal["los"] = "los"
+    patient_id: str
+    hours: float
     model_version: str
 
 
@@ -323,6 +334,7 @@ SimEvent = Annotated[
     | DespawnEvent
     | VitalsEvent
     | RiskEvent
+    | LosEvent
     | BedEvent
     | ArrivalEvent
     | TriageEvent
@@ -414,4 +426,16 @@ class ErrorMessage(Msg):
     message: str
 
 
-ServerMessage = Annotated[SnapshotMessage | EventsMessage | NetworkMessage | ErrorMessage, Field(discriminator="type")]
+class FederatedMessage(Msg):
+    """Progress of a federated training run, sent to everyone connected to the network stream."""
+
+    v: Literal[1] = SCHEMA_VERSION
+    type: Literal["federated"] = "federated"
+    status: Literal["idle", "running", "done", "failed"]
+    round: int
+    rounds: int
+    val_auroc: list[float]
+    error: str | None = None
+
+
+ServerMessage = Annotated[SnapshotMessage | EventsMessage | NetworkMessage | ErrorMessage | FederatedMessage, Field(discriminator="type")]

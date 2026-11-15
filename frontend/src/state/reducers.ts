@@ -57,6 +57,11 @@ function applyEvent(state: HospitalData, event: SimEvent, nextKey: () => number,
       const risk = { score: event.score, level: event.level, top_factors: event.top_factors, model_version: event.model_version };
       return { ...state, entities: { ...state.entities, [e.id]: { ...e, risk } } };
     }
+    case 'los': {
+      const e = state.entities[event.patient_id];
+      if (!e) return state;
+      return { ...state, entities: { ...state.entities, [e.id]: { ...e, expected_discharge_h: event.hours } } };
+    }
     case 'bed':
       return { ...state, beds: { ...state.beds, [event.bed_id]: { id: event.bed_id, patient_id: event.patient_id, state: event.state } } };
     case 'ambulance': {

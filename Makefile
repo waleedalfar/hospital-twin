@@ -83,8 +83,8 @@ seed: db ## Generate Synthea patients and load them (reuses existing output; SEE
 train: db ## Build the training set from the sim and train/evaluate the models (about 1 minute)
 	$(UV) python -m twin.ml.cli
 
-fed-train: ## Federated training from the command line (built in CP7)
-	@echo "make fed-train: federated training is built in CP7 (PROMPT.md §7.6). Nothing was run." >&2; exit 1
+fed-train: ## Federated training across the three hospitals (needs `make train` first)
+	$(UV) python -m twin.ml.fed_cli
 
 verify-live: db ## One real Gemini call on a live sim summary, checked for grounding (needs GEMINI_API_KEY and GEMINI_MODEL)
 	$(UV) python -m twin.agent.live_check

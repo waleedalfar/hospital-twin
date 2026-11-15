@@ -21,12 +21,11 @@ from twin.ml.features import FEATURE_NAMES
 from twin.ml.governance import make_baselines, save_baseline
 from twin.ml.metrics import AGE_BANDS, Floats, Ints, auroc_or_none, calibration_gap, evaluate
 from twin.ml.model import Calibrator, DeteriorationModel
+from twin.ml.split import Split, split_by_time
 
 logger = logging.getLogger(__name__)
 
 MODEL_VERSION = "lgbm-v1"
-TRAIN_FRAC = 0.6
-VAL_FRAC = 0.2
 SEED = 7
 PARAMS: dict[str, Any] = {
     "objective": "binary",
@@ -45,23 +44,6 @@ PARAMS: dict[str, Any] = {
 }
 MAX_ROUNDS = 600
 EARLY_STOP = 40
-
-
-@dataclass
-class Split:
-    train: pd.DataFrame
-    val: pd.DataFrame
-    test: pd.DataFrame
-
-
-def split_by_time(rows: pd.DataFrame, train_frac: float = TRAIN_FRAC, val_frac: float = VAL_FRAC) -> Split:
-    """Split rows by sim time so that every validation row is later than every training row, and so on."""
-    ordered = rows.sort_values("minute", kind="stable")
-    low, high = float(ordered["minute"].min()), float(ordered["minute"].max())
-    cut1 = low + (high - low) * train_frac
-    cut2 = low + (high - low) * (train_frac + val_frac)
-    minute = ordered["minute"]
-    return Split(ordered[minute <= cut1], ordered[(minute > cut1) & (minute <= cut2)], ordered[minute > cut2])
 
 
 def _labels(frame: pd.DataFrame) -> Ints:

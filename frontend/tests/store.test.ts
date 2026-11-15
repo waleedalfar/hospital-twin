@@ -157,3 +157,13 @@ describe('agent recommendations in the store', () => {
     await vi.waitFor(() => { expect(store.getState().problem).toContain("Could not load the agent's recommendations"); });
   });
 });
+
+describe('federated progress', () => {
+  it('keeps the latest federated message from the network stream', () => {
+    const { store, clients } = harness();
+    store.getState().connectNetwork();
+    const msg = { v: 1 as const, type: 'federated' as const, status: 'running' as const, round: 3, rounds: 25, val_auroc: [0.8], error: null };
+    clients[0]?.opts.onMessage(msg);
+    expect(store.getState().federated).toEqual(msg);
+  });
+});

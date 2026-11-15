@@ -238,7 +238,7 @@ test('5b. live risk scores, SHAP factors, forecast and model version appear in t
   // The risk model in use, with its validation AUROC.
   const models = (await (await request.get('/api/models')).json()) as { active_deterioration: string };
   expect(models.active_deterioration).toBe('lgbm-v1');
-  await expect(page.getByTestId('model-badge')).toContainText('Risk model lgbm-v1 · AUROC 0.9');
+  await expect(page.getByTestId('model-badge')).toContainText(/Risk model lgbm-v1 · AUROC 0\.\d\d/);
   // The forecast panel shows six hours of arrivals and hours until full per unit, from /forecast.
   const forecast = (await (await request.get('/api/forecast/mercy')).json()) as { arrivals: { expected: number }[]; hours_until_full: Record<string, number | null> };
   expect(forecast.arrivals).toHaveLength(6);

@@ -717,6 +717,18 @@
     "appearance": {
      "$ref": "#/$defs/Appearance"
     },
+    "expected_discharge_h": {
+     "anyOf": [
+      {
+       "type": "number"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Expected Discharge H"
+    },
     "id": {
      "title": "Id",
      "type": "string"
@@ -896,6 +908,7 @@
         "drift_alert": "#/$defs/DriftAlertEvent",
         "er_admit": "#/$defs/ErAdmitEvent",
         "hospital_status": "#/$defs/HospitalStatusEvent",
+        "los": "#/$defs/LosEvent",
         "move": "#/$defs/MoveEvent",
         "risk": "#/$defs/RiskEvent",
         "scenario": "#/$defs/ScenarioEvent",
@@ -923,6 +936,9 @@
        },
        {
         "$ref": "#/$defs/RiskEvent"
+       },
+       {
+        "$ref": "#/$defs/LosEvent"
        },
        {
         "$ref": "#/$defs/BedEvent"
@@ -1022,6 +1038,69 @@
     "kpis"
    ],
    "title": "EventsMessage",
+   "type": "object"
+  },
+  "FederatedMessage": {
+   "additionalProperties": false,
+   "description": "Progress of a federated training run, sent to everyone connected to the network stream.",
+   "properties": {
+    "error": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Error"
+    },
+    "round": {
+     "title": "Round",
+     "type": "integer"
+    },
+    "rounds": {
+     "title": "Rounds",
+     "type": "integer"
+    },
+    "status": {
+     "enum": [
+      "idle",
+      "running",
+      "done",
+      "failed"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "type": {
+     "const": "federated",
+     "default": "federated",
+     "title": "Type",
+     "type": "string"
+    },
+    "v": {
+     "const": 1,
+     "default": 1,
+     "title": "V",
+     "type": "integer"
+    },
+    "val_auroc": {
+     "items": {
+      "type": "number"
+     },
+     "title": "Val Auroc",
+     "type": "array"
+    }
+   },
+   "required": [
+    "status",
+    "round",
+    "rounds",
+    "val_auroc"
+   ],
+   "title": "FederatedMessage",
    "type": "object"
   },
   "HospitalRef": {
@@ -1204,6 +1283,43 @@
     "room"
    ],
    "title": "Location",
+   "type": "object"
+  },
+  "LosEvent": {
+   "additionalProperties": false,
+   "description": "The length-of-stay model's latest prediction of the hours until a patient goes home.",
+   "properties": {
+    "hours": {
+     "title": "Hours",
+     "type": "number"
+    },
+    "kind": {
+     "const": "los",
+     "default": "los",
+     "title": "Kind",
+     "type": "string"
+    },
+    "model_version": {
+     "title": "Model Version",
+     "type": "string"
+    },
+    "patient_id": {
+     "title": "Patient Id",
+     "type": "string"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "patient_id",
+    "hours",
+    "model_version"
+   ],
+   "title": "LosEvent",
    "type": "object"
   },
   "Move": {
@@ -2160,6 +2276,7 @@
   "mapping": {
    "error": "#/$defs/ErrorMessage",
    "events": "#/$defs/EventsMessage",
+   "federated": "#/$defs/FederatedMessage",
    "network": "#/$defs/NetworkMessage",
    "snapshot": "#/$defs/SnapshotMessage"
   },
@@ -2177,6 +2294,9 @@
   },
   {
    "$ref": "#/$defs/ErrorMessage"
+  },
+  {
+   "$ref": "#/$defs/FederatedMessage"
   }
  ],
  "title": "ServerMessage"

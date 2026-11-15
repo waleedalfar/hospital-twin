@@ -62,6 +62,8 @@ describe('reducers', () => {
       events([
         { kind: 'vitals', time: T, patient_id: patient.id, vitals },
         { kind: 'risk', time: T, patient_id: patient.id, score: 0.9, level: 'high', top_factors: [['SpO2', 0.2]], model_version: 'v1' },
+        { kind: 'los', time: T, patient_id: patient.id, hours: 14.2, model_version: 'los-v1' },
+        { kind: 'los', time: T, patient_id: 'P-404', hours: 3, model_version: 'los-v1' },
         { kind: 'bed', time: T, bed_id: 'ICU-1', patient_id: null, state: 'cleaning' },
         { kind: 'hospital_status', time: T, status: 'diverting', until: null, reason: 'x' },
         { kind: 'vitals', time: T, patient_id: 'P-404', vitals },
@@ -70,6 +72,7 @@ describe('reducers', () => {
     );
     expect(out.entities[patient.id]?.vitals).toEqual(vitals);
     expect(out.entities[patient.id]?.risk).toMatchObject({ score: 0.9, level: 'high', model_version: 'v1' });
+    expect(out.entities[patient.id]?.expected_discharge_h).toBe(14.2);
     expect(out.beds['ICU-1']).toEqual({ id: 'ICU-1', patient_id: null, state: 'cleaning' });
     expect(out.hospital.status).toBe('diverting');
     expect(out.kpis.census).toBe(1);
@@ -255,6 +258,7 @@ describe('socket client', () => {
 
   it('parses and validates messages', () => {
     expect(parseMessage('{"v":1,"type":"events"}').type).toBe('events');
+    expect(parseMessage('{"v":1,"type":"federated"}').type).toBe('federated');
     expect(() => parseMessage('{"v":1,"type":"weird"}')).toThrow('Unknown message type');
     expect(() => parseMessage(5)).toThrow('not text');
   });

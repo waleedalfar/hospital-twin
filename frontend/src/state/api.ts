@@ -1,5 +1,6 @@
 /** Typed REST client for the backend (`/api/*` in the browser; PROMPT.md §6.2). */
 import type { AgentRecModel, TopFactor } from './types';
+import type { FederatedMessage } from './wsTypes';
 
 export class ApiError extends Error {
   constructor(
@@ -60,6 +61,36 @@ export interface ModelsResponse {
   active_arrivals: string | null;
   error: string | null;
   models: { version: string; kind: string; metrics: Record<string, unknown> }[];
+}
+export interface FederatedMetrics {
+  auroc: number;
+  auprc?: number;
+  brier?: number;
+}
+export interface FederatedComparison {
+  version: string;
+  rounds: number;
+  federated: { test: FederatedMetrics; validation_auroc_by_round: number[] };
+  centralized: { test: FederatedMetrics };
+  local_only: Record<string, { test: FederatedMetrics } | number> & { mean_auroc: number };
+  gates: Record<string, boolean>;
+}
+export interface FederatedStatus {
+  state: FederatedMessage;
+  result: FederatedComparison | null;
+  available: boolean;
+}
+export interface ActiveModel {
+  active_deterioration: string;
+  previous: string;
+}
+export interface AskResponse {
+  answer_text: string;
+  entity_ids: string[];
+  cited_metrics: { name: string; value: number }[];
+  source: 'gemini' | 'fallback';
+  label: string | null;
+  tools: { name: string; args: Record<string, unknown> }[];
 }
 export type RecStatus = 'pending' | 'approved' | 'dismissed' | 'expired';
 export interface ApproveResponse {
@@ -177,6 +208,18 @@ export class Api {
     if (filter.exclude?.length) q.set('exclude', filter.exclude.join(','));
     q.set('limit', String(filter.limit ?? 100));
     return this.call(`/governance/audit?${q.toString()}`);
+  }
+  ask(question: string, hospitalId: string): Promise<AskResponse> {
+    return this.call('/agent/ask', { method: 'POST', body: JSON.stringify({ question, hospital_id: hospitalId }) });
+  }
+  federated(): Promise<FederatedStatus> {
+    return this.call('/federated');
+  }
+  runFederated(): Promise<FederatedMessage> {
+    return this.call('/federated/run', { method: 'POST' });
+  }
+  setActiveModel(version: string): Promise<ActiveModel> {
+    return this.call('/models/active', { method: 'POST', body: JSON.stringify({ version }) });
   }
   sim(): Promise<SimState> {
     return this.call('/sim');

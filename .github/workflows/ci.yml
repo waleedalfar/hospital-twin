@@ -42,6 +42,8 @@ jobs:
         env:
           SYNTHEA_POPULATION: '500'
 
+      - name: make train (the federated e2e test needs the saved training rows)
+        run: make train
       - name: make e2e
         run: make e2e
 

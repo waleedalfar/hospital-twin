@@ -7,13 +7,13 @@ Generated 2026-11-14 by `make train`. All data is simulated; no real patient dat
 **Task.** For every patient who is waiting or admitted, every 30 sim minutes: the probability of a
 critical event (escalation to ICU or rapid response) within the next 6 sim hours.
 
-**Data.** The simulation run headless with seed 20261114 for 30 sim days across three hospitals: 120,231 patient-snapshots,
-2,804 positive. Patients are drawn from Synthea records (Phoenix, Arizona) for age, sex and
+**Data.** The simulation run headless with seed 20261114 for 30 sim days across three hospitals: 79,327 patient-snapshots,
+2,239 positive. Patients are drawn from Synthea records (Phoenix, Arizona) for age, sex and
 comorbidities. Vitals, deterioration and critical events come from the simulator's hidden severity process,
 which the model never sees. Flu surges cover about 1% of the time.
 
 **Split.** By time: first 60% train, next 20% validation (early stopping and calibration), last 20% test.
-Rows: train 84,781, validation 20,414, test 15,036.
+Rows: train 52,501, validation 12,694, test 14,132.
 
 **Model.** LightGBM gradient-boosted trees, isotonic calibration, SHAP TreeExplainer for the top three
 factors of each prediction. Levels: high at 0.70 or more, medium at 0.45 or more, otherwise low.
@@ -61,22 +61,22 @@ NEWS2 (calibrated the same way) is the baseline.
 
 | Split | AUROC model | AUROC NEWS2 | AUPRC model | AUPRC NEWS2 | Brier model | Brier NEWS2 |
 | --- | --- | --- | --- | --- | --- | --- |
-| validation | 0.938 | 0.835 | 0.371 | 0.129 | 0.0192 | 0.0235 |
-| test | 0.909 | 0.773 | 0.351 | 0.095 | 0.0225 | 0.0276 |
+| validation | 0.924 | 0.807 | 0.385 | 0.105 | 0.0241 | 0.0304 |
+| test | 0.920 | 0.798 | 0.425 | 0.122 | 0.0254 | 0.0328 |
 
-Positive rate on the test split: 0.030. The calibration curve is in `models/lgbm-v1/metrics.json`.
+Positive rate on the test split: 0.036. The calibration curve is in `models/lgbm-v1/metrics.json`.
 
 ### Fairness on the test split
 
 | Group | Rows | Positives | AUROC | Calibration gap |
 | --- | --- | --- | --- | --- |
-| age 18-39 | 2920 | 0 | n/a | +0.0108 |
-| age 40-64 | 4221 | 90 | 0.927 | -0.0013 |
-| age 65+ | 7895 | 355 | 0.881 | +0.0012 |
-| male | 7499 | 196 | 0.908 | +0.0063 |
-| female | 7537 | 249 | 0.910 | -0.0016 |
+| age 18-39 | 2745 | 12 | 0.891 | +0.0020 |
+| age 40-64 | 3722 | 72 | 0.904 | -0.0016 |
+| age 65+ | 7665 | 422 | 0.906 | -0.0083 |
+| male | 6634 | 208 | 0.931 | -0.0023 |
+| female | 7498 | 298 | 0.911 | -0.0066 |
 
-Largest AUROC gap between groups: 0.046 (gaps above 0.05 are flagged in the governance panel).
+Largest AUROC gap between groups: 0.040 (gaps above 0.05 are flagged in the governance panel).
 
 ## Arrivals forecast (`arrivals-lgbm-v1`)
 
@@ -85,10 +85,25 @@ last 24 hourly counts, rolling means and an active-scenario flag.
 
 | | MAE (arrivals per hour) |
 | --- | --- |
-| Model | 0.785 |
-| Seasonal naive (same hour yesterday) | 1.036 |
+| Model | 0.788 |
+| Seasonal naive (same hour yesterday) | 1.035 |
 
 The model is 24% more accurate than the baseline on 3,744 validation rows.
+
+## Length-of-stay model (`los-lgbm-v1`)
+
+LightGBM median regression on log remaining hours for every patient in a bed, from the deterioration features,
+the chief complaint, hours in the current unit and the patient's current risk score. Patients whose stay had
+not ended when the run stopped are left out.
+
+| | MAE (hours) |
+| --- | --- |
+| Model | 14.40 |
+| Baseline: median remaining stay by unit and hours-since-admission bucket | 17.55 |
+
+The model is 18% more accurate than the baseline on 11,802 validation rows (the gate needs 10%).
+The capacity projection uses these predictions: expected discharges per hour in a unit are the patients
+predicted to leave within 6 hours, divided by 6.
 
 ## Limits
 

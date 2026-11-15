@@ -9,6 +9,7 @@ import { go } from '../route';
 import { FloorPlan } from './FloorPlan';
 import { GovernanceButton } from '../governance/Governance';
 import { AgentPanel } from './AgentPanel';
+import { AskPanel } from './AskPanel';
 import { Inspector } from './Inspector';
 import { ForecastPanel, ModelBadge } from './MlPanels';
 import { KpiStrip, Legend, LiveFeed, PresetBar } from './Panels';
@@ -52,6 +53,7 @@ function useEngine(canvas: React.RefObject<HTMLCanvasElement | null>, box: React
         eng.setVehicles(s.data.vehicles);
       }
       if (s.selectedId !== prev.selectedId) eng.select(s.selectedId);
+      if (s.highlightIds !== prev.highlightIds) eng.highlight(s.highlightIds);
     });
     const now = useTwin.getState();
     if (now.data) {
@@ -165,6 +167,7 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
               <ForecastPanel hospitalId={hospitalId} />
             </div>
             <div className="hud hud--tr">
+              <AskPanel hospitalId={hospitalId} onFly={() => engine?.focusSelected()} />
               <AgentPanel />
               <Inspector entity={entity} onFly={() => engine?.focusSelected()} />
             </div>

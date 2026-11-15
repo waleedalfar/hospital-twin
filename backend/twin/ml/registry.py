@@ -17,6 +17,7 @@ def list_models(root: Path = MODELS_DIR) -> list[dict[str, Any]]:
         if not metrics_file.is_file():
             continue
         metrics = json.loads(metrics_file.read_text(encoding="utf-8"))
-        kind = "arrivals_forecast" if "seasonal_naive_mae" in json.dumps(metrics.get("validation", {})) else "deterioration"
+        validation = json.dumps(metrics.get("validation", {}))
+        kind = "arrivals_forecast" if "seasonal_naive_mae" in validation else "length_of_stay" if "baseline_mae" in validation else "deterioration"
         out.append({"version": directory.name, "kind": kind, "metrics": metrics})
     return out

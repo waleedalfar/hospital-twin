@@ -36,7 +36,7 @@ export function parseMessage(data: unknown): ServerMessage {
   if (typeof data !== 'string') throw new Error('WebSocket message is not text');
   const msg = JSON.parse(data) as { v?: unknown; type?: unknown };
   if (msg.v !== 1) throw new Error(`Unsupported message version ${String(msg.v)}`);
-  if (msg.type !== 'snapshot' && msg.type !== 'events' && msg.type !== 'network' && msg.type !== 'error') {
+  if (msg.type !== 'snapshot' && msg.type !== 'events' && msg.type !== 'network' && msg.type !== 'federated' && msg.type !== 'error') {
     throw new Error(`Unknown message type ${String(msg.type)}`);
   }
   return msg as ServerMessage;

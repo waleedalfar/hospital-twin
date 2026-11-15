@@ -104,6 +104,7 @@ class Patient(Person):
     reserved_bed: str | None = None
     er_bed_at: float | None = None
     risk: Risk | None = None
+    expected_discharge_h: float | None = None
 
 
 @dataclass

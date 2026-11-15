@@ -26,10 +26,11 @@ from twin.ml.forecast import (
 from twin.ml.metrics import auroc_or_none, calibration_gap, evaluate
 from twin.ml.model import HIGH, MEDIUM, Calibrator, DeteriorationModel, level_of, top_factors
 from twin.ml.registry import list_models
-from twin.ml.train import MODEL_VERSION, TrainResult, fairness, save_run, split_by_time, train_deterioration
+from twin.ml.split import split_by_time
+from twin.ml.train import MODEL_VERSION, TrainResult, fairness, save_run, train_deterioration
 
 SEED = 5
-DAYS = 14
+DAYS = 18
 
 
 @pytest.fixture(scope="module")
@@ -47,7 +48,21 @@ def trained(dataset: Dataset) -> TrainResult:
 
 def test_dataset_has_the_feature_schema_and_labels(dataset: Dataset) -> None:
     rows = dataset.rows
-    assert list(rows.columns) == ["minute", "hospital", "patient_id", "encounter_id", *FEATURE_NAMES, "label"]
+    assert list(rows.columns) == [
+        "minute",
+        "hospital",
+        "patient_id",
+        "encounter_id",
+        "complaint",
+        "hours_in_unit",
+        *FEATURE_NAMES,
+        "exit_minute",
+        "label",
+    ]
+    # the length-of-stay columns: when the patient left (known only for finished stays) and public chart fields
+    assert rows["exit_minute"].notna().any() and rows["exit_minute"].isna().any()
+    assert (rows["exit_minute"].dropna() > rows.loc[rows["exit_minute"].notna(), "minute"]).all()
+    assert set(rows["complaint"]) <= set(range(7)) and (rows["hours_in_unit"] >= 0).all()
     assert len(rows) > 5000
     assert 0.005 < rows["label"].mean() < 0.15
     assert set(rows["hospital"]) == {"mercy", "stlukes", "desert"}

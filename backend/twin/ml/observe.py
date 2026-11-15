@@ -8,7 +8,7 @@ physiology, so a model trained or run through it cannot use the latent severity 
 from collections import deque
 from dataclasses import dataclass, field
 
-from twin.common.ws import ArrivalEvent, CriticalEvent, DespawnEvent, SimEvent, VitalsEvent
+from twin.common.ws import AdmitEvent, ArrivalEvent, CriticalEvent, DespawnEvent, ErAdmitEvent, SimEvent, VitalsEvent
 from twin.ml.features import Reading, Static, build_features
 from twin.sim.entities import Patient
 from twin.sim.hospital import HospitalState
@@ -30,6 +30,7 @@ class Chart:
 
     readings: deque[Reading] = field(default_factory=lambda: deque(maxlen=MAX_READINGS))
     encounter_id: int = 0
+    unit_since: float = 0.0  # when the patient entered the unit they are in now
 
 
 class Observer:
@@ -38,6 +39,7 @@ class Observer:
         self.charts: dict[str, Chart] = {}
         self.criticals: list[tuple[float, str, int]] = []
         self.arrivals: list[tuple[float, str, str]] = []  # (minute, hospital, mode)
+        self.exits: dict[tuple[str, int], float] = {}  # (patient, encounter) -> minute they left the hospital
 
     def feed(self, emitted: list[Emitted]) -> None:
         """Take in one tick's events."""
@@ -51,8 +53,12 @@ class Observer:
         if isinstance(event, ArrivalEvent):
             chart = self.charts.get(event.patient_id)
             if chart is None or chart.encounter_id != event.encounter_id:
-                self.charts[event.patient_id] = Chart(encounter_id=event.encounter_id)
+                self.charts[event.patient_id] = Chart(encounter_id=event.encounter_id, unit_since=self._minute(event))
             self.arrivals.append((self._minute(event), hospital_id or "", event.mode))
+        elif isinstance(event, AdmitEvent | ErAdmitEvent):
+            admitted = self.charts.get(event.patient_id)
+            if admitted is not None:
+                admitted.unit_since = self._minute(event)
         elif isinstance(event, VitalsEvent):
             chart = self.charts.setdefault(event.patient_id, Chart())
             v = event.vitals
@@ -61,7 +67,9 @@ class Observer:
             chart = self.charts.get(event.patient_id)
             self.criticals.append((self._minute(event), event.patient_id, chart.encounter_id if chart else 0))
         elif isinstance(event, DespawnEvent) and event.reason in ("discharged", "left"):
-            self.charts.pop(event.entity_id, None)
+            chart = self.charts.pop(event.entity_id, None)
+            if chart is not None:
+                self.exits[(event.entity_id, chart.encounter_id)] = self._minute(event)
 
     def unit_of(self, hospital: HospitalState, p: Patient) -> str:
         if p.phase in UNIT_OF_PHASE:
@@ -96,3 +104,7 @@ class Observer:
                 if p.phase not in ("discharge", "gone"):
                     out.append((hospital, p))
         return out
+
+    def hours_in_unit(self, patient_id: str, now: float) -> float:
+        chart = self.charts.get(patient_id)
+        return 0.0 if chart is None else max(0.0, (now - chart.unit_since) / 60.0)

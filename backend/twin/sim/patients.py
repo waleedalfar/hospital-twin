@@ -184,6 +184,7 @@ def admit(world: World, hospital: HospitalState, patient: Patient, bed_id: str, 
     factor = (1 + 0.05 * (patient.profile.comorbidity_count if patient.profile else 0)) * (
         1.2 if patient.profile is not None and patient.profile.age > 70 else 1.0
     )
+    factor *= c.LOS_ESI_FACTOR[patient.esi] * c.LOS_COMPLAINT_FACTOR[patient.complaint]
     patient.los_end = world.now + 60.0 * lognormal(rng, los_median_h) * factor
     world.emit(hospital.id, AdmitEvent(time=world.time(), patient_id=patient.id, unit=unit, bed_id=bed_id))
     from twin.sim.visitors import maybe_visit

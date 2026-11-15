@@ -14,7 +14,30 @@ def _row(name: str, m: dict[str, Any], b: dict[str, Any]) -> str:
     return f"| {name} | {m['auroc']:.3f} | {b['auroc']:.3f} | {m['auprc']:.3f} | {b['auprc']:.3f} | {m['brier']:.4f} | {b['brier']:.4f} |"
 
 
-def model_card(det: dict[str, Any], arrivals: dict[str, Any]) -> str:
+def _los_section(los: dict[str, Any] | None) -> list[str]:
+    if los is None:
+        return []
+    v = los["validation"]
+    return [
+        "## Length-of-stay model (`" + los["version"] + "`)",
+        "",
+        "LightGBM median regression on log remaining hours for every patient in a bed, from the deterioration features,",
+        "the chief complaint, hours in the current unit and the patient's current risk score. Patients whose stay had",
+        "not ended when the run stopped are left out.",
+        "",
+        "| | MAE (hours) |",
+        "| --- | --- |",
+        f"| Model | {v['mae']:.2f} |",
+        f"| Baseline: median remaining stay by unit and hours-since-admission bucket | {v['baseline_mae']:.2f} |",
+        "",
+        f"The model is {v['improvement'] * 100:.0f}% more accurate than the baseline on {int(v['rows']):,} validation rows (the gate needs 10%).",
+        "The capacity projection uses these predictions: expected discharges per hour in a unit are the patients",
+        "predicted to leave within 6 hours, divided by 6.",
+        "",
+    ]
+
+
+def model_card(det: dict[str, Any], arrivals: dict[str, Any], los: dict[str, Any] | None = None) -> str:
     """Markdown model card for the deterioration model and the arrivals forecast."""
     data = det["data"]
     val, test = det["validation"], det["test"]
@@ -85,6 +108,7 @@ def model_card(det: dict[str, Any], arrivals: dict[str, Any]) -> str:
         "",
         f"The model is {fa['improvement'] * 100:.0f}% more accurate than the baseline on {fa['rows']:,} validation rows.",
         "",
+        *_los_section(los),
         "## Limits",
         "",
         "- Everything is learned from a simulator. The labels follow the simulator's own deterioration rules, so the",

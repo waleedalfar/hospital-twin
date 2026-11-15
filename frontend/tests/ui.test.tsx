@@ -188,6 +188,10 @@ describe('inspector', () => {
     expect(screen.getByText('HIGH RISK')).toBeTruthy();
     expect(screen.getByText('Why the model flagged this')).toBeTruthy();
     expect(screen.getByText('SpO2 drop, 2h')).toBeTruthy();
+    expect(screen.queryByTestId('expected-discharge')).toBeNull();
+    cleanup();
+    render(<Inspector entity={{ ...scored, expected_discharge_h: 13.6 }} onFly={vi.fn()} />);
+    expect(screen.getByTestId('expected-discharge').textContent).toBe('Expected discharge in ~14 h');
   });
 
   it('shows record loading errors instead of hiding them', async () => {

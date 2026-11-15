@@ -12,6 +12,7 @@ import { CameraController, look, presetById, type CamState, type CameraMode, typ
 import { countsOf, installDebug, type FrameStats, type TwinDebug, type ViewInfo } from './debug';
 import { EntityLayer } from './entities';
 import { frameDelta } from './frame';
+import { Highlighter } from './highlight';
 import { LabelFactory } from './labels';
 import { labelFor, toneColor } from './labelsLive';
 import { LAYOUT, LayoutIndex, type Layout } from './layout';
@@ -62,6 +63,7 @@ export class Engine {
   private readonly cam: CameraController;
   private readonly picker = new Picker();
   private readonly ring = new THREE.Group();
+  private highlighter: Highlighter | undefined;
   private width: number;
   private height: number;
   private pixel: number;
@@ -136,6 +138,9 @@ export class Engine {
       xray: () => this.xray.on,
     });
     this.vehicleLayer = new VehicleLayer(this.tk, this.scene, this.layout, this.building);
+    const keep = this.highlighter?.highlighted ?? [];
+    this.highlighter = new Highlighter(this.scene);
+    this.highlighter.set(keep);
     this.vehicleLayer.sync(this.vehicles);
     this.buildRing();
     this.applyView(true);
@@ -331,6 +336,11 @@ export class Engine {
 
   // ---- selection -------------------------------------------------------------------------------------
 
+  /** Mark the entities an answer is about with a pulsing ring and an X-ray marker. An empty list clears them. */
+  highlight(ids: readonly string[]): void {
+    this.highlighter?.set(ids);
+  }
+
   select(id: string | null): void {
     this.selected = id;
   }
@@ -455,6 +465,7 @@ export class Engine {
     this.updateDecor(dt);
     this.vehicleLayer.update(this.time);
     this.updateRing();
+    if (this.highlighter && this.highlighter.highlighted.length > 0) this.highlighter.update(this.layer.rendered(), this.time, (l) => this.building.floors[l]?.g.visible ?? true);
     this.cam.update(dt, now);
     this.renderer.render(this.scene, this.cam.camera);
     this.lastFrameMs = performance.now() - t0;
@@ -559,6 +570,7 @@ export class Engine {
         markersVisible: [...this.labels.markers].filter((m) => m.visible).length,
       }),
       selected: () => this.selected,
+      highlighted: () => ({ ids: [...(this.highlighter?.highlighted ?? [])], drawn: this.highlighter?.drawn ?? 0 }),
       faceAudit: () => {
         const results: { id: string; audit: ReturnType<typeof auditFace> }[] = [];
         for (const { id, character } of this.layer.allCharacters()) results.push({ id, audit: auditFace(character.group, character.skin) });

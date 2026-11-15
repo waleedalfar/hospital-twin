@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 import asyncpg
 import httpx
 import pytest
+from fastapi import FastAPI
 from pydantic import SecretStr
 
 from tests.integration.test_sim_db import seed_patients
@@ -16,7 +17,7 @@ from twin.common.config import Settings
 
 
 @asynccontextmanager
-async def app_client(dsn: str, *, ml: bool = True) -> AsyncIterator[tuple[httpx.AsyncClient, SimRuntime, object]]:
+async def app_client(dsn: str, *, ml: bool = True) -> AsyncIterator[tuple[httpx.AsyncClient, SimRuntime, FastAPI]]:
     settings = Settings(
         _env_file=None,
         database_url=SecretStr(dsn),

@@ -5,7 +5,7 @@ import json
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import lightgbm as lgb
 import numpy as np
@@ -50,6 +50,14 @@ class Scored:
     score: float
     level: str
     top_factors: list[tuple[str, float]]
+
+
+class RiskModel(Protocol):
+    """What live inference needs from a deterioration model: LightGBM and the federated MLP both provide it."""
+
+    version: str
+
+    def score(self, frame: pd.DataFrame) -> list[Scored]: ...
 
 
 class DeteriorationModel:

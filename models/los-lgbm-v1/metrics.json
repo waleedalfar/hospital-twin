@@ -1,0 +1,56 @@
+{
+ "version": "los-lgbm-v1",
+ "validation": {
+  "mae": 14.403889185890982,
+  "baseline_mae": 17.547422334647603,
+  "improvement": 0.17914500995110128,
+  "rows": 11802.0
+ },
+ "test": {
+  "mae": 11.148133354616377,
+  "baseline_mae": 12.320510352442009,
+  "improvement": 0.09515652877100655,
+  "rows": 10375.0
+ },
+ "features": [
+  "hr",
+  "spo2",
+  "sbp",
+  "dbp",
+  "temp",
+  "rr",
+  "hr_d1h",
+  "spo2_d1h",
+  "sbp_d1h",
+  "rr_d1h",
+  "temp_d1h",
+  "hr_d2h",
+  "spo2_d2h",
+  "sbp_d2h",
+  "rr_d2h",
+  "temp_d2h",
+  "spo2_min_2h",
+  "spo2_max_2h",
+  "hr_min_2h",
+  "hr_max_2h",
+  "rr_min_2h",
+  "rr_max_2h",
+  "news2",
+  "age",
+  "sex_male",
+  "comorbidities",
+  "unit",
+  "hours_since_admission",
+  "esi",
+  "complaint",
+  "hours_in_unit",
+  "risk"
+ ],
+ "best_iteration": 229,
+ "baseline": "median remaining hours by unit and hours-since-admission bucket",
+ "rows": {
+  "train": 41592,
+  "validation": 11802,
+  "test": 10375
+ }
+}

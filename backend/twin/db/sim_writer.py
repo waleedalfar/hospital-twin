@@ -11,6 +11,7 @@ from twin.common.ws import (
     ArrivalEvent,
     DischargeEvent,
     HospitalStatusEvent,
+    LosEvent,
     RiskEvent,
     StaffEvent,
     SurgeryEvent,
@@ -103,6 +104,8 @@ class SimWriter:
                 v = event.vitals
                 batch.vitals.append((event.time, event.patient_id, hospital_id, v.hr, v.spo2, v.sbp, v.dbp, v.temp, v.rr))
                 continue
+            if isinstance(event, LosEvent):
+                continue  # live predictions: recomputed every 15 sim minutes, not stored
             if isinstance(event, RiskEvent):
                 batch.risk_scores.append(
                     (

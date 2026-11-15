@@ -17,7 +17,7 @@ from twin.sim.layout_model import load_layout
 
 @pytest.fixture(scope="module")
 def models() -> tuple[DeteriorationModel, object]:
-    ds = build_dataset(make_profiles(), 5, days=10, surges=1)
+    ds = build_dataset(make_profiles(), 5, days=14, surges=1)
     det = train_deterioration(ds.rows).model
     arrivals, _ = train_arrivals(ds.arrivals, ds.unit_stats)
     return det, arrivals

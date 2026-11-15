@@ -47,6 +47,7 @@ def entity_model(world: World, person: Person) -> Entity:
         task=person.task,
         unit=person.unit,
         risk=person.risk if isinstance(person, Patient) else None,
+        expected_discharge_h=person.expected_discharge_h if isinstance(person, Patient) else None,
         vitals=vitals,
     )
 

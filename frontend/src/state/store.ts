@@ -10,7 +10,7 @@ import { initialClock, onMessage as clockOnMessage, simNow, type ClockState } fr
 import { applyEvents, fromSnapshot, mergeRecs, recsIn } from './reducers';
 import { WsClient, type ConnectionStatus, type WsOptions } from './socket';
 import type { AgentRecModel, HospitalData, NetworkMessage } from './types';
-import type { ServerMessage } from './wsTypes';
+import type { FederatedMessage, ServerMessage } from './wsTypes';
 
 export interface ClientLike {
   start(): void;
@@ -32,9 +32,13 @@ export interface TwinState {
   recs: AgentRecModel[];
   clock: ClockState;
   network: NetworkMessage | null;
+  /** Progress of the federated training run, pushed over the network stream. */
+  federated: FederatedMessage | null;
   networkConnection: ConnectionStatus;
   networkClock: ClockState;
   selectedId: string | null;
+  /** Entities an answer to a question is about: ringed and marked in the 3D view. */
+  highlightIds: string[];
   /** The last thing that went wrong that the user should see (bad message, rejected request). */
   problem: string | null;
   /** `?freeze=1`: hold sim time for screenshot tests. */
@@ -44,6 +48,7 @@ export interface TwinState {
   connectNetwork: () => void;
   disconnectNetwork: () => void;
   select: (id: string | null) => void;
+  setHighlight: (ids: string[]) => void;
   setProblem: (text: string | null) => void;
   setFreeze: (on: boolean) => void;
   simNowMs: () => number;
@@ -69,15 +74,17 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     recs: [],
     clock: initialClock(),
     network: null,
+    federated: null,
     networkConnection: 'closed',
     networkClock: initialClock(),
     selectedId: null,
+    highlightIds: [],
     problem: null,
     freeze: false,
 
     connectHospital: (id) => {
       hospitalClient?.stop();
-      set({ hospitalId: id, data: null, recs: [], connection: 'connecting', selectedId: null, clock: initialClock() });
+      set({ hospitalId: id, data: null, recs: [], connection: 'connecting', selectedId: null, highlightIds: [], clock: initialClock() });
       hospitalClient = deps.createClient({
         url: () => deps.wsUrl(`/ws?hospital=${encodeURIComponent(id)}`),
         onStatus: (connection) => { set({ connection }); },
@@ -114,7 +121,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     disconnectHospital: () => {
       hospitalClient?.stop();
       hospitalClient = null;
-      set({ hospitalId: null, data: null, recs: [], connection: 'closed', selectedId: null });
+      set({ hospitalId: null, data: null, recs: [], connection: 'closed', selectedId: null, highlightIds: [] });
     },
 
     connectNetwork: () => {
@@ -127,6 +134,8 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
         onMessage: (msg: ServerMessage) => {
           if (msg.type === 'network') {
             set({ network: msg, networkClock: clockOnMessage(msg.sim_time, msg.speed, msg.paused, msg.frozen, deps.now()) });
+          } else if (msg.type === 'federated') {
+            set({ federated: msg });
           }
         },
       });
@@ -140,6 +149,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     },
 
     select: (selectedId) => { set({ selectedId }); },
+    setHighlight: (highlightIds) => { set({ highlightIds }); },
     setProblem: (problem) => { set({ problem }); },
     setFreeze: (freeze) => { set({ freeze }); },
     simNowMs: () => simNow(get().clock, deps.now()),

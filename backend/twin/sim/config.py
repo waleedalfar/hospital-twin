@@ -72,7 +72,10 @@ ER_TREATMENT_MEDIAN_MIN = {1: 150.0, 2: 180.0, 3: 150.0, 4: 90.0, 5: 60.0}
 WARD_LOS_MEDIAN_H = 20.0
 ICU_LOS_MEDIAN_H = 24.0
 STEP_DOWN_LOS_MEDIAN_H = 16.0
-LOS_SIGMA = 0.5
+LOS_SIGMA = 0.3
+# Stays run longer for sicker triage levels and for some chief complaints (multipliers on the median stay).
+LOS_ESI_FACTOR = {1: 1.3, 2: 1.1, 3: 0.9, 4: 0.7, 5: 0.55}
+LOS_COMPLAINT_FACTOR = {"respiratory": 0.95, "cardiac": 1.15, "trauma": 1.25, "gi": 0.7, "neuro": 1.15, "infection": 0.9, "other": 0.75}
 SURGERY_MIN = (60.0, 180.0)
 RECOVERY_MIN = (90.0, 180.0)
 CLEANING_MIN = (30.0, 45.0)

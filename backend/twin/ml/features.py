@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 VITAL_KEYS = ("hr", "spo2", "sbp", "dbp", "temp", "rr")
 UNITS = ("ER", "WARD", "ICU", "REC", "WAITING", "OR")
+COMPLAINT_CODES = {"respiratory": 0, "cardiac": 1, "trauma": 2, "gi": 3, "neuro": 4, "infection": 5, "other": 6}
 HISTORY_MIN = 120.0  # features look back at most two hours
 
 # (feature name, readable name shown in the UI and the model card)

@@ -128,6 +128,11 @@ export function Inspector({ entity, onFly }: { entity: Entity | undefined; onFly
         </>
       )}
       <Sparkline points={hrPoints} label="Heart rate, 6 h (5-minute averages)" />
+      {entity.expected_discharge_h != null && (
+        <div className="muted" data-testid="expected-discharge">
+          Expected discharge in ~{Math.round(entity.expected_discharge_h)} h
+        </div>
+      )}
       <Sparkline points={riskPoints} label="Risk score, 6 h" color="#e5484d" min={0} max={1} />
       <dl className="facts">
         <dt>FHIR</dt>

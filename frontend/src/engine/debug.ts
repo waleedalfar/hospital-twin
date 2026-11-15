@@ -33,6 +33,8 @@ export interface TwinDebug {
   view(): ViewInfo;
   xray(): { on: boolean; wallOpacity: number; floorOpacity: number; markersVisible: number };
   selected(): string | null;
+  /** The entities highlighted by an answer, and how many rings are drawn. */
+  highlighted(): { ids: string[]; drawn: number };
   faceAudit(): { ok: boolean; checked: number; results: { id: string; audit: FaceAudit }[] };
   frameStats(): FrameStats;
   problems(): string[];
@@ -54,6 +56,7 @@ const EMPTY: TwinDebug = {
   view: () => ({ mode: 'iso', view: 'all', exploded: false, night: false, pixelFactor: 2, preset: null, floorsVisible: [], roofVisible: false, floorY: [] }),
   xray: () => ({ on: false, wallOpacity: 1, floorOpacity: 1, markersVisible: 0 }),
   selected: () => null,
+  highlighted: () => ({ ids: [], drawn: 0 }),
   faceAudit: () => ({ ok: true, checked: 0, results: [] }),
   frameStats: () => ({ frames: 0, fps: 0, lastFrameMs: 0, drawCalls: 0, triangles: 0 }),
   problems: () => [],

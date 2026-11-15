@@ -14,8 +14,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from twin.common.ws import AlertEvent, DriftAlertEvent, Risk, RiskEvent
-from twin.ml.features import FEATURE_NAMES
+from twin.common.ws import AlertEvent, DriftAlertEvent, LosEvent, Risk, RiskEvent
+from twin.ml.features import COMPLAINT_CODES, FEATURE_NAMES
 from twin.ml.forecast import BED_UNITS, LAGS, MAX_HOURS_UNTIL_FULL, ArrivalsModel, project_capacity
 from twin.ml.governance import (
     DRIFT_EVERY_MIN,
@@ -26,7 +26,8 @@ from twin.ml.governance import (
     FeatureBaseline,
     ScoredRow,
 )
-from twin.ml.model import DeteriorationModel
+from twin.ml.los import LOS_FEATURES, LOS_UNITS, LosModel, discharge_rates
+from twin.ml.model import RiskModel
 from twin.ml.observe import Observer
 from twin.sim.config import SIM_START
 from twin.sim.scenarios import flu_active
@@ -36,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 SCORE_EVERY_MIN = 5
 FORECAST_EVERY_MIN = 15
+LOS_EVERY_MIN = 15
 SCORING_LEAD_MIN = 6 * 60  # start scoring this long before the visible start, so charts have history
 NOT_FULL = MAX_HOURS_UNTIL_FULL + 75.0  # stored value meaning "will not fill within 24 h"
 
@@ -61,9 +63,10 @@ class AuditRow:
 @dataclass
 class InferenceEngine:
     world: World
-    model: DeteriorationModel
+    model: RiskModel
     arrivals_model: ArrivalsModel | None = None
     baseline: dict[str, dict[str, FeatureBaseline]] | None = None
+    los_model: LosModel | None = None
     observer: Observer = field(init=False)
     levels: dict[str, str] = field(default_factory=dict)
     pending_forecasts: list[ForecastRow] = field(default_factory=list)
@@ -73,6 +76,8 @@ class InferenceEngine:
     fairness: FairnessMonitor = field(default_factory=FairnessMonitor)
     latest_drift: list[DriftReading] = field(default_factory=list)
     latest_fairness: dict[str, Any] | None = None
+    # Predicted remaining hours of the admitted patients, per hospital and unit (length-of-stay model).
+    remaining: dict[str, dict[str, list[float]]] = field(default_factory=dict)
     batches: int = 0
     scored: int = 0
 
@@ -91,6 +96,8 @@ class InferenceEngine:
             return
         if minute % SCORE_EVERY_MIN == 0:
             self.score_all()
+        if self.los_model is not None and minute % LOS_EVERY_MIN == 0:
+            self.predict_stays()
         if self.arrivals_model is not None and minute % FORECAST_EVERY_MIN == 0:
             self.forecast_all()
         if self.drift is not None and minute % DRIFT_EVERY_MIN == 0:
@@ -192,6 +199,41 @@ class InferenceEngine:
             {"rows": report["rows"], "max_auroc_gap": report["max_auroc_gap"], "flagged": report["flagged"]},
         )
 
+    # ---- length of stay ---------------------------------------------------------------------------------
+
+    def predict_stays(self) -> int:
+        """Predict the remaining hours of every patient who has a bed, from public chart data and their risk score."""
+        now = self.world.now
+        rows: list[dict[str, float]] = []
+        targets = []
+        for hospital, patient in self.observer.scorable():
+            if patient.place.bed is None or patient.risk is None:
+                continue
+            features = self.observer.features_for(hospital, patient, now)
+            if features is None or features["unit"] not in LOS_UNITS:
+                continue
+            rows.append(
+                {
+                    **features,
+                    "complaint": float(COMPLAINT_CODES[patient.complaint]),
+                    "hours_in_unit": self.observer.hours_in_unit(patient.id, now),
+                    "risk": patient.risk.score,
+                }
+            )
+            targets.append((hospital, patient, hospital.beds[patient.place.bed].unit))
+        self.remaining = {}
+        if not rows or self.los_model is None:
+            return 0
+        hours = self.los_model.predict(pd.DataFrame(rows, columns=list(LOS_FEATURES)))
+        for (hospital, patient, unit), h in zip(targets, hours, strict=True):
+            patient.expected_discharge_h = round(float(h), 1)
+            self.remaining.setdefault(hospital.id, {}).setdefault(unit, []).append(float(h))
+            self.world.emit(
+                hospital.id,
+                LosEvent(time=self.world.time(), patient_id=patient.id, hours=patient.expected_discharge_h, model_version=self.los_model.version),
+            )
+        return len(targets)
+
     # ---- forecasts ------------------------------------------------------------------------------------
 
     def hourly_arrivals(self, hospital_id: str, hours: int) -> tuple[np.ndarray, int]:
@@ -218,7 +260,8 @@ class InferenceEngine:
             history, last = self.hourly_arrivals(hospital_id, LAGS)
             forecast = self.arrivals_model.forecast(hospital_id, history, last, int(flu_active(self.world, hospital_id)))
             occupancy = {u: sum(1 for b in hospital.beds.values() if b.unit == u and b.state == "occupied") for u in BED_UNITS}
-            hours = project_capacity(forecast, occupancy, layout.capacity, self.arrivals_model.unit_stats)
+            rates = discharge_rates(self.remaining[hospital_id]) if hospital_id in self.remaining else None
+            hours = project_capacity(forecast, occupancy, layout.capacity, self.arrivals_model.unit_stats, rates)
             when, version = self.world.time(), self.arrivals_model.version
             for h, value in enumerate(forecast, start=1):
                 self.pending_forecasts.append(ForecastRow(when, hospital_id, version, h, "arrivals", value))

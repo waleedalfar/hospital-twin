@@ -7,11 +7,15 @@ from datetime import timedelta
 
 from fastapi import FastAPI
 
+from twin.agent.ask import AskService
+from twin.agent.ask_llm import make_ask_llm
 from twin.agent.llm import make_client
 from twin.agent.service import AgentService
+from twin.api.federated import FederatedService
 from twin.api.health import router as health_router
 from twin.api.hub import Hub
 from twin.api.routes_agent import router as agent_router
+from twin.api.routes_federated import router as federated_router
 from twin.api.routes_governance import router as governance_router
 from twin.api.routes_hospitals import router as hospitals_router
 from twin.api.routes_ml import router as ml_router
@@ -25,6 +29,7 @@ from twin.db.pool import create_pool
 from twin.ml.forecast import FORECAST_VERSION, ArrivalsModel
 from twin.ml.governance import load_baseline
 from twin.ml.inference import InferenceEngine
+from twin.ml.los import LOS_VERSION, LosModel
 from twin.ml.model import MODELS_DIR, DeteriorationModel
 from twin.ml.train import MODEL_VERSION
 from twin.sim.engine import Simulation
@@ -41,13 +46,14 @@ def attach_models(app: FastAPI, sim: Simulation) -> None:
     try:
         det = DeteriorationModel.load(MODEL_VERSION)
         arrivals = ArrivalsModel.load(FORECAST_VERSION)
+        los = LosModel.load(LOS_VERSION)
     except (FileNotFoundError, ValueError) as error:
         app.state.ml_error = f"Models not available ({error}). Run `make train`."
         logger.error(app.state.ml_error)
         return
     baseline = load_baseline(MODELS_DIR / det.version)
-    sim.attach_ml(InferenceEngine(sim.world, det, arrivals, baseline))
-    logger.info("Inference attached: %s and %s", det.version, arrivals.version)
+    sim.attach_ml(InferenceEngine(sim.world, det, arrivals, baseline, los))
+    logger.info("Inference attached: %s, %s and %s", det.version, arrivals.version, los.version)
 
 
 async def start_simulation(app: FastAPI, settings: Settings) -> None:
@@ -70,6 +76,15 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
         attach_models(app, sim)
     runtime = SimRuntime(sim, app.state.pool, Hub(), settings.sim_speed)
     app.state.runtime = runtime
+    app.state.federated = FederatedService(runtime.hub, runtime.audit)
+    app.state.ask = AskService(
+        sim,
+        app.state.pool,
+        make_ask_llm(
+            settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None,
+            settings.gemini_model,
+        ),
+    )
     if settings.agent_enabled:
         runtime.agent = AgentService(
             sim,
@@ -105,6 +120,7 @@ def create_app(settings: Settings | None = None, *, simulate: bool = True) -> Fa
             yield
         finally:
             if app.state.runtime is not None:
+                await app.state.federated.stop()
                 await app.state.runtime.stop()
             await app.state.pool.close()
             logger.info("Database pool closed")
@@ -117,6 +133,7 @@ def create_app(settings: Settings | None = None, *, simulate: bool = True) -> Fa
         patients_router,
         sim_router,
         ml_router,
+        federated_router,
         agent_router,
         governance_router,
         ws_router,
