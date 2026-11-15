@@ -74,13 +74,12 @@ async def test_two_bad_answers_fall_back_to_the_rules_engine(migrated_db_url: st
         llm = FakeLLM(fixture(reply), fixture(reply))
         agent.llm = llm
         output, source = await agent.produce(busy_summary(), "test")
-        expected_calls = 1 if reply == "wrong_action.json" else 2  # an unparseable answer is not retried
-        assert source == "rules" and len(llm.prompts) == expected_calls
+        assert source == "rules" and len(llm.prompts) == 2  # an unreadable answer is retried once too
         assert output.recommendations and {r.hospital_id for r in output.recommendations} == {"mercy"}
 
 
-@pytest.mark.parametrize("failure", [fixture("malformed.json"), TimeoutError("slow"), OSError("network down")])
-async def test_gemini_errors_timeouts_and_malformed_json_fall_back_and_are_audited(migrated_db_url: str, failure: str | Exception) -> None:
+@pytest.mark.parametrize("failure", [TimeoutError("slow"), OSError("network down")])
+async def test_gemini_errors_and_timeouts_fall_back_and_are_audited(migrated_db_url: str, failure: str | Exception) -> None:
     await seed_patients(migrated_db_url)
     async with app_client(migrated_db_url) as (_, rt, _app):
         agent = agent_of(rt)
@@ -307,3 +306,24 @@ async def test_a_gemini_api_error_such_as_a_bad_key_falls_back_to_the_rules_engi
         output, source = await agent.produce(busy_summary(), "test")
         assert source == "rules" and output.recommendations
         assert "agent_llm_error" in await audit_actions(migrated_db_url)
+
+
+async def test_malformed_json_is_retried_once_with_the_error_and_then_used(migrated_db_url: str) -> None:
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (_, rt, _app):
+        agent = agent_of(rt)
+        llm = FakeLLM(fixture("malformed.json"), fixture("valid_divert.json"))
+        agent.llm = llm
+        _, source = await agent.produce(busy_summary(), "test")
+        assert source == "gemini" and len(llm.prompts) == 2
+        assert "rejected for these reasons" in llm.prompts[1] and "not valid JSON" in llm.prompts[1]
+
+
+async def test_malformed_json_twice_falls_back_and_is_audited(migrated_db_url: str) -> None:
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (_, rt, _app):
+        agent = agent_of(rt)
+        agent.llm = FakeLLM(fixture("malformed.json"), fixture("malformed.json"))
+        output, source = await agent.produce(busy_summary(), "test")
+        assert source == "rules" and output.recommendations
+        assert "agent_validation_failed" in await audit_actions(migrated_db_url)

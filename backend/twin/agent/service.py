@@ -15,11 +15,10 @@ from datetime import datetime
 from typing import Any
 
 from google.genai.errors import APIError
-from pydantic import ValidationError
 
 from twin.agent import rules
 from twin.agent.llm import LLMClient, build_prompt
-from twin.agent.schema import FALLBACK_LABEL, AgentOutput, Recommendation, Source
+from twin.agent.schema import FALLBACK_LABEL, AgentOutput, Recommendation, Source, parse_agent_output
 from twin.agent.summary import Summary, build_summary
 from twin.agent.validator import apply_params, validate
 from twin.common.ws import AgentRecEvent, AgentRecModel
@@ -133,15 +132,15 @@ class AgentService:
             try:
                 assert self.llm is not None  # noqa: S101 - callers check
                 text = await self.llm.generate(build_prompt(summary, errors or None))
-                output = AgentOutput.model_validate_json(text)
-            except (APIError, TimeoutError, OSError, ValueError, ValidationError, json.JSONDecodeError) as error:
+            except (APIError, TimeoutError, OSError, ValueError) as error:
                 logger.exception("Gemini failed for %s (%s, attempt %d)", summary.hospital_id, reason, attempt)
-                await self.audit(
-                    "agent_llm_error",
-                    {"hospital_id": summary.hospital_id, "attempt": attempt, "error": str(error)[:300]},
-                )
+                await self.audit("agent_llm_error", {"hospital_id": summary.hospital_id, "attempt": attempt, "error": str(error)[:300]})
                 return None
-            errors = validate(output, summary)
+            try:
+                output = parse_agent_output(text)
+                errors = validate(output, summary)
+            except ValueError as error:
+                errors = [str(error)]  # an unreadable reply is retried once with what is wrong with it, like a failed check
             if not errors:
                 return output
             await self.audit(

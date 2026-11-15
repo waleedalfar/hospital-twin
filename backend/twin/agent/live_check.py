@@ -14,7 +14,7 @@ from google.genai.errors import APIError
 from pydantic import ValidationError
 
 from twin.agent.llm import build_prompt, make_client
-from twin.agent.schema import AgentOutput
+from twin.agent.schema import parse_agent_output
 from twin.agent.summary import build_summary
 from twin.agent.validator import validate
 from twin.common.config import get_settings
@@ -45,7 +45,7 @@ async def check() -> int:
     summary = build_summary(sim.world, sim.ml, "mercy")
     try:
         text = await client.generate(build_prompt(summary))
-        output = AgentOutput.model_validate_json(text)
+        output = parse_agent_output(text)
     except (APIError, TimeoutError, OSError, ValueError, ValidationError) as error:
         logger.exception("The live Gemini call failed")
         print(f"verify-live: FAILED, the call or its parsing raised {type(error).__name__}: {error}", file=sys.stderr)

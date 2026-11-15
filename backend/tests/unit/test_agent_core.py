@@ -239,3 +239,16 @@ def test_no_client_without_a_key_and_a_model_name_and_none_is_hardcoded() -> Non
     import twin.agent.llm as llm
 
     assert "gemini-" not in inspect.getsource(llm).replace("GEMINI_", "").lower().replace("gemini client", "")
+
+
+def test_replies_with_code_fences_or_trailing_commas_are_still_read() -> None:
+    from twin.agent.schema import parse_agent_output
+
+    good = fixture("valid_divert.json")
+    assert parse_agent_output(f"```json\n{good}\n```").recommendations[0].action == "divert_ambulances"
+    assert parse_agent_output('{"recommendations": [],}').recommendations == []
+    assert parse_agent_output('{"recommendations": [], "metrics": {}}').recommendations == []  # extra keys are ignored
+    with pytest.raises(ValueError, match="not valid JSON"):
+        parse_agent_output(fixture("malformed.json"))
+    with pytest.raises(ValueError, match="does not match"):
+        parse_agent_output('{"recommendations": [{"action": "launch_missiles"}]}')
