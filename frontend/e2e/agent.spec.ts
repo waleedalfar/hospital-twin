@@ -78,12 +78,28 @@ test('7. flu surge: waiting rises, a drift alert fires, the agent recommends, ap
   }
   await page.screenshot({ path: `${EVIDENCE}/agent-panel.png` });
 
-  // Approve the first one in the UI. The sim changes and the audit log records who did what.
-  const id = (await pending.getAttribute('data-testid'))?.replace('rec-', '') ?? '';
-  const chosen = recs.find((r) => r.id === id) ?? recs[0];
-  expect(chosen).toBeDefined();
-  await pending.getByRole('button', { name: 'Approve' }).click();
-  await expect.poll(async () => ((await (await request.get(`/api/agent/recs?hospital=mercy&status=approved`)).json()) as Rec[]).some((r) => r.id === id), { timeout: 20_000 }).toBe(true);
+  // Approve one in the UI, diversions first. A recommendation can have become impossible by the time it is approved
+  // (for example a patient already went home); the server then refuses with a conflict and it stays pending, so the
+  // next one is tried. The sim changes and the audit log records who did what.
+  const ordered = [...recs].sort((a, b) => Number(b.action === 'divert_ambulances') - Number(a.action === 'divert_ambulances'));
+  let id = '';
+  const refusals: string[] = [];
+  for (const candidate of ordered) {
+    const card = page.getByTestId(`rec-${candidate.id}`);
+    if (!(await card.isVisible())) continue;
+    await card.getByRole('button', { name: 'Approve' }).click();
+    const done = await expect
+      .poll(async () => ((await (await request.get(`/api/agent/recs?hospital=mercy&status=approved`)).json()) as Rec[]).some((r) => r.id === candidate.id), { timeout: 10_000 })
+      .toBe(true)
+      .then(() => true, () => false);
+    if (done) {
+      id = candidate.id;
+      break;
+    }
+    refusals.push(`${candidate.id} (${candidate.action}): ${(await page.getByTestId('problem-banner').textContent().catch(() => null)) ?? 'no message'}`);
+  }
+  expect(id, `no recommendation could be approved: ${refusals.join('; ')}`).not.toBe('');
+  const chosen = recs.find((r) => r.id === id);
   const audit = (await (await request.get('/api/governance/audit?limit=500')).json()) as AuditRow[];
   const approved = audit.find((r) => r.action === 'agent_rec_approved' && r.payload['id'] === id);
   expect(approved?.actor).toBe('user');
