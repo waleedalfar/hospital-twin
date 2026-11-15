@@ -18,7 +18,9 @@ import { LAYOUT, LayoutIndex, type Layout } from './layout';
 import { Toolkit, type CanvasFactory } from './materials';
 import { DEFAULT_PIXEL_FACTOR, MAX_PIXEL_FACTOR, MIN_PIXEL_FACTOR, STYLES, type StyleName } from './palette';
 import { isClick, Picker } from './picking';
+import { VehicleLayer } from './vehicles';
 import { Xray } from './xray';
+import type { VehicleAtHospital } from '../state/types';
 import type { Entity } from '../state/wsTypes';
 
 export interface EngineOptions {
@@ -53,13 +55,15 @@ export class Engine {
   private factory!: CharacterFactory;
   private building!: BuildingView;
   private layer!: EntityLayer;
+  private vehicleLayer!: VehicleLayer;
+  private vehicles: readonly VehicleAtHospital[] = [];
   private xray!: Xray;
   private sun!: THREE.DirectionalLight;
   private readonly cam: CameraController;
   private readonly picker = new Picker();
   private readonly ring = new THREE.Group();
-  private readonly width: number;
-  private readonly height: number;
+  private width: number;
+  private height: number;
   private pixel: number;
   private night: boolean;
   private view: ViewLevel = 'all';
@@ -131,6 +135,8 @@ export class Engine {
       carVisible: () => this.carVisible(),
       xray: () => this.xray.on,
     });
+    this.vehicleLayer = new VehicleLayer(this.tk, this.scene, this.layout, this.building);
+    this.vehicleLayer.sync(this.vehicles);
     this.buildRing();
     this.applyView(true);
     if ('fonts' in document) {
@@ -178,6 +184,24 @@ export class Engine {
     this.entities = entities;
     this.layer.sync(entities, this.simNow());
     this.refreshLabels();
+  }
+
+  /** Vehicles on the hospital's grounds (ambulances in the bay, the helicopter on the roof). */
+  setVehicles(vehicles: readonly VehicleAtHospital[]): void {
+    this.vehicles = vehicles;
+    this.vehicleLayer.sync(vehicles);
+  }
+
+  /** Resize the canvas area (CSS pixels). The render resolution stays 1/pixel-factor of it. */
+  resize(width: number, height: number): void {
+    this.width = Math.max(64, Math.round(width));
+    this.height = Math.max(40, Math.round(height));
+    this.cam.resize(this.width / this.height);
+    this.applyPixel();
+  }
+
+  setFrozen(on: boolean): void {
+    this.frozen = on;
   }
 
   /** The hospital's name on the entrance sign. */
@@ -429,6 +453,7 @@ export class Engine {
     const sim = this.simNow();
     this.layer.update(sim, this.time);
     this.updateDecor(dt);
+    this.vehicleLayer.update(this.time);
     this.updateRing();
     this.cam.update(dt, now);
     this.renderer.render(this.scene, this.cam.camera);
@@ -547,6 +572,8 @@ export class Engine {
         return { frames: this.frames, fps: span > 0 ? (w.length - 1) / span : 0, lastFrameMs: this.lastFrameMs, drawCalls: info.calls, triangles: info.triangles };
       },
       problems: () => [...this.layer.problems],
+      vehicles: () => this.vehicleLayer.drawn(),
+      screenPoint: (id) => this.screenPoint(id),
     };
   }
 }

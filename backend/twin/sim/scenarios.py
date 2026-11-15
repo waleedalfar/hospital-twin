@@ -6,6 +6,7 @@ from typing import Literal
 from twin.common.ws import ScenarioEvent, ScenarioInfo, ScenarioName
 from twin.sim import config as c
 from twin.sim.entities import Staff
+from twin.sim.vehicles import snap_to_roads
 from twin.sim.world import SimGen, World
 
 ScenarioStatus = Literal["started", "stopped", "ended"]
@@ -108,7 +109,7 @@ def start(
     elif name == "hospital_offline" and hospital_id is not None:
         set_hospital_status(world, world.hospitals[hospital_id], "offline", None, f"scenario {scenario.id}")
     elif name == "mass_casualty" and lat is not None and lon is not None:
-        world.env.process(mass_casualty(world, scenario, (lat, lon)))
+        world.env.process(mass_casualty(world, scenario, snap_to_roads(world, lat, lon)))
     if ends is not None:
         world.env.process(end_later(world, scenario))
     return scenario

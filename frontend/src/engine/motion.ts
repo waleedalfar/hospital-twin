@@ -76,3 +76,26 @@ export function parseTimes(times: readonly string[]): number[] {
     return ms;
   });
 }
+
+export interface RestingPlace {
+  x: number;
+  z: number;
+  level: number;
+  yaw: number;
+  kind: 'bed' | 'seat' | 'spot' | 'table';
+}
+
+/** Where an entity at rest is, from its location: its bed, seat or work spot. Null if the layout has no such place. */
+export function restingPlace(idx: LayoutIndex, loc: { bed?: string | null; spot?: string | null }): RestingPlace | null {
+  if (loc.bed) {
+    const b = idx.beds.get(loc.bed);
+    if (b) return { x: b.x, z: b.z, level: b.floor, yaw: b.rotation, kind: 'bed' };
+  }
+  if (loc.spot) {
+    const seat = idx.seats.get(loc.spot);
+    if (seat) return { x: seat.x, z: seat.z, level: seat.floor, yaw: seat.rotation, kind: 'seat' };
+    const s = idx.spots.get(loc.spot);
+    if (s) return { x: s.x, z: s.z, level: s.floor, yaw: s.rotation, kind: s.kind === 'table' ? 'table' : 'spot' };
+  }
+  return null;
+}

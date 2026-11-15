@@ -233,3 +233,21 @@ def test_ambulance_patients_are_wheeled_in_by_an_emt() -> None:
 def test_unused_profile_type() -> None:
     assert PatientProfile("P-1", 1, "male", 0, ()).id == "P-1"
     assert timedelta(minutes=1).total_seconds() == 60
+
+
+def test_scenes_and_routes_stay_on_the_street_grid() -> None:
+    """Ambulances drive east-west first, then north-south, along streets through the hospitals."""
+    from twin.sim.vehicles import road_lines, scene_crossings, snap_to_roads
+
+    sim = make_sim(8, 24)
+    world = sim.world
+    lats, lons = road_lines(world)
+    assert len(lats) == 3 and len(lons) == 3
+    assert len(scene_crossings(world)) == 6  # 9 crossings, 3 are hospitals
+    assert snap_to_roads(world, 33.46, -112.08) == (lats[1], lons[1])
+    for _ in range(2 * 24 * 60):
+        sim.tick()
+        for v in world.vehicles.values():
+            if v.kind == "ambulance" and v.route:
+                for lat, lon, _t in v.route:
+                    assert lat in lats and lon in lons

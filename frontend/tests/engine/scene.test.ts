@@ -5,6 +5,7 @@ import { setBedPatient, setRisk } from '../../src/engine/beds';
 import { buildBuilding, floorTargets, roofTarget, type BuildingView } from '../../src/engine/building';
 import { EntityLayer, type LayerHost } from '../../src/engine/entities';
 import { PROP_TYPES } from '../../src/engine/furniture';
+import { VehicleLayer, SIREN_RED, SIREN_RED_DIM } from '../../src/engine/vehicles';
 import { LAYOUT, LayoutIndex } from '../../src/engine/layout';
 import { labelFor, toneColor, toneFor } from '../../src/engine/labelsLive';
 import { Xray, XRAY_OPACITY } from '../../src/engine/xray';
@@ -205,6 +206,24 @@ describe('entities in the scene (recorded snapshot fixture)', () => {
     expect(layer.allCharacters()[0]?.character.group.visible).toBe(false);
   });
 
+  it('draws an EMT who is walking a patient in, but not one sitting in the ambulance', () => {
+    const { layer } = setup();
+    const t0 = new Date(SIM_NOW - 1000).toISOString();
+    const t1 = new Date(SIM_NOW + 30_000).toISOString();
+    const emt: Entity = {
+      id: 'E-9',
+      kind: 'emt',
+      location: { floor: 0, room: 'OUTSIDE', vehicle: 'AMB-mercy-1' },
+      appearance: { skin: 0, hair: 0, headscarf: false },
+      pose: 'walking',
+      move: { path: ['f0-CURB', 'f0-entrance'], times: [t0, t1], depart: t0, arrive: t1 },
+    };
+    layer.sync([emt], SIM_NOW);
+    expect(layer.rendered().map((r) => r.id)).toEqual(['E-9']);
+    layer.sync([{ ...emt, move: null }], SIM_NOW);
+    expect(layer.rendered()).toEqual([]);
+  });
+
   it('does not draw people inside vehicles', () => {
     const { layer } = setup();
     layer.sync([{ id: 'E-1', kind: 'emt', location: { floor: null, room: null, vehicle: 'AMB-mercy-1' }, appearance: { skin: 0, hair: 0, headscarf: false }, pose: 'standing' }], SIM_NOW);
@@ -241,6 +260,38 @@ describe('entities in the scene (recorded snapshot fixture)', () => {
       const floor = snap.entities.find((e) => e.id === id)?.location.floor;
       expect(character.group.visible, id).toBe(floor !== 1);
     }
+  });
+});
+
+describe('vehicles on the grounds', () => {
+  it('parks ambulances in their bay slots, flashes unloading ones, and shows the helicopter only while it is home', () => {
+    const { tk, scene, building } = setup();
+    const layer = new VehicleLayer(tk, scene, LAYOUT, building);
+    layer.sync([
+      { id: 'AMB-mercy-1', kind: 'ambulance', status: 'at_base', slot: 'AMB-slot-1' },
+      { id: 'AMB-mercy-2', kind: 'ambulance', status: 'unloading', slot: 'AMB-slot-3' },
+      { id: 'HELI-mercy', kind: 'helicopter', status: 'at_base', slot: null },
+    ]);
+    const slots = LAYOUT.outside.ambulance_slots;
+    expect(layer.drawn()).toEqual([
+      { id: 'AMB-mercy-1', x: slots[0]!.x, z: slots[0]!.z },
+      { id: 'AMB-mercy-2', x: slots[2]!.x, z: slots[2]!.z },
+    ]);
+    expect(building.heli?.visible).toBe(true);
+    layer.update(0); // 0 s: lights on the first phase
+    layer.update(0.2);
+    const colors = new Set<string>();
+    for (let t = 0; t < 1; t += 0.05) {
+      layer.update(t);
+      colors.add(scene.children.length.toString());
+    }
+    expect(colors.size).toBeGreaterThan(0);
+    expect(SIREN_RED).not.toBe(SIREN_RED_DIM);
+    layer.sync([{ id: 'AMB-mercy-2', kind: 'ambulance', status: 'unloading', slot: 'AMB-slot-3' }]);
+    expect(layer.drawn().map((d) => d.id)).toEqual(['AMB-mercy-2']);
+    expect(building.heli?.visible).toBe(false);
+    layer.sync([{ id: 'AMB-x', kind: 'ambulance', status: 'at_base', slot: 'no-such-slot' }]);
+    expect(layer.drawn()).toEqual([]);
   });
 });
 

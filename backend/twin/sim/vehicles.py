@@ -81,6 +81,27 @@ def hospital_point(world: World, hospital_id: str) -> tuple[float, float]:
     return h.lat, h.lon
 
 
+def road_lines(world: World) -> tuple[list[float], list[float]]:
+    """The city's streets: one east-west street through each hospital's latitude and one north-south street
+    through each hospital's longitude. Ambulances drive east-west first, then north-south, so a trip between
+    two street crossings stays on streets."""
+    hospitals = world.layout.hospitals
+    return sorted({h.lat for h in hospitals}), sorted({h.lon for h in hospitals})
+
+
+def snap_to_roads(world: World, lat: float, lon: float) -> tuple[float, float]:
+    """The street crossing nearest to a point."""
+    lats, lons = road_lines(world)
+    return min(lats, key=lambda v: abs(v - lat)), min(lons, key=lambda v: abs(v - lon))
+
+
+def scene_crossings(world: World) -> list[tuple[float, float]]:
+    """Street crossings that are not a hospital: where emergencies happen."""
+    lats, lons = road_lines(world)
+    hospital_points = {(h.lat, h.lon) for h in world.layout.hospitals}
+    return [(la, lo) for la in lats for lo in lons if (la, lo) not in hospital_points]
+
+
 def set_status(world: World, vehicle: Vehicle, status: VehicleStatus) -> None:
     vehicle.status = status
     if vehicle.at_hospital is not None:
@@ -412,15 +433,12 @@ def calls(world: World, hospital_id: str) -> SimGen:
     from twin.sim.scenarios import demand_multiplier
 
     rng = world.rng("calls", hospital_id)
-    base = hospital_point(world, hospital_id)
     while True:
         rate = c.PROFILES[hospital_id].ambulance_per_h * c.HOURLY_PATTERN[world.local_hour()]
         rate *= demand_multiplier(world, hospital_id)
         for _ in range(poisson(rng, rate / 60.0)):
-            scene = (
-                base[0] + rng.uniform(-c.CALL_RADIUS_DEG, c.CALL_RADIUS_DEG),
-                base[1] + rng.uniform(-c.CALL_RADIUS_DEG, c.CALL_RADIUS_DEG),
-            )
+            crossings = scene_crossings(world)
+            scene = crossings[rng.randrange(len(crossings))]
             world.env.process(run_call(world, hospital_id, scene))
         yield world.env.timeout(c.TICK_MIN)
 

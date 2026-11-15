@@ -94,8 +94,8 @@ export class EntityLayer {
       } else if (!moving && spot?.kind === 'table') {
         seenTables.add(e.id);
         this.ensureTable(e, spot.floor, spot.x, spot.z, spot.rotation);
-      } else if (e.location.vehicle || e.location.floor === null) {
-        continue; // inside a vehicle: not drawn in the building
+      } else if (!moving && (e.location.vehicle || e.location.floor === null)) {
+        continue; // sitting in a vehicle: not drawn in the building (an EMT walking a patient in is)
       } else {
         seenChars.add(e.id);
         this.ensureChar(e);

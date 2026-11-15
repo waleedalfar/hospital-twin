@@ -311,3 +311,61 @@ Found by comparing the render with the reference; fixed in `layout_parts.py`, wi
 
 None. Visual differences from the references are limited to people and furniture states that come from
 live data (the references had hand-placed demo people), and the missing ambulance at the bay (CP4).
+
+---
+
+## CP4 — Live end to end (2026-11-14, hour 2.5 of 48; target hour 21)
+
+Spec: PROMPT.md §10.1, §10.6, §11 e2e 1-6, 8, 10. Recorded as a log, not a gate.
+
+### What was built
+
+| Spec | What | Where |
+| --- | --- | --- |
+| §10.6 | Client store: applies the snapshot, then each events message (pure reducers); keeps sim time between ticks at the current speed; reconnects with backoff and resyncs from a fresh snapshot; "Disconnected" banner while offline; server and parse problems are shown, not hidden | `frontend/src/state/{reducers,store,socket,clock,feed,api}.ts`, `ui/common.tsx` |
+| §10.1 screen 1 | Network map: pixel-art city on a canvas, three hospitals with capacity and status pills (OK, BUSY, CRITICAL, OFFLINE as text), live ambulances and helicopter on streets, routes of ambulances carrying patients, side panel with hospitals and incoming ambulances, click a hospital to open it | `ui/network/*` |
+| §10.1 screen 2 | Hospital 3D view driven by the live sim: KPI strip, live feed, patient inspector (live vitals from the stream, 6-hour heart-rate and risk sparklines from `/patients/{id}/vitals` and `/risk`, FHIR id, top factors when a model scores them, "Fly to this bed"), presets, X-ray legend, speed and pause, scenario menu, camera mode, night, pixel factor | `ui/hospital/*` |
+| §10.1 screen 3 | 2D floor plan fallback from the same store; used automatically, with a banner, if WebGL cannot start | `ui/hospital/FloorPlan.tsx` |
+| §10.6 | Moves animate along the server paths between depart and arrive; walking EMTs escort ambulance patients in; ambulances park in the bay slots; the helicopter is on the roof only while home; `window.__TWIN_DEBUG__` is always present | `engine/entities.ts`, `engine/vehicles.ts`, `engine/debug.ts` |
+| backend | Emergency scenes snap to a street grid through the three hospitals so ambulances drive on streets; bed and ambulance-slot rotations fixed to match the prototype | `sim/vehicles.py`, `sim/layout_parts.py` |
+
+### Commands run and results
+
+| Command | Result |
+| --- | --- |
+| `make verify` | Exit 0. Backend 214 passed, coverage 96.7%. Frontend **146 passed, 0 skipped, coverage 91%** (gate 80%). Faceless step, schema, layout and type sync checks pass |
+| `make e2e` | Exit 0. **25 passed, 0 skipped** in 2.1 min: 2 smoke, 12 scene (fixture), 11 live against the real backend and database |
+
+The live tests use no fixture: every expected value comes from the backend API. They cover e2e 1, 2, 3, 4, 5,
+6, 8 and 10 from §11, plus: walkers change position frame by frame, the 2D plan matches the live state and
+works with WebGL disabled, and the network map shows ambulances with their patients.
+
+### Evidence (`docs/evidence/cp4/`)
+
+`network-map.png`, `network-map-live.png`, `inspector.png`, `ground-floor-live.png`, `xray-floor3.png`,
+`floor-plan.png`, `disconnected.png`.
+
+### How to check it yourself
+
+1. `make dev`, open http://127.0.0.1:5173 : the city with three hospitals; ambulances drive between them.
+2. Click Mercy General: the 3D hospital. Click "Floor 3", then a patient in a bed: the inspector shows their
+   id, bed, age, live vitals and charts. Press 8x to watch people walk.
+3. Click "2D plan" for the floor plan. Press X-ray, Night, Free-fly camera.
+4. Stop the backend (Ctrl-C the `uvicorn` process): a red "Disconnected" banner appears; start it again and it
+   resyncs.
+5. `make verify` and `make e2e`.
+
+### Decisions where the spec leaves room
+
+1. Patients walking to a bed are drawn walking until they arrive, then lying in the bed. The API marks the
+   bed occupied from the start of the walk, so e2e 3 compares only patients who have arrived.
+2. Time in the browser: 1x is 60 sim seconds per real second, so a 20 m walk takes about a quarter second at
+   1x. That follows from "1 tick = 1 sim minute, 1 tick per real second".
+3. Hospital status pill by load: CRITICAL at 90%, BUSY at 70%; OFFLINE when it takes no ambulances.
+4. The agent card, recommendations and governance drawer belong to CP6 and are not on screen yet.
+5. The sim restarts from the 08:00 start on every backend start (SIM_RESET_ON_START).
+
+### Deviations and known issues
+
+None. One test (X-ray) was seen failing once under heavy load during an earlier run; it passed on every rerun
+and in the final 25-test run. Watch it if CI becomes flaky.

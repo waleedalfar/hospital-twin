@@ -228,7 +228,11 @@ def build_layout() -> Layout:
                 node=node,
             )
         )
-        slots.append(AmbulanceSlot(id=f"AMB-slot-{i}", x=x, z=t.AMBULANCE_SLOT_Z, rotation=0.0, spot=spot_id))
+        slots.append(
+            AmbulanceSlot(
+                id=f"AMB-slot-{i}", x=x, z=t.AMBULANCE_SLOT_Z, rotation=ROTATION["north"], spot=spot_id
+            )
+        )
     curb = g.node("f0-CURB", 0, t.CURB[0], t.CURB[1], "OUTSIDE")
     g.connect(curb, g.lane("OUTSIDE", 0, t.CURB[0]))
     spots.append(

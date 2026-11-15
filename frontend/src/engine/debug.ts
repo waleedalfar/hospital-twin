@@ -36,6 +36,9 @@ export interface TwinDebug {
   faceAudit(): { ok: boolean; checked: number; results: { id: string; audit: FaceAudit }[] };
   frameStats(): FrameStats;
   problems(): string[];
+  vehicles(): { id: string; x: number; z: number }[];
+  /** Where an entity is on the canvas in CSS pixels (so tests can click it), or null. */
+  screenPoint(id: string): { x: number; y: number } | null;
 }
 
 declare global {
@@ -54,6 +57,8 @@ const EMPTY: TwinDebug = {
   faceAudit: () => ({ ok: true, checked: 0, results: [] }),
   frameStats: () => ({ frames: 0, fps: 0, lastFrameMs: 0, drawCalls: 0, triangles: 0 }),
   problems: () => [],
+  vehicles: () => [],
+  screenPoint: () => null,
 };
 
 /** Install the debug object on `window`. A frozen copy is exposed, so tests cannot change the scene through it. */

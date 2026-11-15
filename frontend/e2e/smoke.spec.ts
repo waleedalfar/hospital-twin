@@ -12,7 +12,7 @@ test('shell loads and shows the live backend status from the API', async ({ page
 
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hospital Twin');
-  await expect(page.getByText('Simulated data')).toBeVisible();
+  await expect(page.getByTestId('simulated-label')).toHaveText('Simulated data');
 
   const status = page.getByTestId('backend-status');
   await expect(status).toHaveAttribute('data-tone', 'ok');
