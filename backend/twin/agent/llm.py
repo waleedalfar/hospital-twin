@@ -14,6 +14,7 @@ from twin.agent.summary import Summary, flat_metrics
 
 logger = logging.getLogger(__name__)
 TIMEOUT_S = 10.0
+TOTAL_TIMEOUT_S = 25.0
 
 SYSTEM = (
     "You are the operations agent for a hospital network. From the JSON summary of one hospital, recommend at most "
@@ -67,7 +68,8 @@ class GeminiClient:
                 raise ValueError("Gemini returned no text")
             return response.text
 
-        return await self.chain.run(one, (APIError, TimeoutError, OSError, ValueError))
+        # An overall limit, so a hanging service costs seconds, not minutes, before the next fallback takes over.
+        return await asyncio.wait_for(self.chain.run(one, (APIError, TimeoutError, OSError, ValueError)), timeout=TOTAL_TIMEOUT_S)
 
 
 def make_client(api_key: str | None, models: str | None, chain: ModelChain | None = None) -> LLMClient | None:

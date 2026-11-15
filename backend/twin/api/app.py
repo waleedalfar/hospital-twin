@@ -11,6 +11,7 @@ from twin.agent.ask import AskService
 from twin.agent.ask_llm import make_ask_llm
 from twin.agent.llm import make_client
 from twin.agent.model_chain import ModelChain
+from twin.agent.ollama import combine, make_ollama
 from twin.agent.service import AgentService
 from twin.api.federated import FederatedService
 from twin.api.health import router as health_router
@@ -92,10 +93,13 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
         runtime.agent = AgentService(
             sim,
             app.state.pool,
-            make_client(
-                settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None,
-                settings.gemini_model,
-                gemini_chain,
+            combine(
+                make_client(
+                    settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None,
+                    settings.gemini_model,
+                    gemini_chain,
+                ),
+                make_ollama(settings.ollama_url, settings.ollama_model),
             ),
             runtime.apply_action,
             runtime.publish_now,

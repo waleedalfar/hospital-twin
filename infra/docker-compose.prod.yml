@@ -16,6 +16,17 @@ services:
     restart: unless-stopped
     expose:
       - "8000"
+  # Optional local model for the agent when Gemini fails or hangs (no key, no quota). Turn it on with
+  # COMPOSE_PROFILES=ollama plus OLLAMA_URL=http://ollama:11434 and OLLAMA_MODEL in .env, then pull the model once:
+  #   docker compose -f infra/docker-compose.prod.yml --env-file .env exec ollama ollama pull qwen2.5:1.5b
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    expose:
+      - "11434"
   caddy:
     build:
       context: ..
@@ -33,5 +44,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  ollama-data:
   caddy-data:
   caddy-config:

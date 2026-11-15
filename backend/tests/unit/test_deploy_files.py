@@ -66,3 +66,9 @@ def test_secrets_are_not_part_of_what_is_copied_or_built() -> None:
     assert "PASSWORD" in example and "GEMINI_API_KEY=..." in example  # dummy values only
     assert ".env.*" in (REPO_ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
     assert Path(SCRIPT).stat().st_mode & 0o111  # executable
+
+
+def test_the_local_model_is_optional_and_off_unless_its_profile_is_enabled() -> None:
+    compose = (REPO_ROOT / "infra" / "docker-compose.prod.yml").read_text(encoding="utf-8")
+    block = compose[compose.index("  ollama:") : compose.index("  caddy:")]
+    assert 'profiles: ["ollama"]' in block and "ollama/ollama" in block

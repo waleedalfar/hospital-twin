@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     sim_seed: int = 20261114
     gemini_api_key: SecretStr | None = None
     gemini_model: str | None = None
+    # A local model (Ollama) used when Gemini fails or hangs; no key needed, e.g. OLLAMA_URL=http://ollama:11434
+    ollama_url: str | None = None
+    ollama_model: str | None = None
     sim_warmup_hours: float = Field(default=72.0, ge=0)
     sim_speed: int = 1
     sim_autostart: bool = True

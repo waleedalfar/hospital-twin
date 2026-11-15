@@ -56,3 +56,23 @@ Create an API key in Google AI Studio and choose the model name (it is read from
 
 `make smoke URL=https://<domain>` repeats the check at any time. Logs: `ssh deploy@<VM_IP> "cd hospital-twin &&
 docker compose -f infra/docker-compose.prod.yml --env-file .env logs --tail=100"`.
+
+## Optional: a local model when Gemini fails or hangs
+
+Ollama needs no API key. In `.env.prod` add:
+
+```
+COMPOSE_PROFILES=ollama
+OLLAMA_URL=http://ollama:11434
+OLLAMA_MODEL=qwen2.5:1.5b
+```
+
+Run `make deploy`, then pull the model once (about 1 GB; the 4 GB VM can hold it next to the backend):
+
+```
+ssh deploy@<VM_IP> "cd hospital-twin && docker compose -f infra/docker-compose.prod.yml --env-file .env exec ollama ollama pull qwen2.5:1.5b"
+```
+
+The agent then tries Gemini, then the local model, then the rules engine. Ask Hospital Twin falls back to its
+deterministic parser (small local models are not reliable enough at calling tools). Replies from the local model go
+through the same grounding check as Gemini's.
