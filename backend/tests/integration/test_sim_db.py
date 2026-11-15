@@ -145,7 +145,9 @@ async def test_api_serves_state_patients_kpis_and_sim_control(migrated_db_url: s
         series = (await client.get(f"/patients/{patient['id']}/vitals?window=6h")).json()
         assert series["points"] and series["window"] == "6h"
         assert all(p["samples"] >= 1 for p in series["points"])
-        assert (await client.get(f"/patients/{patient['id']}/risk?window=90m")).json()["points"] == []
+        risk = (await client.get(f"/patients/{patient['id']}/risk?window=90m")).json()
+        assert risk["window"] == "90m"
+        assert all(0 <= p["score"] <= 1 for p in risk["points"])
         assert (await client.get("/patients/P-9999")).status_code == 404
         assert (await client.get("/patients/P-9999/vitals")).status_code == 404
         assert (await client.get(f"/patients/{patient['id']}/vitals?window=forever")).status_code == 422

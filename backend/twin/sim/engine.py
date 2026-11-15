@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 
 from twin.common.ws import ActionName, NetworkMessage, ScenarioName, SnapshotMessage
+from twin.ml.inference import InferenceEngine
 from twin.sim import actions, scenarios
 from twin.sim.arrivals import walk_ins
 from twin.sim.config import DEFAULT_WARMUP, SIM_START, TICK_MIN
@@ -31,6 +32,7 @@ class Simulation:
     ) -> None:
         self.world = World(layout, profiles, seed, SIM_START - warmup)
         self.debug = debug
+        self.ml: InferenceEngine | None = None
         world = self.world
         for hospital_id in sorted(world.hospitals):
             build_staff(world, world.hospitals[hospital_id])
@@ -54,7 +56,11 @@ class Simulation:
         world.env.run(until=world.now + TICK_MIN)
         if self.debug:
             check(world)
-        return world.drain()
+        emitted = world.drain()
+        if self.ml is not None:
+            self.ml.after_tick(emitted)
+            emitted.extend(world.drain())  # risk scores and alerts produced by the models
+        return emitted
 
     def run_until(self, when: datetime) -> list[Emitted]:
         out: list[Emitted] = []
@@ -78,6 +84,10 @@ class Simulation:
 
     def network(self, speed: int, paused: bool, frozen: bool) -> NetworkMessage:
         return network_message(self.world, speed, paused, frozen)
+
+    def attach_ml(self, engine: InferenceEngine) -> None:
+        """Score patients and forecast demand as the simulation runs (PROMPT.md §7.4)."""
+        self.ml = engine
 
     def check_invariants(self) -> None:
         check(self.world)

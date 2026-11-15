@@ -5,7 +5,7 @@ from typing import Literal
 
 import simpy
 
-from twin.common.ws import Appearance, ArrivalMode, Complaint, EntityKind, Vitals
+from twin.common.ws import Appearance, ArrivalMode, Complaint, EntityKind, Risk, Vitals
 
 PatientPhase = Literal[
     "waiting_triage",
@@ -103,6 +103,7 @@ class Patient(Person):
     visitor_id: str | None = None
     reserved_bed: str | None = None
     er_bed_at: float | None = None
+    risk: Risk | None = None
 
 
 @dataclass

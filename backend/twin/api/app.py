@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from twin.api.health import router as health_router
 from twin.api.hub import Hub
 from twin.api.routes_hospitals import router as hospitals_router
+from twin.api.routes_ml import router as ml_router
 from twin.api.routes_patients import router as patients_router
 from twin.api.routes_sim import router as sim_router
 from twin.api.routes_ws import router as ws_router
@@ -17,12 +18,30 @@ from twin.api.runtime import SimRuntime, load_profiles
 from twin.common.config import Settings, get_settings
 from twin.common.logging import configure_logging
 from twin.db.pool import create_pool
+from twin.ml.forecast import FORECAST_VERSION, ArrivalsModel
+from twin.ml.inference import InferenceEngine
+from twin.ml.model import DeteriorationModel
+from twin.ml.train import MODEL_VERSION
 from twin.sim.engine import Simulation
 from twin.sim.layout_model import load_layout
 
 logger = logging.getLogger(__name__)
 
 APP_TITLE = "Hospital Twin API"
+
+
+def attach_models(app: FastAPI, sim: Simulation) -> None:
+    """Load the trained models and attach live inference. Without models the simulation still runs, scores are
+    absent, and /health says so."""
+    try:
+        det = DeteriorationModel.load(MODEL_VERSION)
+        arrivals = ArrivalsModel.load(FORECAST_VERSION)
+    except (FileNotFoundError, ValueError) as error:
+        app.state.ml_error = f"Models not available ({error}). Run `make train`."
+        logger.error(app.state.ml_error)
+        return
+    sim.attach_ml(InferenceEngine(sim.world, det, arrivals))
+    logger.info("Inference attached: %s and %s", det.version, arrivals.version)
 
 
 async def start_simulation(app: FastAPI, settings: Settings) -> None:
@@ -40,6 +59,9 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
         timedelta(hours=settings.sim_warmup_hours),
         debug=settings.sim_debug,
     )
+    app.state.ml_error = None
+    if settings.ml_enabled:
+        attach_models(app, sim)
     runtime = SimRuntime(sim, app.state.pool, Hub(), settings.sim_speed)
     app.state.runtime = runtime
     await runtime.prepare(reset=settings.sim_reset_on_start)
@@ -71,6 +93,6 @@ def create_app(settings: Settings | None = None, *, simulate: bool = True) -> Fa
 
     app = FastAPI(title=APP_TITLE, version="0.1.0", lifespan=lifespan)
     app.state.settings = resolved
-    for router in (health_router, hospitals_router, patients_router, sim_router, ws_router):
+    for router in (health_router, hospitals_router, patients_router, sim_router, ml_router, ws_router):
         app.include_router(router)
     return app

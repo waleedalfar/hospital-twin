@@ -1,0 +1,18 @@
+{
+ "ER": {
+  "admit_per_arrival": 0.9951120162932791,
+  "departure_per_bed_hour": 0.36823148278552886
+ },
+ "WARD": {
+  "admit_per_arrival": 0.3433808553971487,
+  "departure_per_bed_hour": 0.0387189403237127
+ },
+ "ICU": {
+  "admit_per_arrival": 0.09653767820773931,
+  "departure_per_bed_hour": 0.025219560157523975
+ },
+ "REC": {
+  "admit_per_arrival": 0.054175152749490835,
+  "departure_per_bed_hour": 0.31408666902824256
+ }
+}

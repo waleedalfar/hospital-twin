@@ -19,3 +19,5 @@ class HealthResponse(BaseModel):
     sim: Literal["running", "paused", "frozen", "starting", "off"] = "off"
     sim_time: datetime | None = None
     sim_error: str | None = None
+    ml: Literal["ready", "missing", "off"] = "off"
+    ml_version: str | None = None

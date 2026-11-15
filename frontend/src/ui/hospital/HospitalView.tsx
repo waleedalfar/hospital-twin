@@ -8,6 +8,7 @@ import { Banners, ScenarioMenu, SimClock, SpeedControls } from '../common';
 import { go } from '../route';
 import { FloorPlan } from './FloorPlan';
 import { Inspector } from './Inspector';
+import { ForecastPanel, ModelBadge } from './MlPanels';
 import { KpiStrip, Legend, LiveFeed, PresetBar } from './Panels';
 
 /** Creates the 3D engine on a canvas and keeps it in step with the store. Returns the engine or an error. */
@@ -156,7 +157,9 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
             <div className="hud hud--tl">
               <KpiStrip kpis={data.kpis} />
               <div className="chip" data-testid="viewing">Viewing: {preset ?? 'custom'} · simulated data</div>
+              <ModelBadge />
               <LiveFeed feed={data.feed} />
+              <ForecastPanel hospitalId={hospitalId} />
             </div>
             <div className="hud hud--tr">
               <Inspector entity={entity} onFly={() => engine?.focusSelected()} />

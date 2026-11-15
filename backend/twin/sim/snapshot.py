@@ -46,7 +46,7 @@ def entity_model(world: World, person: Person) -> Entity:
         move=world.move_model(person.move),
         task=person.task,
         unit=person.unit,
-        risk=None,
+        risk=person.risk if isinstance(person, Patient) else None,
         vitals=vitals,
     )
 
@@ -67,7 +67,7 @@ def kpis(world: World, hospital: HospitalState) -> Kpis:
         capacity=sum(1 for b in hospital.beds.values() if b.unit in BED_UNITS),
         er_wait_min=round(sum(waits) / len(waits), 1) if waits else 0.0,
         waiting=len(waiting_patients),
-        alerts=0,
+        alerts=sum(1 for p in hospital.patients() if p.risk is not None and p.risk.level == "high"),
     )
 
 

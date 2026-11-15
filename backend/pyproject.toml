@@ -10,6 +10,12 @@ dependencies = [
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
     "simpy>=4.1",
+    "lightgbm>=4.5",
+    "scikit-learn>=1.5",
+    "shap>=0.46",
+    "pandas>=2.2",
+    "pyarrow>=17",
+    "numpy>=1.26",
 ]
 
 [dependency-groups]
@@ -21,6 +27,7 @@ dev = [
     "ruff>=0.8",
     "mypy>=1.13",
     "asyncpg-stubs>=0.30",
+    "pandas-stubs>=3.1.0.261029",
 ]
 
 [build-system]
@@ -60,6 +67,14 @@ ignore = []
 "tests/**" = ["S101", "S105", "S106", "S311", "PT018", "RUF007"]
 # The simulation needs seeded, reproducible randomness, not cryptographic randomness.
 "twin/sim/**" = ["S311"]
+# The model card and the training report are prose; wrapping them would make them harder to edit.
+"twin/ml/card.py" = ["E501"]
+"twin/ml/cli.py" = ["E501"]
+
+[[tool.mypy.overrides]]
+# These libraries ship no type information. Calls into them are wrapped in typed helpers in twin/ml.
+module = ["lightgbm.*", "shap.*", "sklearn.*", "pyarrow.*"]
+ignore_missing_imports = true
 
 [tool.mypy]
 python_version = "3.12"

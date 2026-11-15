@@ -293,3 +293,51 @@ describe('network map', () => {
     expect(screen.queryByTestId('disconnected-banner')).toBeNull(); // still connecting, not disconnected
   });
 });
+
+describe('forecast and model panels', () => {
+  const report = {
+    hospital_id: 'mercy',
+    as_of: '2026-11-14T15:00:00Z',
+    model_version: 'arrivals-lgbm-v1',
+    arrivals: [1, 2, 3, 4, 5, 6].map((h) => ({ hours_ahead: h, expected: 1 + h / 10 })),
+    hours_until_full: { ER: 0, WARD: 6.5, ICU: null, REC: 12 },
+  };
+
+  it('shows expected arrivals and hours until each unit is full', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(json(report))));
+    const { ForecastPanel } = await import('../src/ui/hospital/MlPanels');
+    render(<ForecastPanel hospitalId="mercy" />);
+    await waitFor(() => expect(screen.getByTestId('forecast-total').textContent).toBe('Arrivals expected: 8.1 in 6 h'));
+    expect(screen.getByTestId('full-ER').textContent).toContain('FULL');
+    expect(screen.getByTestId('full-WARD').textContent).toContain('full in 6.5 h');
+    expect(screen.getByTestId('full-ICU').textContent).toContain('not within 24 h');
+    expect(screen.getByTestId('full-REC').textContent).toContain('Recovery');
+    expect(screen.getByRole('img', { name: /Expected arrivals per hour: 1.1, 1.2/ })).toBeTruthy();
+    expect(screen.getByText('Model arrivals-lgbm-v1')).toBeTruthy();
+  });
+
+  it('says so when there is no forecast or the request fails', async () => {
+    const { ForecastPanel } = await import('../src/ui/hospital/MlPanels');
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(json({ ...report, arrivals: [], model_version: null, hours_until_full: {} }))));
+    const { unmount } = render(<ForecastPanel hospitalId="mercy" />);
+    await waitFor(() => expect(screen.getByText('No forecast yet (no model).')).toBeTruthy());
+    unmount();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(json({ detail: 'boom' }, 500))));
+    render(<ForecastPanel hospitalId="mercy" />);
+    await waitFor(() => expect(screen.getByText('Forecast unavailable: boom')).toBeTruthy());
+    spy.mockRestore();
+  });
+
+  it('shows the active risk model and its validation AUROC, or why there is none', async () => {
+    const { ModelBadge } = await import('../src/ui/hospital/MlPanels');
+    const models = { active_deterioration: 'lgbm-v1', active_arrivals: 'a', error: null, models: [{ version: 'lgbm-v1', kind: 'deterioration', metrics: { validation: { model: { auroc: 0.9404 } } } }] };
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(json(models))));
+    const { unmount } = render(<ModelBadge />);
+    await waitFor(() => expect(screen.getByTestId('model-badge').textContent).toBe('Risk model lgbm-v1 · AUROC 0.94'));
+    unmount();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(json({ ...models, active_deterioration: null, error: 'Models not available. Run `make train`.', models: [] }))));
+    render(<ModelBadge />);
+    await waitFor(() => expect(screen.getByTestId('model-badge').textContent).toContain('make train'));
+  });
+});

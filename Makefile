@@ -80,8 +80,8 @@ verify: lint test faceless placeholders ## Everything in CLAUDE.md §3; fails on
 seed: db ## Generate Synthea patients and load them (reuses existing output; SEED_ARGS=--regenerate forces)
 	$(UV) python -m twin.db.seed $(SEED_ARGS)
 
-train: ## Build the training set and train/evaluate models (built in CP5)
-	@echo "make train: model training is built in CP5 (PROMPT.md §7). Nothing was run." >&2; exit 1
+train: db ## Build the training set from the sim and train/evaluate the models (about 1 minute)
+	$(UV) python -m twin.ml.cli
 
 fed-train: ## Federated training from the command line (built in CP7)
 	@echo "make fed-train: federated training is built in CP7 (PROMPT.md §7.6). Nothing was run." >&2; exit 1

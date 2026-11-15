@@ -63,6 +63,7 @@ class SimRuntime:
             ticks = 0
             while self.sim.now < self.sim.visible_start:
                 self.writer.add(self.sim.tick())
+                self._queue_forecasts()
                 ticks += 1
                 if ticks % WARMUP_FLUSH_TICKS == 0:
                     await self.writer.flush(conn)
@@ -111,12 +112,17 @@ class SimRuntime:
         emitted = self.sim.tick()
         self.ticks += 1
         self.writer.add(emitted)
+        self._queue_forecasts()
         # Broadcast before any await: a snapshot is built between awaits, so it always reflects exactly the
         # ticks whose events have already been sent. Otherwise a client could receive events that its
         # snapshot already includes.
         self.broadcast(emitted)
         async with self.pool.acquire() as conn:
             await self.writer.flush(conn)
+
+    def _queue_forecasts(self) -> None:
+        if self.sim.ml is not None:
+            self.writer.add_forecasts(self.sim.ml.drain_forecasts())
 
     def broadcast(self, emitted: list[Any]) -> None:
         for hospital_id in self.sim.world.hospitals:

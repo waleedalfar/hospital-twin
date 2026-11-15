@@ -48,6 +48,19 @@ export interface SimState {
   frozen: boolean;
   ready: boolean;
 }
+export interface ForecastReport {
+  hospital_id: string;
+  as_of: string | null;
+  model_version: string | null;
+  arrivals: { hours_ahead: number; expected: number }[];
+  hours_until_full: Record<string, number | null>;
+}
+export interface ModelsResponse {
+  active_deterioration: string | null;
+  active_arrivals: string | null;
+  error: string | null;
+  models: { version: string; kind: string; metrics: Record<string, unknown> }[];
+}
 export type ScenarioName = 'flu_surge' | 'mass_casualty' | 'staff_shortage' | 'hospital_offline';
 
 export type Fetch = typeof fetch;
@@ -86,6 +99,12 @@ export class Api {
   }
   async risk(id: string, window = '6h'): Promise<RiskPoint[]> {
     return (await this.call<{ points: RiskPoint[] }>(`/patients/${encodeURIComponent(id)}/risk?window=${window}`)).points;
+  }
+  forecast(hospitalId: string): Promise<ForecastReport> {
+    return this.call(`/forecast/${encodeURIComponent(hospitalId)}`);
+  }
+  models(): Promise<ModelsResponse> {
+    return this.call('/models');
   }
   sim(): Promise<SimState> {
     return this.call('/sim');

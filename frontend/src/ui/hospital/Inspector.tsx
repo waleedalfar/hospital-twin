@@ -121,7 +121,7 @@ export function Inspector({ entity, onFly }: { entity: Entity | undefined; onFly
           {factors.map(([name, weight]) => (
             <div key={name} className="factor">
               <span className="factor__k">{name}</span>
-              <span className="factor__bar" style={{ width: Math.round(Math.abs(weight) * 300), background: riskNow ? LEVEL_COLOR[riskNow.level] : '#2453b0' }} />
+              <span className="factor__bar" style={{ width: Math.round(Math.abs(weight) * 160), background: riskNow ? LEVEL_COLOR[riskNow.level] : '#2453b0' }} />
               <span className="factor__v">{weight.toFixed(2)}</span>
             </div>
           ))}

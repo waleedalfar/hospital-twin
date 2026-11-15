@@ -53,7 +53,18 @@ def with_sim(result: HealthResponse, request: Request) -> HealthResponse:
         sim = "paused"
     else:
         sim = "running"
-    return result.model_copy(update={"sim": sim, "sim_time": runtime.sim.now})
+    ml = runtime.sim.ml
+    ml_state = (
+        "ready" if ml is not None else ("missing" if getattr(request.app.state, "ml_error", None) else "off")
+    )
+    return result.model_copy(
+        update={
+            "sim": sim,
+            "sim_time": runtime.sim.now,
+            "ml": ml_state,
+            "ml_version": ml.model.version if ml else None,
+        }
+    )
 
 
 @router.get(

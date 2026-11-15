@@ -11,12 +11,14 @@ from twin.common.ws import (
     ArrivalEvent,
     DischargeEvent,
     HospitalStatusEvent,
+    RiskEvent,
     StaffEvent,
     SurgeryEvent,
     TransferEvent,
     VitalsEvent,
 )
 from twin.db.pool import Conn
+from twin.ml.inference import ForecastRow
 from twin.sim.entities import Staff
 from twin.sim.world import Emitted, World
 
@@ -56,13 +58,22 @@ class Batch:
     vitals: list[tuple[Any, ...]] = field(default_factory=list)
     events: list[tuple[Any, ...]] = field(default_factory=list)
     bed_state: list[tuple[Any, ...]] = field(default_factory=list)
+    risk_scores: list[tuple[Any, ...]] = field(default_factory=list)
+    forecasts: list[tuple[Any, ...]] = field(default_factory=list)
     encounters: list[tuple[Any, ...]] = field(default_factory=list)
     encounter_updates: list[tuple[Any, ...]] = field(default_factory=list)
     staff: list[tuple[Any, ...]] = field(default_factory=list)
     hospital_status: dict[str, str] = field(default_factory=dict)
 
     def __len__(self) -> int:
-        return len(self.vitals) + len(self.events) + len(self.bed_state) + len(self.encounters)
+        return (
+            len(self.vitals)
+            + len(self.events)
+            + len(self.bed_state)
+            + len(self.encounters)
+            + len(self.risk_scores)
+            + len(self.forecasts)
+        )
 
 
 class SimWriter:
@@ -87,6 +98,19 @@ class SimWriter:
                 v = event.vitals
                 batch.vitals.append(
                     (event.time, event.patient_id, hospital_id, v.hr, v.spo2, v.sbp, v.dbp, v.temp, v.rr)
+                )
+                continue
+            if isinstance(event, RiskEvent):
+                batch.risk_scores.append(
+                    (
+                        event.time,
+                        event.patient_id,
+                        hospital_id,
+                        event.model_version,
+                        event.score,
+                        event.level,
+                        json.dumps(event.top_factors),
+                    )
                 )
                 continue
             payload = event.model_dump(mode="json", by_alias=True, exclude={"time", "kind"})
@@ -137,6 +161,13 @@ class SimWriter:
                 (staff.id, staff.home_hospital, staff.kind, staff.unit or "ER", staff.id)
             )
 
+    def add_forecasts(self, rows: list[ForecastRow]) -> None:
+        """Queue forecast rows from the inference engine."""
+        for r in rows:
+            self._batch.forecasts.append(
+                (r.time, r.hospital_id, r.model_version, r.horizon_h, r.metric, r.value)
+            )
+
     def add_all_staff(self) -> None:
         for staff_id in sorted(self._world.staff):
             self._staff_row(staff_id)
@@ -184,6 +215,8 @@ class SimWriter:
                 ("vitals", batch.vitals),
                 ("events", batch.events),
                 ("bed_state", batch.bed_state),
+                ("risk_scores", batch.risk_scores),
+                ("forecasts", batch.forecasts),
             ):
                 if rows:
                     await conn.copy_records_to_table(table, records=rows, columns=COLUMNS[table])
@@ -196,6 +229,8 @@ COLUMNS = {
     "vitals": ["time", "patient_id", "hospital_id", "hr", "spo2", "sbp", "dbp", "temp", "rr"],
     "events": ["time", "hospital_id", "kind", "entity_id", "payload"],
     "bed_state": ["time", "bed_id", "hospital_id", "patient_id", "state"],
+    "risk_scores": ["time", "patient_id", "hospital_id", "model_version", "score", "level", "top_factors"],
+    "forecasts": ["time", "hospital_id", "model_version", "horizon_h", "metric", "value"],
 }
 
 

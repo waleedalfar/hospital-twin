@@ -1,0 +1,70 @@
+{
+ "version": "arrivals-lgbm-v1",
+ "validation": {
+  "mae": 0.7848670288542449,
+  "seasonal_naive_mae": 1.0363247863247864,
+  "improvement": 0.24264377421899674,
+  "rows": 3744,
+  "by_horizon": {
+   "1": {
+    "mae": 0.7916078137166354,
+    "naive_mae": 1.044871794871795
+   },
+   "2": {
+    "mae": 0.788123186717222,
+    "naive_mae": 1.0416666666666667
+   },
+   "3": {
+    "mae": 0.7871436971420201,
+    "naive_mae": 1.0384615384615385
+   },
+   "4": {
+    "mae": 0.780340106578271,
+    "naive_mae": 1.0336538461538463
+   },
+   "5": {
+    "mae": 0.7822141916920257,
+    "naive_mae": 1.0272435897435896
+   },
+   "6": {
+    "mae": 0.7797731772792952,
+    "naive_mae": 1.0320512820512822
+   }
+  }
+ },
+ "features": [
+  "hospital",
+  "horizon",
+  "target_hour",
+  "target_dow",
+  "scenario",
+  "lag_0",
+  "lag_1",
+  "lag_2",
+  "lag_3",
+  "lag_4",
+  "lag_5",
+  "lag_6",
+  "lag_7",
+  "lag_8",
+  "lag_9",
+  "lag_10",
+  "lag_11",
+  "lag_12",
+  "lag_13",
+  "lag_14",
+  "lag_15",
+  "lag_16",
+  "lag_17",
+  "lag_18",
+  "lag_19",
+  "lag_20",
+  "lag_21",
+  "lag_22",
+  "lag_23",
+  "mean_3h",
+  "mean_6h",
+  "mean_24h"
+ ],
+ "best_iteration": 91
+}

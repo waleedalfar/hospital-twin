@@ -369,3 +369,74 @@ works with WebGL disabled, and the network map shows ambulances with their patie
 
 None. One test (X-ray) was seen failing once under heavy load during an earlier run; it passed on every rerun
 and in the final 25-test run. Watch it if CI becomes flaky.
+
+---
+
+## CP5 — Machine learning (2026-11-14, hour 3.3 of 48; target hour 26)
+
+Spec: PROMPT.md §7.1-§7.4. Recorded as a log, not a gate.
+
+### What was built (`backend/twin/ml/`)
+
+| Spec | What | File |
+| --- | --- | --- |
+| §7.1 | `make train` runs the sim headless and fast (30 sim days x 3 hospitals, seed 20261114, about 8 s) and builds one row per waiting or admitted patient per 30 sim minutes; label: a critical event in the next 6 sim hours. A few flu surges are included | `dataset.py`, `observe.py` |
+| §7.2 | Features: latest vitals, 1 h and 2 h deltas, rolling min and max of SpO2, HR and RR over 2 h, NEWS2, age, sex, comorbidities, unit, hours since admission, ESI (29 in all). No latent severity, no future data; a test appends future readings and checks nothing changes, another changes the hidden physiology and checks nothing changes | `features.py` |
+| §7.2 | LightGBM, isotonic calibration, time-based split (60/20/20 by sim time), metrics for the model and for NEWS2 alone: AUROC, AUPRC, Brier, calibration curve; quality gates (AUROC >= 0.75 and beats NEWS2) as tests and in `make train` | `train.py`, `metrics.py`, `model.py`, `cli.py` |
+| §7.2 | SHAP TreeExplainer: top 3 factors per prediction, readable names, signed shares; levels high >= 0.70, medium >= 0.45 | `model.py` |
+| §7.2 | Model card with data, features, metrics, fairness by age band and sex, limits | `card.py` -> `docs/model_card.md` |
+| §7.3 | Hourly arrivals forecast for the next 6 h, must beat seasonal naive (gate); capacity projection "hours until full" per unit | `forecast.py` |
+| §7.4 | Live scoring every 5 sim minutes (risk events, alert on entering high), forecasts every 15; risk scores and forecasts stored in `risk_scores` and `forecasts`; scores shown in the inspector, monitors, markers, "!" signs, ALERTS KPI; forecast panel and model badge | `inference.py`, `api/routes_ml.py`, `frontend/src/ui/hospital/MlPanels.tsx` |
+| §6.2 | `GET /models` (versions, metrics, active models), `GET /forecast/{hospital}` (read from the `forecasts` table) | `api/routes_ml.py` |
+
+The trained models are committed in `models/` (a few hundred kilobytes, plain text and JSON, no pickles), so
+`make dev` scores patients without training first. `make train` rebuilds them.
+
+### Results (`make train`, 13 s)
+
+| | Model | NEWS2 alone |
+| --- | --- | --- |
+| Validation AUROC | **0.940** | 0.893 |
+| Test AUROC | **0.910** | 0.845 |
+| Test AUPRC | 0.351 | 0.163 |
+| Test Brier | 0.0225 | 0.0263 |
+
+Data: 120,231 rows, 2,804 positive (2.3%). Arrivals forecast MAE 0.785 against
+1.036 for seasonal naive (24% better). Largest AUROC gap between groups on the
+test split: 0.048.
+
+### Commands run and results
+
+| Command | Result |
+| --- | --- |
+| `make train` | Exit 0, all gates met (output above) |
+| `make verify` | Exit 0. Backend **279 passed**, coverage 96.3%. Frontend 149 passed, coverage 91%. Lint, `mypy --strict`, faceless, schema and layout checks pass |
+| `make e2e` | Exit 0. **26 passed, 0 skipped** (the new live test checks scores, factors, forecast, model version and alerts against the API) |
+
+### Evidence
+
+`models/lgbm-v1/metrics.json` (full metrics, calibration curves, fairness, feature importance),
+`models/arrivals-lgbm-v1/metrics.json`, `docs/model_card.md`, `docs/evidence/cp4/risk-inspector.png`.
+
+### How to check it yourself
+
+1. `make train`: ends with the metrics against NEWS2 and the forecast against the baseline.
+2. Open `docs/model_card.md`.
+3. `make dev`, open a hospital, click a patient: score, level, model version and three factors.
+   The left panel shows "Risk model lgbm-v1" and the 6-hour forecast with hours until each unit is full.
+4. `curl localhost:8000/models` and `curl localhost:8000/forecast/mercy`.
+
+### Decisions where the spec leaves room
+
+1. Factors are shown as signed shares of the total SHAP contribution (between -1 and 1), because raw SHAP
+   values are in log-odds and one factor can be 3.0.
+2. Scoring starts 6 sim hours before the 08:00 start, so risk charts have history when the page opens.
+3. Calibration uses the validation split (also used for early stopping); calibration and Brier are reported on the
+   untouched test split.
+4. The capacity projection's expected discharges use historical departure rates per occupied bed now; CP7
+   replaces them with length-of-stay predictions through the `discharge_rate` argument (already tested).
+5. The audit log entry per inference batch (PROMPT.md §8) comes with the governance work in CP6.
+
+### Deviations and known issues
+
+None.

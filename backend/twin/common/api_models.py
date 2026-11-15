@@ -2,6 +2,7 @@
 
 import re
 from datetime import datetime, timedelta
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -116,6 +117,28 @@ class KpiReport(Api):
     er_wait: ErWait | None
     arrivals_last_hour: dict[str, int]
     alerts_last_hour: dict[str, int]
+
+
+class ArrivalForecast(Api):
+    hours_ahead: int
+    expected: float
+
+
+class ForecastReport(Api):
+    hospital_id: str
+    as_of: datetime | None
+    model_version: str | None
+    arrivals: list[ArrivalForecast]
+    hours_until_full: dict[str, float | None] = Field(
+        description="Hours until each unit is full; null if not within 24 h"
+    )
+
+
+class ModelsResponse(Api):
+    active_deterioration: str | None
+    active_arrivals: str | None
+    error: str | None
+    models: list[dict[str, Any]]
 
 
 class SimState(Api):

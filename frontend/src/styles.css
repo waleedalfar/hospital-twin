@@ -730,3 +730,69 @@ select:focus-visible {
     position: static;
   }
 }
+
+/* ---------- forecast ---------- */
+.forecast {
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  background: var(--hud);
+  color: var(--white);
+  border: 2px solid var(--ink);
+}
+
+.forecast .muted {
+  color: #b8c4d6;
+}
+
+.forecast .error {
+  color: #ff9b9f;
+}
+
+.bars {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  height: 54px;
+}
+
+.bars__col {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.bars__col i {
+  display: block;
+  width: 100%;
+  background: #6d88b0;
+  border: 1px solid var(--ink);
+}
+
+.bars__col b {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.full {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: 'VT323', monospace;
+  font-size: 17px;
+}
+
+.full li {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
