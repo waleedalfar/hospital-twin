@@ -106,10 +106,20 @@ function within(testId: string, name: string): HTMLElement {
   return button;
 }
 
+function inspectorFetch(page: () => Response): ReturnType<typeof vi.fn> {
+  return vi.fn().mockImplementation((url: string) => {
+    if (url.includes('page-nurse')) return Promise.resolve(page());
+    if (url.includes('/vitals') || url.includes('/risk')) return Promise.resolve(new Response(JSON.stringify({ points: [] })));
+    return Promise.resolve(
+      new Response(JSON.stringify({ id: 'P-1', fhir_id: 'Patient/abc', age: 67, sex: 'male', conditions: ['A'], comorbidity_count: 1, hospital_id: 'mercy', location: null, encounter: null, vitals: null, risk: null })),
+    );
+  });
+}
+
 describe('paging from the inspector', () => {
   const patient = loadSnapshot().entities.find((e) => e.kind === 'patient' && e.location.bed) as Entity;
   it('shows the responsible nurse and pages them', async () => {
-    const f = vi.fn().mockImplementation((url: string) => Promise.resolve(new Response(JSON.stringify(url.includes('page-nurse') ? alert({ reason: 'paged' }) : { points: [] }))));
+    const f = inspectorFetch(() => new Response(JSON.stringify(alert({ reason: 'paged' }))));
     vi.stubGlobal('fetch', f);
     render(<Inspector entity={{ ...patient, nurse_id: 'N-14' }} onFly={vi.fn()} />);
     expect(screen.getByTestId('inspector-nurse').textContent).toContain('Nurse N-14');
@@ -117,7 +127,7 @@ describe('paging from the inspector', () => {
     await waitFor(() => { expect(f.mock.calls.some((c) => String(c[0]) === `/api/patients/${patient.id}/page-nurse` && (c[1] as RequestInit).method === 'POST')).toBe(true); });
   });
   it('has no page button without an assigned nurse, and reports a refusal', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => Promise.resolve(url.includes('page-nurse') ? new Response(JSON.stringify({ detail: 'No nurse is on duty in ICU' }), { status: 409 }) : new Response(JSON.stringify({ points: [] })))));
+    vi.stubGlobal('fetch', inspectorFetch(() => new Response(JSON.stringify({ detail: 'No nurse is on duty in ICU' }), { status: 409 })));
     render(<Inspector entity={{ ...patient, nurse_id: null }} onFly={vi.fn()} />);
     expect(screen.queryByTestId('page-nurse')).toBeNull();
     cleanup();

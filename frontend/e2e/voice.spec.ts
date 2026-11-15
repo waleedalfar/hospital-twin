@@ -66,15 +66,15 @@ test('11. a typed question highlights the highest-risk ICU patient', async ({ pa
   await page.getByRole('button', { name: 'Fly to' }).first().click();
   await expect(page.getByTestId('inspector-id')).toHaveText(top?.id ?? '');
 
-  // Closing the answer clears the highlight.
+  // Closing the answer clears its highlight. (A nurse with a pending alert is ringed too, so only patients are checked.)
   await page.getByTestId('ask-answer').getByRole('button', { name: 'Close' }).click();
-  await expect.poll(() => debug(page, (d) => d.highlighted().ids)).toEqual([]);
+  await expect.poll(async () => (await debug(page, (d) => d.highlighted().ids)).filter((i) => i.startsWith('P-'))).toEqual([]);
 
   // A question outside the tools gets an honest "I can answer questions about ..." and highlights nothing.
   await page.getByTestId('ask-input').fill('tell me a joke');
   await page.getByTestId('ask-send').click();
   await expect(page.getByTestId('ask-answer-text')).toContainText('I can answer questions about');
-  expect(await debug(page, (d) => d.highlighted().ids)).toEqual([]);
+  expect((await debug(page, (d) => d.highlighted().ids)).filter((i) => i.startsWith('P-'))).toEqual([]);
 });
 
 test('12. federated training from the UI streams round progress, and the model switch changes the version in the inspector', async ({ page, request }) => {

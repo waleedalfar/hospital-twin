@@ -104,14 +104,27 @@ test('5. clicking a patient in a bed opens the inspector with the same id as the
   const simNow = Date.parse(api.sim_time);
   const inBed = api.entities.filter((e) => e.kind === 'patient' && e.location.bed && !e.move && Date.parse(api.sim_time) >= simNow);
   expect(inBed.length).toBeGreaterThan(3);
-  const target = inBed.find((e) => e.location.bed === 'ICU-3') ?? inBed.find((e) => e.location.room === 'ICU') ?? inBed[0]!;
-  const preset = { 0: 'Ground floor', 1: 'Floor 2', 2: 'Floor 3' }[target.location.floor ?? 0] ?? 'Outside';
+  // ICU-3 first, then the other ICU beds, then any bed on that floor: the first one that no HUD panel is drawn over.
+  const ordered = [inBed.find((e) => e.location.bed === 'ICU-3'), ...inBed.filter((e) => e.location.room === 'ICU'), ...inBed].filter((e): e is (typeof inBed)[number] => e !== undefined);
+  const floor = ordered[0]?.location.floor ?? 0;
+  const preset = { 0: 'Ground floor', 1: 'Floor 2', 2: 'Floor 3' }[floor] ?? 'Outside';
   await page.getByRole('button', { name: preset }).click();
   await expect.poll(() => debug(page, (d) => d.view().floorY.length), { timeout: 5000 }).toBe(3);
   await page.waitForTimeout(1500);
-  const point = await page.evaluate((id) => (window as unknown as { __TWIN_DEBUG__: TwinDebug }).__TWIN_DEBUG__.screenPoint(id), target.id);
-  expect(point).not.toBeNull();
   const box = (await page.getByTestId('scene').boundingBox())!;
+  let target = ordered[0]!;
+  let point: { x: number; y: number } | null = null;
+  for (const c of ordered.filter((e) => e.location.floor === floor)) {
+    const p = await page.evaluate((id) => (window as unknown as { __TWIN_DEBUG__: TwinDebug }).__TWIN_DEBUG__.screenPoint(id), c.id);
+    if (!p) continue;
+    const free = await page.evaluate(([x, y]) => document.elementFromPoint(x ?? 0, y ?? 0)?.getAttribute('data-testid') === 'scene', [box.x + p.x, box.y + p.y]);
+    if (free) {
+      target = c;
+      point = p;
+      break;
+    }
+  }
+  expect(point, 'a patient that no HUD panel covers').not.toBeNull();
   await page.mouse.click(box.x + point!.x, box.y + point!.y);
   await expect(page.getByTestId('inspector-id')).toHaveText(target.id);
   expect(await debug(page, (d) => d.selected())).toBe(target.id);
