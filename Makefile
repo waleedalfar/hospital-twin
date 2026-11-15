@@ -93,8 +93,9 @@ deploy: ## Build and deploy to the Vultr VM, migrate, smoke-check (needs .env.de
 	bash scripts/deploy.sh
 
 seed-prod: ## Migrate and load Synthea patients into the production database (PROD_DATABASE_URL in .env.deploy)
-	@set -a; . ./.env.deploy; set +a; : "$${PROD_DATABASE_URL:?Set PROD_DATABASE_URL in .env.deploy}"; \
-	DATABASE_URL="$$PROD_DATABASE_URL" $(UV) python -m twin.db.migrate && DATABASE_URL="$$PROD_DATABASE_URL" $(MAKE) seed
+	@url="$$(grep -m1 '^PROD_DATABASE_URL=' .env.deploy | cut -d= -f2- | sed -e "s/^['\"]//" -e "s/['\"]$$//")"; \
+	test -n "$$url" || { echo "Set PROD_DATABASE_URL in .env.deploy" >&2; exit 1; }; \
+	DATABASE_URL="$$url" $(UV) python -m twin.db.migrate && DATABASE_URL="$$url" $(MAKE) seed
 
 smoke: ## Smoke-check a running deployment: make smoke URL=https://example.com
 	$(UV) python -m twin.ops.smoke $(URL)

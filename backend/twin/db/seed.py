@@ -64,17 +64,29 @@ async def load_records(conn: asyncpg.Connection, records: list[PatientRecord]) -
             "DELETE FROM patients WHERE NOT (id || '/' || synthea_id = ANY($1::text[]))",
             [f"{row[0]}/{row[1]}" for row in rows],
         )
-        for start in range(0, len(rows), BATCH):
-            await conn.executemany(
-                """
-                INSERT INTO patients (id, synthea_id, fhir, age, sex, comorbidity_count, conditions)
-                VALUES ($1, $2, $3::jsonb, $4, $5, $6, $7)
-                ON CONFLICT (id) DO UPDATE
-                SET fhir = EXCLUDED.fhir, age = EXCLUDED.age, sex = EXCLUDED.sex,
-                    comorbidity_count = EXCLUDED.comorbidity_count, conditions = EXCLUDED.conditions
-                """,
-                rows[start : start + BATCH],
-            )
+        # Bulk copy into a staging table, then one upsert: one round trip per step instead of one per row, which
+        # matters when the database is a cloud service far from this machine.
+        await conn.execute(
+            """
+            CREATE TEMP TABLE patients_stage (
+                id text, synthea_id text, fhir text, age int, sex text, comorbidity_count int, conditions text[]
+            ) ON COMMIT DROP
+            """
+        )
+        await conn.copy_records_to_table(
+            "patients_stage",
+            records=rows,
+            columns=["id", "synthea_id", "fhir", "age", "sex", "comorbidity_count", "conditions"],
+        )
+        await conn.execute(
+            """
+            INSERT INTO patients (id, synthea_id, fhir, age, sex, comorbidity_count, conditions)
+            SELECT id, synthea_id, fhir::jsonb, age, sex, comorbidity_count, conditions FROM patients_stage
+            ON CONFLICT (id) DO UPDATE
+            SET fhir = EXCLUDED.fhir, age = EXCLUDED.age, sex = EXCLUDED.sex,
+                comorbidity_count = EXCLUDED.comorbidity_count, conditions = EXCLUDED.conditions
+            """
+        )
     return len(rows)
 
 
