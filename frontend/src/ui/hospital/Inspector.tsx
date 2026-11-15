@@ -1,4 +1,6 @@
+import { useTwin } from '../../state/store';
 import type { Entity, TopFactor } from '../../state/types';
+import { api } from '../common';
 import { Sparkline } from './Sparkline';
 import { usePatient } from './usePatient';
 
@@ -45,6 +47,13 @@ function Vital({ k, label, value, unit = '', digits = 0 }: { k: string; label: s
 export function Inspector({ entity, onFly }: { entity: Entity | undefined; onFly: () => void }) {
   const isPatient = entity?.kind === 'patient';
   const { detail, vitals, risk, error } = usePatient(isPatient ? entity.id : null);
+  const setProblem = useTwin((s) => s.setProblem);
+  const pageNurse = (patientId: string) => {
+    api.pageNurse(patientId).catch((e: unknown) => {
+      console.error('Could not page the nurse', e);
+      setProblem(`Could not page the nurse: ${e instanceof Error ? e.message : String(e)}`);
+    });
+  };
   if (!entity) {
     return (
       <aside className="inspector" aria-label="Inspector">
@@ -128,6 +137,12 @@ export function Inspector({ entity, onFly }: { entity: Entity | undefined; onFly
         </>
       )}
       <Sparkline points={hrPoints} label="Heart rate, 6 h (5-minute averages)" />
+      {entity.nurse_id != null && (
+        <div className="inspector__nurse" data-testid="inspector-nurse">
+          <span className="muted">Nurse {entity.nurse_id}</span>{' '}
+          <button type="button" className="btn" data-testid="page-nurse" onClick={() => { pageNurse(entity.id); }}>Page nurse</button>
+        </div>
+      )}
       {entity.expected_discharge_h != null && (
         <div className="muted" data-testid="expected-discharge">
           Expected discharge in ~{Math.round(entity.expected_discharge_h)} h

@@ -438,7 +438,7 @@ export class Engine {
 
   /** Pick at normalized device coordinates and select the hit entity. */
   pickAt(nx: number, ny: number): string | null {
-    const id = this.picker.pick(nx, ny, this.cam.camera, this.layer.pickTargets());
+    const id = this.picker.pick(nx, ny, this.cam.camera, this.layer.pickTargets(), (id) => this.layer.entity(id)?.kind === 'patient');
     if (id) {
       this.selected = id;
       this.opts.onPick?.(id);

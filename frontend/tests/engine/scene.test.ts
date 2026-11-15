@@ -384,6 +384,44 @@ describe('picking', () => {
   });
 });
 
+describe('picking a patient behind a person', () => {
+  function scene(gap: number, frontId = 'N-14'): { cam: THREE.OrthographicCamera; root: THREE.Group } {
+    const root = new THREE.Group();
+    const make = (id: string, z: number): void => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 0.2), new THREE.MeshBasicMaterial());
+      m.userData['entityId'] = id;
+      m.position.z = z;
+      root.add(m);
+    };
+    make(frontId, 1); // the nurse stands in front, nearer the camera
+    make('P-0412', 1 - gap); // the patient lies behind her
+    const cam = new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 100);
+    cam.position.set(0, 0, 10);
+    cam.lookAt(0, 0, 0);
+    cam.updateMatrixWorld();
+    root.updateMatrixWorld(true);
+    return { cam, root };
+  }
+  const prefersPatients = (id: string): boolean => id.startsWith('P-');
+
+  it('selects the patient when they are just behind someone standing at the bedside', () => {
+    const { cam, root } = scene(0.8);
+    const picker = new Picker();
+    expect(picker.pick(0, 0, cam, [root])).toBe('N-14'); // without a preference the nearest wins
+    expect(picker.pick(0, 0, cam, [root], prefersPatients)).toBe('P-0412');
+  });
+  it('still selects the person when the patient is far behind them, or when nobody is preferred', () => {
+    const { cam, root } = scene(4);
+    const picker = new Picker();
+    expect(picker.pick(0, 0, cam, [root], prefersPatients)).toBe('N-14');
+    expect(picker.pick(0, 0, cam, [root], () => false)).toBe('N-14');
+  });
+  it('takes a preferred entity that is the nearest hit as it is', () => {
+    const { cam, root } = scene(0.8, 'P-0001');
+    expect(new Picker().pick(0, 0, cam, [root], prefersPatients)).toBe('P-0001');
+  });
+});
+
 describe('debug API', () => {
   it('is always present and read-only', () => {
     installDebug();

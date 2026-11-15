@@ -149,6 +149,7 @@ export type HospitalId1 = string;
 export type Id5 = string;
 export type NurseId1 = string;
 export type PatientId14 = string;
+export type Reason1 = 'high_risk' | 'paged';
 export type Responded = string | null;
 export type Score3 = number;
 export type SecondsToAck = number | null;
@@ -160,7 +161,7 @@ export type Time16 = string;
 export type Change = 'on_duty' | 'off_duty';
 export type EntityId2 = string;
 export type Kind19 = 'staff';
-export type Reason1 = string;
+export type Reason2 = string;
 export type Time17 = string;
 export type Destination = string | null;
 export type Kind20 = 'ambulance';
@@ -171,7 +172,7 @@ export type Time18 = string;
 export type VehicleId1 = string;
 export type VehicleKind = 'ambulance' | 'helicopter';
 export type Kind21 = 'hospital_status';
-export type Reason2 = string;
+export type Reason3 = string;
 export type Status4 = 'open' | 'diverting' | 'offline';
 export type Time19 = string;
 export type Until = string | null;
@@ -523,6 +524,7 @@ export interface NurseAlertModel {
   id: Id5;
   nurse_id: NurseId1;
   patient_id: PatientId14;
+  reason?: Reason1;
   responded?: Responded;
   score: Score3;
   seconds_to_ack?: SecondsToAck;
@@ -534,7 +536,7 @@ export interface StaffEvent {
   change: Change;
   entity_id: EntityId2;
   kind?: Kind19;
-  reason: Reason1;
+  reason: Reason2;
   time: Time17;
 }
 export interface AmbulanceEvent {
@@ -549,7 +551,7 @@ export interface AmbulanceEvent {
 }
 export interface HospitalStatusEvent {
   kind?: Kind21;
-  reason: Reason2;
+  reason: Reason3;
   status: Status4;
   time: Time19;
   until: Until;

@@ -378,3 +378,21 @@ async def test_nurse_alerts_can_be_listed_acknowledged_and_escalated_and_respons
         stats = (await client.get("/governance/nurse-response")).json()
         assert stats["raised"] >= 2 and stats["acknowledged"] == 1 and stats["escalated"] == 1
         assert stats["mean_seconds_to_ack"] > 0 and stats["median_seconds_to_ack"] > 0
+
+
+async def test_a_person_can_page_a_patients_nurse_and_the_page_is_audited(migrated_db_url: str) -> None:
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (client, rt, _app):
+        for _ in range(60):
+            await rt.step()
+        patient = next(p for h in rt.sim.world.hospitals.values() for p in h.bedded("WARD") if p.risk is not None and p.nurse_id)
+        paged = await client.post(f"/patients/{patient.id}/page-nurse")
+        assert paged.status_code == 201
+        body = paged.json()
+        assert body["patient_id"] == patient.id and body["nurse_id"] == patient.nurse_id and body["reason"] == "paged" and body["status"] == "pending"
+        assert (await client.get("/nurse-alerts?status=pending")).json()[0]["id"] == body["id"]
+        assert (await client.post(f"/nurse-alerts/{body['id']}/acknowledge")).json()["status"] == "acknowledged"
+        assert "nurse_paged" in await audit_actions(migrated_db_url)
+        assert (await client.post("/patients/P-9999/page-nurse")).status_code == 404
+        waiting = next(p for h in rt.sim.world.hospitals.values() for p in h.patients() if p.place.bed is None)
+        assert (await client.post(f"/patients/{waiting.id}/page-nurse")).status_code == 409

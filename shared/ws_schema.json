@@ -1708,6 +1708,15 @@
      "title": "Patient Id",
      "type": "string"
     },
+    "reason": {
+     "default": "high_risk",
+     "enum": [
+      "high_risk",
+      "paged"
+     ],
+     "title": "Reason",
+     "type": "string"
+    },
     "responded": {
      "anyOf": [
       {

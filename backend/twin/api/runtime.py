@@ -214,6 +214,25 @@ class SimRuntime:
         await self.audit("scenario_stop", {"id": scenario.id, "name": scenario.name})
         return scenario
 
+    async def page_nurse(self, patient_id: str, actor: str) -> nurses.NurseAlert:
+        """A person pages the nurse responsible for a patient who has a bed (the same pop-up as a high-risk alert)."""
+        found = self.sim.world.patient(patient_id)
+        if found is None:
+            raise nurses.AlertError(f"Unknown patient {patient_id}", 404)
+        hospital, patient = found
+        if patient.place.bed is None:
+            raise nurses.AlertError(f"{patient_id} does not have a bed yet", 409)
+        if patient.risk is None:
+            raise nurses.AlertError(f"{patient_id} has no risk score yet", 409)
+        alert = nurses.raise_alert(self.sim.world, hospital, patient, "paged")
+        if alert is None:
+            raise nurses.AlertError(f"No nurse is on duty in {patient.place.bed.split('-')[0]}", 409)
+        await self._publish_now()
+        await self.audit(
+            "nurse_paged", {"id": alert.id, "nurse_id": alert.nurse_id, "patient_id": patient_id, "hospital_id": hospital.id}, actor=actor
+        )
+        return alert
+
     async def nurse_response(self, alert_id: str, action: str, actor: str) -> nurses.NurseAlert:
         """Acknowledge or escalate a nurse alert; the time taken is audited."""
         alert = nurses.respond(self.sim.world, alert_id, action)

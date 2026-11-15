@@ -46,6 +46,15 @@ async def escalate(alert_id: str, rt: Runtime) -> NurseAlertModel:
     return await answer(rt, alert_id, "escalate")
 
 
+@router.post("/patients/{patient_id}/page-nurse", status_code=201)
+async def page_nurse(patient_id: str, rt: Runtime) -> NurseAlertModel:
+    """Page the nurse responsible for a patient: the same pop-up and bedside visit as a high-risk alert."""
+    try:
+        return (await rt.page_nurse(patient_id, "user")).model()
+    except AlertError as error:
+        raise HTTPException(error.status, str(error)) from error
+
+
 @router.get("/governance/nurse-response")
 async def nurse_response(rt: Runtime, db: DbPool) -> NurseResponseStats:
     """How quickly nurses answer high-risk alerts, from the audit log."""

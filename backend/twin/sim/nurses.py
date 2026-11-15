@@ -7,6 +7,7 @@ nurse (or a person using the UI) acknowledges it or escalates it to a doctor; th
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Literal
 
 from twin.common.ws import NurseAlertEvent, NurseAlertModel, NurseAlertStatus
 from twin.sim.entities import Patient, Staff
@@ -38,6 +39,7 @@ class NurseAlert:
     status: NurseAlertStatus = "pending"
     responded: datetime | None = None
     seconds_to_ack: float | None = None
+    reason: Literal["high_risk", "paged"] = "high_risk"
     history: list[str] = field(default_factory=list)
 
     def model(self) -> NurseAlertModel:
@@ -54,6 +56,7 @@ class NurseAlert:
             created=self.created,
             responded=self.responded,
             seconds_to_ack=self.seconds_to_ack,
+            reason=self.reason,
         )
 
 
@@ -99,7 +102,7 @@ def send_to_patient(world: World, hospital: HospitalState, staff: Staff, patient
     world.kick(staff, "alert", patient_id)
 
 
-def raise_alert(world: World, hospital: HospitalState, patient: Patient) -> NurseAlert | None:
+def raise_alert(world: World, hospital: HospitalState, patient: Patient, reason: Literal["high_risk", "paged"] = "high_risk") -> NurseAlert | None:
     """Address a high-risk alert to the patient's nurse and send them over. None if no nurse is on duty in the unit."""
     unit = unit_of(hospital, patient)
     if unit is None or patient.risk is None:
@@ -120,6 +123,7 @@ def raise_alert(world: World, hospital: HospitalState, patient: Patient) -> Nurs
         score=patient.risk.score,
         top_factors=list(patient.risk.top_factors),
         created=world.time(),
+        reason=reason,
     )
     world.nurse_alerts[alert.id] = alert
     send_to_patient(world, hospital, nurse, patient.id)

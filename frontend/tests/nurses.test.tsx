@@ -4,10 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { feedItem } from '../src/state/feed';
 import { alertsIn, highlightTargets, mergeAlerts } from '../src/state/reducers';
 import { useTwin } from '../src/state/store';
-import type { EventsMessage, NurseAlertModel } from '../src/state/types';
+import type { Entity, EventsMessage, NurseAlertModel } from '../src/state/types';
 import { GovernanceDrawer } from '../src/ui/governance/Governance';
 import { NurseResponsePanel, minutes } from '../src/ui/governance/NurseResponse';
+import { Inspector } from '../src/ui/hospital/Inspector';
 import { NurseAlerts } from '../src/ui/hospital/NurseAlerts';
+import { loadSnapshot } from './engine/helpers';
 
 function alert(over: Partial<NurseAlertModel> = {}): NurseAlertModel {
   return {
@@ -20,6 +22,7 @@ function alert(over: Partial<NurseAlertModel> = {}): NurseAlertModel {
     score: 0.83,
     top_factors: [['SpO2 drop, 2h', 0.3], ['HR trend', 0.2], ['Age', 0.1]],
     status: 'pending',
+    reason: 'high_risk',
     created: '2026-11-14T18:00:00Z',
     responded: null,
     seconds_to_ack: null,
@@ -102,6 +105,32 @@ function within(testId: string, name: string): HTMLElement {
   if (!button) throw new Error(`no ${name} button`);
   return button;
 }
+
+describe('paging from the inspector', () => {
+  const patient = loadSnapshot().entities.find((e) => e.kind === 'patient' && e.location.bed) as Entity;
+  it('shows the responsible nurse and pages them', async () => {
+    const f = vi.fn().mockImplementation((url: string) => Promise.resolve(new Response(JSON.stringify(url.includes('page-nurse') ? alert({ reason: 'paged' }) : { points: [] }))));
+    vi.stubGlobal('fetch', f);
+    render(<Inspector entity={{ ...patient, nurse_id: 'N-14' }} onFly={vi.fn()} />);
+    expect(screen.getByTestId('inspector-nurse').textContent).toContain('Nurse N-14');
+    fireEvent.click(screen.getByTestId('page-nurse'));
+    await waitFor(() => { expect(f.mock.calls.some((c) => String(c[0]) === `/api/patients/${patient.id}/page-nurse` && (c[1] as RequestInit).method === 'POST')).toBe(true); });
+  });
+  it('has no page button without an assigned nurse, and reports a refusal', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => Promise.resolve(url.includes('page-nurse') ? new Response(JSON.stringify({ detail: 'No nurse is on duty in ICU' }), { status: 409 }) : new Response(JSON.stringify({ points: [] })))));
+    render(<Inspector entity={{ ...patient, nurse_id: null }} onFly={vi.fn()} />);
+    expect(screen.queryByTestId('page-nurse')).toBeNull();
+    cleanup();
+    render(<Inspector entity={{ ...patient, nurse_id: 'N-2' }} onFly={vi.fn()} />);
+    fireEvent.click(screen.getByTestId('page-nurse'));
+    await waitFor(() => { expect(useTwin.getState().problem).toBe('Could not page the nurse: No nurse is on duty in ICU'); });
+  });
+  it('words a paged alert differently from a high-risk one', () => {
+    useTwin.setState({ nurseAlerts: [alert({ reason: 'paged', score: 0.2 })] });
+    render(<NurseAlerts />);
+    expect(screen.getByTestId('nurse-alert-NA-1').textContent).toContain('Paged from the inspector · risk 0.20');
+  });
+});
 
 describe('response panel', () => {
   const stats = { raised: 5, pending: 1, acknowledged: 3, escalated: 1, mean_seconds_to_ack: 150, median_seconds_to_ack: 120 };

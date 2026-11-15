@@ -31,7 +31,7 @@ function Toast({ alert }: { alert: NurseAlertModel }) {
   return (
     <div className="toast" role="alert" data-testid={`nurse-alert-${alert.id}`}>
       <b className="toast__title">{alert.nurse_id}: {alert.patient_id}{alert.bed ? ` in ${alert.bed}` : ''}</b>
-      <span className="toast__score">High risk {alert.score.toFixed(2)}</span>
+      <span className="toast__score">{alert.reason === 'paged' ? `Paged from the inspector · risk ${alert.score.toFixed(2)}` : `High risk ${alert.score.toFixed(2)}`}</span>
       <ul className="toast__why">
         {(alert.top_factors as TopFactor[]).slice(0, 3).map(([name]) => <li key={name}>{name}</li>)}
       </ul>

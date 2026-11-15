@@ -236,6 +236,9 @@ export class Api {
   nurseAlerts(hospitalId: string | null = null): Promise<NurseAlertModel[]> {
     return this.call(hospitalId ? `/nurse-alerts?hospital=${encodeURIComponent(hospitalId)}` : '/nurse-alerts');
   }
+  pageNurse(patientId: string): Promise<NurseAlertModel> {
+    return this.call(`/patients/${encodeURIComponent(patientId)}/page-nurse`, { method: 'POST' });
+  }
   acknowledgeAlert(id: string): Promise<NurseAlertModel> {
     return this.call(`/nurse-alerts/${encodeURIComponent(id)}/acknowledge`, { method: 'POST' });
   }

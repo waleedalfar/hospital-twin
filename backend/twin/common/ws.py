@@ -273,6 +273,8 @@ class NurseAlertModel(Msg):
     created: datetime
     responded: datetime | None = None
     seconds_to_ack: float | None = None
+    # "high_risk" when the model raised it, "paged" when a person paged the nurse from the inspector.
+    reason: Literal["high_risk", "paged"] = "high_risk"
 
 
 class NurseAlertEvent(Ev):
