@@ -23,6 +23,11 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Install dependencies
         run: make setup
 
@@ -31,6 +36,11 @@ jobs:
 
       - name: make verify
         run: make verify
+
+      - name: make seed (a smaller patient pool than the 3,000 of a full run, to keep CI fast)
+        run: make seed
+        env:
+          SYNTHEA_POPULATION: '500'
 
       - name: make e2e
         run: make e2e
