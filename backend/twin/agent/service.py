@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
+from google.genai.errors import APIError
 from pydantic import ValidationError
 
 from twin.agent import rules
@@ -133,7 +134,7 @@ class AgentService:
                 assert self.llm is not None  # noqa: S101 - callers check
                 text = await self.llm.generate(build_prompt(summary, errors or None))
                 output = AgentOutput.model_validate_json(text)
-            except (TimeoutError, OSError, ValueError, ValidationError, json.JSONDecodeError) as error:
+            except (APIError, TimeoutError, OSError, ValueError, ValidationError, json.JSONDecodeError) as error:
                 logger.exception("Gemini failed for %s (%s, attempt %d)", summary.hospital_id, reason, attempt)
                 await self.audit(
                     "agent_llm_error",

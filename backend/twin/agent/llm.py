@@ -10,7 +10,6 @@ from typing import Protocol
 from google.genai.errors import APIError
 
 from twin.agent.model_chain import ModelChain
-from twin.agent.schema import AgentOutput
 from twin.agent.summary import Summary, flat_metrics
 
 logger = logging.getLogger(__name__)
@@ -24,7 +23,10 @@ SYSTEM = (
     "params.bed_id an open bed from open_beds), call_in_staff (target one unit of ER, WARD, ICU, REC; params.count 1-4), "
     "hold_bed (target one open bed from open_beds; params.minutes 15-240). Cite 2-5 metrics per recommendation in "
     "cited_metrics using ONLY names from the list 'metrics' and their exact values. Do not invent ids or numbers. "
-    "If nothing needs doing, return an empty list."
+    "If nothing needs doing, return an empty list. Reply with ONLY a JSON object of this shape: "
+    '{"recommendations": [{"id": "r1", "hospital_id": "<the hospital in the input>", "action": "divert_ambulances", '
+    '"targets": ["<id>"], "params": {"duration_min": 120}, "rationale": "<one or two sentences>", '
+    '"cited_metrics": [{"name": "<a name from metrics>", "value": 12.3}]}]}.'
 )
 
 
@@ -57,7 +59,7 @@ class GeminiClient:
                 self._client.aio.models.generate_content(
                     model=model,
                     contents=prompt,
-                    config=types.GenerateContentConfig(response_mime_type="application/json", response_schema=AgentOutput, temperature=0.2),
+                    config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.2),
                 ),
                 timeout=TIMEOUT_S,
             )

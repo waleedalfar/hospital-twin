@@ -8,6 +8,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Literal
 
+from google.genai.errors import APIError
 from pydantic import BaseModel, ValidationError
 
 from twin.agent.ask_llm import AskError, AskLLM
@@ -83,7 +84,7 @@ class AskService:
 
             try:
                 output = await self.llm.ask(question, hospital_id, call, errors)
-            except (TimeoutError, OSError, AskError, ValueError, ValidationError):
+            except (APIError, TimeoutError, OSError, AskError, ValueError, ValidationError):
                 logger.exception("Gemini could not answer %r (attempt %d)", question, attempt)
                 return None
             errors = check_answer(output, results) if results else ["the answer used no tool results"]

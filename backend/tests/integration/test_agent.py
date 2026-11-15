@@ -295,3 +295,15 @@ async def test_governance_without_models_says_why(migrated_db_url: str) -> None:
 def test_the_agent_protocol_is_satisfied_by_the_fake_client() -> None:
     client: LLMClient = FakeLLM("{}")
     assert client is not None
+
+
+async def test_a_gemini_api_error_such_as_a_bad_key_falls_back_to_the_rules_engine(migrated_db_url: str) -> None:
+    from google.genai.errors import ClientError
+
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (_, rt, _app):
+        agent = agent_of(rt)
+        agent.llm = FakeLLM(ClientError(400, {"error": {"message": "API key not valid"}}))
+        output, source = await agent.produce(busy_summary(), "test")
+        assert source == "rules" and output.recommendations
+        assert "agent_llm_error" in await audit_actions(migrated_db_url)

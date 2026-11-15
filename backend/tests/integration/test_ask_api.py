@@ -219,3 +219,15 @@ async def test_asking_without_the_simulation_running_is_unavailable(migrated_db_
     app = create_app(Settings(_env_file=None, database_url=SecretStr(migrated_db_url)), simulate=False)
     async with app.router.lifespan_context(app), httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         assert (await client.post("/agent/ask", json={"question": "how full", "hospital_id": "mercy"})).status_code == 503
+
+
+async def test_a_gemini_api_error_such_as_a_bad_key_gives_the_fallback_answer_not_a_server_error(migrated_db_url: str) -> None:
+    from google.genai.errors import ClientError, ServerError
+
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (client, rt, app):
+        await warmed(client, rt, 10)
+        for failure in (ClientError(400, {"error": {"message": "API key not valid"}}), ServerError(503, {"error": {"message": "overloaded"}})):
+            ask_service(app).llm = ScriptedAsk([], failure)
+            response = await client.post("/agent/ask", json={"question": "how many nurses are on duty", "hospital_id": "mercy"})
+            assert response.status_code == 200 and response.json()["source"] == "fallback"
