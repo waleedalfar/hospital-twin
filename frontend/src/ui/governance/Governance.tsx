@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { AuditEntry, AuditFilter, DriftReport, FairnessReport } from '../../state/api';
 import { api } from '../common';
 import { FederatedPanel } from './Federated';
+import { ModelsPanel } from './Models';
 
 export const GOVERNANCE_POLL_MS = 5000;
 const NOISE = ['risk_alert', 'inference_batch'];
@@ -153,12 +154,13 @@ export function AuditList() {
   );
 }
 
-type Tab = 'drift' | 'fairness' | 'audit' | 'federated';
+type Tab = 'drift' | 'fairness' | 'audit' | 'federated' | 'models';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'drift', label: 'Drift' },
   { id: 'fairness', label: 'Fairness' },
   { id: 'audit', label: 'Audit log' },
   { id: 'federated', label: 'Federated training' },
+  { id: 'models', label: 'Models' },
 ];
 
 /** Governance drawer (PROMPT.md §8): drift heatmap, fairness, audit log, and the model card. */
@@ -183,6 +185,7 @@ export function GovernanceDrawer({ onClose }: { onClose: () => void }) {
         {tab === 'fairness' && <FairnessTable />}
         {tab === 'audit' && <AuditList />}
         {tab === 'federated' && <FederatedPanel />}
+        {tab === 'models' && <ModelsPanel />}
       </div>
     </aside>
   );

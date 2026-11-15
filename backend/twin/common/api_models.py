@@ -171,6 +171,7 @@ class FairnessReport(Api):
     available: bool
     reason: str | None = None
     as_of: str | None = None
+    overall_auroc: float | None = None
     rows: int | None = None
     positives: int | None = None
     groups: dict[str, Any] | None = None
@@ -215,3 +216,19 @@ class ScenarioRequest(Api):
 
 class ErrorBody(Api):
     detail: str
+
+
+class ProposalInfo(Api):
+    reason: str
+    detail: str
+    from_version: str
+    to_version: str
+    created: datetime
+
+
+class ProposalResponse(Api):
+    proposal: ProposalInfo | None
+    live_auroc: float | None
+    validation_auroc: float | None
+    active: str | None
+    available: list[str]

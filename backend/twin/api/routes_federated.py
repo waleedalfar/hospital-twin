@@ -9,9 +9,11 @@ from pydantic import BaseModel
 from twin.api.deps import runtime
 from twin.api.federated import FederatedError, FederatedService
 from twin.api.runtime import SimRuntime
+from twin.common.api_models import ProposalInfo, ProposalResponse
 from twin.common.ws import FederatedMessage
 from twin.ml.fed_model import FED_VERSION, FederatedMlp
 from twin.ml.model import MODELS_DIR, DeteriorationModel, RiskModel
+from twin.ml.registry import deterioration_versions, validation_auroc
 from twin.ml.train import MODEL_VERSION
 
 logger = logging.getLogger(__name__)
@@ -27,6 +29,7 @@ class FederatedStatus(BaseModel):
 
 class ActiveModelRequest(BaseModel):
     version: str
+    reason: str | None = None  # set when the switch confirms a rollback proposal
 
 
 class ActiveModelResponse(BaseModel):
@@ -75,8 +78,34 @@ async def set_active_model(body: ActiveModelRequest, rt: Runtime) -> ActiveModel
         ) from error
     previous = ml.model.version
     ml.model = model
+    ml.validation_auroc = validation_auroc(body.version)
+    ml.available_versions = deterioration_versions()
+    ml.proposal = None
+    ml.live_auroc = None
     ml.score_all()  # rescore now, so every score on screen carries the new version
     await rt.publish_now()
-    await rt.audit("model_switch", {"from": previous, "to": body.version})
+    await rt.audit("model_switch", {"from": previous, "to": body.version, **({"reason": body.reason} if body.reason else {})})
+    if body.reason:
+        await rt.audit("rollback_confirmed", {"from": previous, "to": body.version, "reason": body.reason})
     logger.info("Live deterioration model: %s -> %s", previous, body.version)
     return ActiveModelResponse(active_deterioration=body.version, previous=previous)
+
+
+@router.get("/models/proposal")
+async def rollback_proposal(rt: Runtime) -> ProposalResponse:
+    """Whether the live model should be rolled back, and why. Nothing changes until a person confirms."""
+    ml = rt.sim.ml
+    if ml is None:
+        return ProposalResponse(proposal=None, live_auroc=None, validation_auroc=None, active=None, available=[])
+    found = ml.proposal
+    return ProposalResponse(
+        proposal=ProposalInfo(
+            reason=found.reason, detail=found.detail, from_version=found.from_version, to_version=found.to_version, created=found.created
+        )
+        if found
+        else None,
+        live_auroc=ml.live_auroc,
+        validation_auroc=ml.validation_auroc,
+        active=ml.model.version,
+        available=ml.available_versions,
+    )

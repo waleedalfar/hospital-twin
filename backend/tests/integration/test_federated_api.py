@@ -160,3 +160,36 @@ async def test_the_model_switch_needs_loaded_models(migrated_db_url: str) -> Non
         await rt.step()
         response = await client.post("/models/active", json={"version": "fed-mlp-v1"})
         assert response.status_code == 409 and "make train" in response.json()["detail"]
+
+
+async def test_a_slipping_model_gets_a_proposal_a_person_confirms_it_and_everything_is_audited(migrated_db_url: str) -> None:
+    await seed_patients(migrated_db_url)
+    async with app_client(migrated_db_url) as (client, rt, _app):
+        for _ in range(10):
+            await rt.step()
+        ml = rt.sim.ml
+        assert ml is not None
+        quiet = (await client.get("/models/proposal")).json()
+        assert quiet["proposal"] is None and quiet["active"] == "lgbm-v1" and set(quiet["available"]) >= {"lgbm-v1", "fed-mlp-v1"}
+        assert quiet["validation_auroc"] and quiet["validation_auroc"] > 0.8
+
+        ml.review_model(quiet["validation_auroc"] - 0.2)  # the next hourly review finds the live AUROC far below validation
+        found = (await client.get("/models/proposal")).json()
+        assert found["proposal"]["reason"] == "live_auroc_drop" and found["proposal"]["to_version"] == "fed-mlp-v1"
+        assert found["live_auroc"] == pytest.approx(quiet["validation_auroc"] - 0.2)
+        await rt.step()  # the audit rows queued by the review are written with the next tick
+        assert "rollback_proposed" in await audit_actions(migrated_db_url)
+        assert (await client.get("/models")).json()["active_deterioration"] == "lgbm-v1"  # nothing changed by itself
+
+        for _ in range(5):  # the swap happens while the simulation keeps running
+            await rt.step()
+        confirmed = await client.post("/models/active", json={"version": "fed-mlp-v1", "reason": found["proposal"]["reason"]})
+        assert confirmed.status_code == 200
+        for _ in range(5):
+            await rt.step()
+        state = (await client.get("/hospitals/mercy/state")).json()
+        assert {e["risk"]["model_version"] for e in state["entities"] if e["risk"]} == {"fed-mlp-v1"}
+        after = (await client.get("/models/proposal")).json()
+        assert after["proposal"] is None and after["active"] == "fed-mlp-v1"
+        actions = await audit_actions(migrated_db_url)
+        assert "rollback_confirmed" in actions and "model_switch" in actions

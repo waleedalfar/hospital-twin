@@ -216,6 +216,7 @@ class FairnessMonitor:
         aurocs = {k: g["auroc"] for k, g in groups.items() if g["auroc"] is not None}
         gap = float(max(aurocs.values()) - min(aurocs.values())) if len(aurocs) > 1 else 0.0
         return {
+            "overall_auroc": auroc_or_none(y, p) if len(window) >= MIN_GROUP_ROWS and len(set(y.tolist())) == 2 else None,
             "rows": len(window),
             "positives": int(y.sum()),
             "groups": groups,

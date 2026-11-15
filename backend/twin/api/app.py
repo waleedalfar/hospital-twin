@@ -33,6 +33,7 @@ from twin.ml.governance import load_baseline
 from twin.ml.inference import InferenceEngine
 from twin.ml.los import LOS_VERSION, LosModel
 from twin.ml.model import MODELS_DIR, DeteriorationModel
+from twin.ml.registry import deterioration_versions, validation_auroc
 from twin.ml.train import MODEL_VERSION
 from twin.sim.engine import Simulation
 from twin.sim.layout_model import load_layout
@@ -54,7 +55,10 @@ def attach_models(app: FastAPI, sim: Simulation) -> None:
         logger.error(app.state.ml_error)
         return
     baseline = load_baseline(MODELS_DIR / det.version)
-    sim.attach_ml(InferenceEngine(sim.world, det, arrivals, baseline, los))
+    engine = InferenceEngine(sim.world, det, arrivals, baseline, los)
+    engine.validation_auroc = validation_auroc(det.version)
+    engine.available_versions = deterioration_versions()
+    sim.attach_ml(engine)
     logger.info("Inference attached: %s, %s and %s", det.version, arrivals.version, los.version)
 
 

@@ -29,6 +29,7 @@ from twin.ml.governance import (
 from twin.ml.los import LOS_FEATURES, LOS_UNITS, LosModel, discharge_rates
 from twin.ml.model import RiskModel
 from twin.ml.observe import Observer
+from twin.ml.rollback import Proposal, propose
 from twin.sim.config import SIM_START
 from twin.sim.scenarios import flu_active
 from twin.sim.world import Emitted, World
@@ -77,6 +78,11 @@ class InferenceEngine:
     latest_drift: list[DriftReading] = field(default_factory=list)
     latest_fairness: dict[str, Any] | None = None
     latest_fairness_by_hospital: dict[str, dict[str, Any]] = field(default_factory=dict)
+    # Model review (extra X3): the live model's validation AUROC, the models that could replace it, and any proposal.
+    validation_auroc: float | None = None
+    available_versions: list[str] = field(default_factory=list)
+    live_auroc: float | None = None
+    proposal: Proposal | None = None
     # Predicted remaining hours of the admitted patients, per hospital and unit (length-of-stay model).
     remaining: dict[str, dict[str, list[float]]] = field(default_factory=dict)
     batches: int = 0
@@ -203,6 +209,21 @@ class InferenceEngine:
             "fairness_report",
             {"rows": report["rows"], "max_auroc_gap": report["max_auroc_gap"], "flagged": report["flagged"]},
         )
+        self.review_model(report.get("overall_auroc"))
+
+    def review_model(self, live_auroc: float | None) -> None:
+        """Compare the live model with its validation numbers and with drift; propose a rollback when it has slipped.
+        Called every sim hour with the AUROC on the latest labelled window."""
+        self.live_auroc = live_auroc
+        found = propose(live_auroc, self.validation_auroc, self.latest_drift, self.model.version, self.available_versions, self.world.time())
+        if found is None:
+            self.proposal = None
+            return
+        if self.proposal is None or self.proposal.reason != found.reason or self.proposal.to_version != found.to_version:
+            self.audit(
+                "system", "rollback_proposed", {"reason": found.reason, "detail": found.detail, "from": found.from_version, "to": found.to_version}
+            )
+        self.proposal = found
 
     # ---- length of stay ---------------------------------------------------------------------------------
 

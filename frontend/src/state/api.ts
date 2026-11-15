@@ -60,7 +60,7 @@ export interface ModelsResponse {
   active_deterioration: string | null;
   active_arrivals: string | null;
   error: string | null;
-  models: { version: string; kind: string; metrics: Record<string, unknown> }[];
+  models: { version: string; kind: string; metrics: Record<string, unknown>; trained_at?: string }[];
 }
 export interface FederatedMetrics {
   auroc: number;
@@ -79,6 +79,13 @@ export interface FederatedStatus {
   state: FederatedMessage;
   result: FederatedComparison | null;
   available: boolean;
+}
+export interface RollbackProposal {
+  proposal: { reason: string; detail: string; from_version: string; to_version: string; created: string } | null;
+  live_auroc: number | null;
+  validation_auroc: number | null;
+  active: string | null;
+  available: string[];
 }
 export interface ActiveModel {
   active_deterioration: string;
@@ -218,8 +225,11 @@ export class Api {
   runFederated(): Promise<FederatedMessage> {
     return this.call('/federated/run', { method: 'POST' });
   }
-  setActiveModel(version: string): Promise<ActiveModel> {
-    return this.call('/models/active', { method: 'POST', body: JSON.stringify({ version }) });
+  rollbackProposal(): Promise<RollbackProposal> {
+    return this.call('/models/proposal');
+  }
+  setActiveModel(version: string, reason?: string): Promise<ActiveModel> {
+    return this.call('/models/active', { method: 'POST', body: JSON.stringify({ version, ...(reason ? { reason } : {}) }) });
   }
   sim(): Promise<SimState> {
     return this.call('/sim');
