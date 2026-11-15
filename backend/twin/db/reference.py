@@ -48,10 +48,7 @@ async def sync_reference(conn: asyncpg.Connection, layout: Layout) -> ReferenceC
             SET name = EXCLUDED.name, unit = EXCLUDED.unit, floor = EXCLUDED.floor, kind = EXCLUDED.kind,
                 x1 = EXCLUDED.x1, x2 = EXCLUDED.x2, z1 = EXCLUDED.z1, z2 = EXCLUDED.z2
             """,
-            [
-                (r.id, r.name, r.unit, r.floor, r.kind, r.rect.x1, r.rect.x2, r.rect.z1, r.rect.z2)
-                for r in rooms
-            ],
+            [(r.id, r.name, r.unit, r.floor, r.kind, r.rect.x1, r.rect.x2, r.rect.z1, r.rect.z2) for r in rooms],
         )
         await conn.executemany(
             """
@@ -69,9 +66,5 @@ async def sync_reference(conn: asyncpg.Connection, layout: Layout) -> ReferenceC
             [f"{hospital_id}/{b.id}" for b, hospital_id in beds],
         )
         await conn.execute("DELETE FROM rooms WHERE NOT (id = ANY($1::text[]))", [r.id for r in rooms])
-        await conn.execute(
-            "DELETE FROM units WHERE NOT (id = ANY($1::text[]))", [u.id for u in layout.care_units]
-        )
-    return ReferenceCounts(
-        hospitals=len(layout.hospitals), units=len(layout.care_units), rooms=len(rooms), beds=len(beds)
-    )
+        await conn.execute("DELETE FROM units WHERE NOT (id = ANY($1::text[]))", [u.id for u in layout.care_units])
+    return ReferenceCounts(hospitals=len(layout.hospitals), units=len(layout.care_units), rooms=len(rooms), beds=len(beds))

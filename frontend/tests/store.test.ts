@@ -12,6 +12,7 @@ const snap: SnapshotMessage = { ...loadSnapshot(), frozen: false };
 function harness(freeze = false) {
   const clients: { opts: WsOptions; started: boolean; stopped: boolean }[] = [];
   const setFrozen = vi.fn().mockResolvedValue({});
+  const recs = vi.fn().mockResolvedValue([]);
   let now = 1000;
   const store = createTwinStore({
     createClient: (opts): ClientLike => {
@@ -22,12 +23,12 @@ function harness(freeze = false) {
         stop: () => (c.stopped = true),
       };
     },
-    api: { setFrozen },
+    api: { setFrozen, recs },
     now: () => now,
     wsUrl: (p) => `ws://test${p}`,
   });
   store.getState().setFreeze(freeze);
-  return { store, clients, setFrozen, setNow: (n: number) => (now = n) };
+  return { store, clients, setFrozen, recs, setNow: (n: number) => (now = n) };
 }
 
 const events = (time: string, list: object[]): EventsMessage => ({
@@ -130,5 +131,29 @@ describe('store', () => {
 
   it('builds ws and wss URLs from the page location', () => {
     expect(defaultWsUrl('/ws/network')).toBe(`ws://${location.host}/ws/network`);
+  });
+});
+
+describe('agent recommendations in the store', () => {
+  it('loads the stored recommendations after the snapshot and keeps up through events', async () => {
+    const { store, clients, recs } = harness();
+    const stored = { id: 'REC-1', hospital_id: 'mercy', action: 'hold_bed', targets: ['ICU-6'], params: {}, rationale: 'x', cited_metrics: [], source: 'rules', status: 'pending', created: '2026-11-14T18:00:00Z' };
+    recs.mockResolvedValue([stored]);
+    store.getState().connectHospital('mercy');
+    clients[0]?.opts.onMessage(snap);
+    await vi.waitFor(() => { expect(store.getState().recs.map((r) => r.id)).toEqual(['REC-1']); });
+    expect(recs).toHaveBeenCalledWith('mercy');
+    const approved = { ...stored, status: 'approved' };
+    clients[0]?.opts.onMessage(events(snap.sim_time, [{ kind: 'agent_rec', time: snap.sim_time, rec: approved }]));
+    expect(store.getState().recs[0]?.status).toBe('approved');
+    store.getState().disconnectHospital();
+    expect(store.getState().recs).toEqual([]);
+  });
+  it('shows a problem when the recommendations cannot be loaded', async () => {
+    const { store, clients, recs } = harness();
+    recs.mockRejectedValue(new Error('down'));
+    store.getState().connectHospital('mercy');
+    clients[0]?.opts.onMessage(snap);
+    await vi.waitFor(() => { expect(store.getState().problem).toContain("Could not load the agent's recommendations"); });
   });
 });

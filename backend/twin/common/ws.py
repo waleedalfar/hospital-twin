@@ -19,9 +19,7 @@ ArrivalMode = Literal["walk_in", "ambulance", "air"]
 Complaint = Literal["respiratory", "cardiac", "trauma", "gi", "neuro", "infection", "other"]
 RiskLevel = Literal["low", "medium", "high"]
 VehicleKind = Literal["ambulance", "helicopter"]
-VehicleStatus = Literal[
-    "at_base", "to_scene", "on_scene", "to_hospital", "unloading", "returning", "transferring"
-]
+VehicleStatus = Literal["at_base", "to_scene", "on_scene", "to_hospital", "unloading", "returning", "transferring"]
 ScenarioName = Literal["flu_surge", "mass_casualty", "staff_shortage", "hospital_offline"]
 ActionName = Literal["divert_ambulances", "expedite_discharge", "move_patient", "call_in_staff", "hold_bed"]
 
@@ -285,6 +283,40 @@ class ActionEvent(Ev):
     result: str
 
 
+class DriftAlertEvent(Ev):
+    """A feature's distribution at a hospital moved away from the training data (PSI above 0.2)."""
+
+    kind: Literal["drift_alert"] = "drift_alert"
+    feature: str
+    psi: float
+
+
+class AgentRecModel(Msg):
+    id: str
+    hospital_id: str
+    action: ActionName
+    targets: list[str]
+    params: dict[str, str | float | int | list[str]]
+    rationale: str
+    cited_metrics: list["CitedMetric"]
+    source: Literal["gemini", "rules"]
+    status: Literal["pending", "approved", "dismissed", "expired"]
+    created: datetime
+    label: str | None = None
+
+
+class CitedMetric(Msg):
+    name: str
+    value: float
+
+
+class AgentRecEvent(Ev):
+    """A new or updated recommendation from the operations agent."""
+
+    kind: Literal["agent_rec"] = "agent_rec"
+    rec: AgentRecModel
+
+
 SimEvent = Annotated[
     MoveEvent
     | SpawnEvent
@@ -305,7 +337,9 @@ SimEvent = Annotated[
     | AmbulanceEvent
     | HospitalStatusEvent
     | ScenarioEvent
-    | ActionEvent,
+    | ActionEvent
+    | DriftAlertEvent
+    | AgentRecEvent,
     Field(discriminator="kind"),
 ]
 
@@ -380,6 +414,4 @@ class ErrorMessage(Msg):
     message: str
 
 
-ServerMessage = Annotated[
-    SnapshotMessage | EventsMessage | NetworkMessage | ErrorMessage, Field(discriminator="type")
-]
+ServerMessage = Annotated[SnapshotMessage | EventsMessage | NetworkMessage | ErrorMessage, Field(discriminator="type")]

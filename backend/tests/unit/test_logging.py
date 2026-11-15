@@ -32,9 +32,7 @@ def test_redact_dsn_leaves_other_text_alone() -> None:
 
 
 def test_filter_removes_known_secrets_from_message_and_args() -> None:
-    record = logging.LogRecord(
-        "t", logging.INFO, __file__, 1, "key=%s url=%s", ("abc123", "x://u:pw@h"), None
-    )
+    record = logging.LogRecord("t", logging.INFO, __file__, 1, "key=%s url=%s", ("abc123", "x://u:pw@h"), None)
     assert SecretRedactingFilter(["abc123"]).filter(record) is True
     assert record.getMessage() == f"key={REDACTED} url=x://u:{REDACTED}@h"
 
@@ -44,9 +42,7 @@ def test_filter_replaces_longer_secret_first() -> None:
     assert redactor.redact("value abcdef end") == f"value {REDACTED} end"
 
 
-def test_configure_logging_redacts_output(
-    restore_root_logger: object, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_configure_logging_redacts_output(restore_root_logger: object, capsys: pytest.CaptureFixture[str]) -> None:
     configure_logging("debug", ["topsecret"])
     logging.getLogger("twin.test").info("token topsecret used for postgresql://a:b@c/d")
     err = capsys.readouterr().err

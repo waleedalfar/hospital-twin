@@ -150,9 +150,7 @@ def test_scenarios_write_events_and_show_in_the_snapshot() -> None:
     assert [x.id for x in sim.snapshot("stlukes", 1, False, False).scenarios] == [s.id]
     assert sim.snapshot("mercy", 1, False, False).scenarios == []
     sim.stop_scenario(s.id)
-    assert ("scenario", "stopped") in [
-        (i.event.kind, getattr(i.event, "status", None)) for i in sim.world.drain()
-    ]
+    assert ("scenario", "stopped") in [(i.event.kind, getattr(i.event, "status", None)) for i in sim.world.drain()]
     assert sim.snapshot("stlukes", 1, False, False).scenarios == []
 
 
@@ -258,9 +256,7 @@ def test_actions_emit_events() -> None:
         ("hold_bed", {"hospital_id": "mercy", "bed_id": "ICU-1", "minutes": 99999}, "minutes must be"),
     ],
 )
-def test_invalid_actions_are_rejected_and_change_nothing(
-    action: ActionName, params: dict[str, str | float | int | list[str]], message: str
-) -> None:
+def test_invalid_actions_are_rejected_and_change_nothing(action: ActionName, params: dict[str, str | float | int | list[str]], message: str) -> None:
     sim = warm()
     sim.world.drain()
     with pytest.raises(ActionError, match=message):

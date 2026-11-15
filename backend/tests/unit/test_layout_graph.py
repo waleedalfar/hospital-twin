@@ -141,9 +141,7 @@ def test_no_edge_passes_through_a_wall(layout: Layout) -> None:
                 if not lo - EPS <= where <= hi + EPS:
                     continue
                 gaps = [d for d in layout.doors if d.floor == a.floor and d.axis == axis and d.at == at]
-                assert any(d.start < where < d.end for d in gaps), (
-                    f"edge {edge.a} - {edge.b} crosses the wall of {room.id} at {axis}={where:.2f}"
-                )
+                assert any(d.start < where < d.end for d in gaps), f"edge {edge.a} - {edge.b} crosses the wall of {room.id} at {axis}={where:.2f}"
 
 
 def test_no_edge_passes_through_furniture_or_beds(layout: Layout) -> None:
@@ -166,9 +164,7 @@ def test_no_edge_passes_through_furniture_or_beds(layout: Layout) -> None:
             # A seat is on its chair or couch, and a table spot is on its table: those ends are allowed.
             if footprint.contains(a.x, a.z) or footprint.contains(b.x, b.z):
                 continue
-            assert not segment_hits_rect(a, b, footprint), (
-                f"edge {edge.a} - {edge.b} passes through {obstacle_id}"
-            )
+            assert not segment_hits_rect(a, b, footprint), f"edge {edge.a} - {edge.b} passes through {obstacle_id}"
 
 
 def test_segment_helper_detects_crossings() -> None:

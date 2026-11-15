@@ -228,11 +228,7 @@ def build_layout() -> Layout:
                 node=node,
             )
         )
-        slots.append(
-            AmbulanceSlot(
-                id=f"AMB-slot-{i}", x=x, z=t.AMBULANCE_SLOT_Z, rotation=ROTATION["north"], spot=spot_id
-            )
-        )
+        slots.append(AmbulanceSlot(id=f"AMB-slot-{i}", x=x, z=t.AMBULANCE_SLOT_Z, rotation=ROTATION["north"], spot=spot_id))
     curb = g.node("f0-CURB", 0, t.CURB[0], t.CURB[1], "OUTSIDE")
     g.connect(curb, g.lane("OUTSIDE", 0, t.CURB[0]))
     spots.append(
@@ -317,10 +313,7 @@ def build_layout() -> Layout:
         ),
         hospitals=[Hospital(id=h[0], name=h[1], lat=h[2], lon=h[3], helipad=h[4]) for h in t.HOSPITALS],
         care_units=[Unit(id=u[0], name=u[1], clinical=u[2], capacity=capacity[u[0]]) for u in t.UNITS],
-        floors=[
-            Floor(level=level, name=t.FLOOR_NAMES[level], rooms=rooms[level], doors=doors[level])
-            for level in range(t.LEVELS + 1)
-        ],
+        floors=[Floor(level=level, name=t.FLOOR_NAMES[level], rooms=rooms[level], doors=doors[level]) for level in range(t.LEVELS + 1)],
         beds=beds,
         seats=seats,
         spots=spots,

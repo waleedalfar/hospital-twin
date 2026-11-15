@@ -55,10 +55,7 @@ def test_every_scorable_patient_with_vitals_gets_a_score_and_it_shows_in_the_sna
     sim.run_until(sim.visible_start + timedelta(minutes=60))
     ml = sim.ml
     assert ml is not None
-    sim.run_until(
-        sim.world.time()
-        + timedelta(minutes=(SCORE_EVERY_MIN - round(sim.world.now) % SCORE_EVERY_MIN) % SCORE_EVERY_MIN)
-    )
+    sim.run_until(sim.world.time() + timedelta(minutes=(SCORE_EVERY_MIN - round(sim.world.now) % SCORE_EVERY_MIN) % SCORE_EVERY_MIN))
     for hospital_id in sim.world.hospitals:
         snap = sim.snapshot(hospital_id, 1, False, False)
         with_vitals = [e for e in snap.entities if e.kind == "patient" and e.vitals is not None]
@@ -126,14 +123,7 @@ def test_hourly_arrivals_match_the_arrival_events(models: tuple[DeteriorationMod
     counts, last = ml.hourly_arrivals("mercy", 5)
     assert last == 4  # hours 0..4 are complete at 13:20; hour 0 starts at the visible start
     visible = sim.world.minutes(sim.visible_start)
-    expected = [
-        sum(
-            1
-            for m, h, _ in ml.observer.arrivals
-            if h == "mercy" and visible + 60 * k <= m < visible + 60 * (k + 1)
-        )
-        for k in range(5)
-    ]
+    expected = [sum(1 for m, h, _ in ml.observer.arrivals if h == "mercy" and visible + 60 * k <= m < visible + 60 * (k + 1)) for k in range(5)]
     assert counts.tolist() == expected
 
 

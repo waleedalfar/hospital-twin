@@ -57,10 +57,7 @@ def read_records(fhir_dir: Path, as_of: date = AS_OF) -> tuple[list[PatientRecor
 async def load_records(conn: asyncpg.Connection, records: list[PatientRecord]) -> int:
     """Make the `patients` table hold exactly `records`. Ids are assigned by sorted Synthea id, so the
     same Synthea output always gives the same P-numbers."""
-    rows = [
-        (patient_id(i), r.synthea_id, json.dumps(r.fhir), r.age, r.sex, r.comorbidity_count, r.conditions)
-        for i, r in enumerate(records)
-    ]
+    rows = [(patient_id(i), r.synthea_id, json.dumps(r.fhir), r.age, r.sex, r.comorbidity_count, r.conditions) for i, r in enumerate(records)]
     async with conn.transaction():
         # Clear rows whose Synthea id would collide with a different P-number (a changed patient set).
         await conn.execute(
@@ -109,10 +106,7 @@ def main(argv: list[str] | None = None) -> int:
         logger.info("Reusing Synthea output in %s (same version, seed and population)", data_dir)
 
     result = asyncio.run(seed_from_directory(settings.database_url.get_secret_value(), data_dir / "fhir"))
-    print(
-        f"Synthea patients loaded: {result.loaded} "
-        f"({result.files} bundles read, {result.deceased} deceased patients left out)"
-    )
+    print(f"Synthea patients loaded: {result.loaded} ({result.files} bundles read, {result.deceased} deceased patients left out)")
     return 0
 
 

@@ -80,9 +80,7 @@ async def apply_migrations(conn: asyncpg.Connection, migrations: list[Migration]
         known_checksum = recorded.get(migration.version)
         if known_checksum is not None:
             if known_checksum != migration.checksum:
-                raise MigrationError(
-                    f"Migration {migration.version:04d}_{migration.name} was changed after it was applied"
-                )
+                raise MigrationError(f"Migration {migration.version:04d}_{migration.name} was changed after it was applied")
             continue
         async with conn.transaction():
             await conn.execute(migration.sql)
@@ -97,9 +95,7 @@ async def apply_migrations(conn: asyncpg.Connection, migrations: list[Migration]
     return applied
 
 
-async def connect_with_retry(
-    dsn: str, attempts: int = CONNECT_ATTEMPTS, delay_s: float = CONNECT_DELAY_S
-) -> asyncpg.Connection:
+async def connect_with_retry(dsn: str, attempts: int = CONNECT_ATTEMPTS, delay_s: float = CONNECT_DELAY_S) -> asyncpg.Connection:
     """Connect to the database, waiting for it to accept connections (it may still be starting)."""
     for attempt in range(1, attempts + 1):
         try:

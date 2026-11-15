@@ -53,10 +53,7 @@ def test_path_is_shortest(router: Router) -> None:
                 dist[m] = d + w
                 heapq.heappush(heap, (d + w, m))
     path = router.path(src, dst)
-    total = sum(
-        next(e.length for e in layout.graph.edges if {e.a, e.b} == {a, b})
-        for a, b in zip(path, path[1:], strict=False)
-    )
+    total = sum(next(e.length for e in layout.graph.edges if {e.a, e.b} == {a, b}) for a, b in zip(path, path[1:], strict=False))
     assert total == pytest.approx(dist[dst], abs=1e-6)
 
 
@@ -80,9 +77,7 @@ def test_no_route_error() -> None:
     from twin.sim.layout_model import Layout
 
     layout = load_layout()
-    broken = Layout.model_validate(
-        {**layout.model_dump(), "graph": {"nodes": layout.model_dump()["graph"]["nodes"], "edges": []}}
-    )
+    broken = Layout.model_validate({**layout.model_dump(), "graph": {"nodes": layout.model_dump()["graph"]["nodes"], "edges": []}})
     with pytest.raises(NoRouteError):
         Router(broken).path("f0-ELEV", "f1-ELEV")
 

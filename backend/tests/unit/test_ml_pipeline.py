@@ -81,9 +81,7 @@ def test_observer_features_do_not_change_when_the_hidden_state_changes() -> None
     observer = Observer(sim.world)
     for _ in range(10 * 60):
         observer.feed(sim.tick())
-    hospital, patient = next(
-        (h, p) for h, p in observer.scorable() if p.id in observer.charts and observer.charts[p.id].readings
-    )
+    hospital, patient = next((h, p) for h, p in observer.scorable() if p.id in observer.charts and observer.charts[p.id].readings)
     before = observer.features_for(hospital, patient, sim.world.now)
     assert before is not None
     assert patient.physiology is not None
@@ -108,9 +106,7 @@ def test_hourly_arrivals_cover_every_hour_for_every_hospital(dataset: Dataset) -
     assert a["arrivals"].sum() > 500
     assert a["scenario"].sum() > 0  # flu surges are flagged
     assert set(dataset.unit_stats) == set(BED_UNITS)
-    assert all(
-        v["admit_per_arrival"] >= 0 and v["departure_per_bed_hour"] > 0 for v in dataset.unit_stats.values()
-    )
+    assert all(v["admit_per_arrival"] >= 0 and v["departure_per_bed_hour"] > 0 for v in dataset.unit_stats.values())
 
 
 # ---- deterioration model -----------------------------------------------------------------------------------
@@ -120,9 +116,7 @@ def test_time_based_split_keeps_validation_after_training_and_test_after_validat
     s = split_by_time(dataset.rows)
     assert s.train["minute"].max() < s.val["minute"].min() <= s.val["minute"].max() < s.test["minute"].min()
     assert len(s.train) + len(s.val) + len(s.test) == len(dataset.rows)
-    span = (
-        dataset.rows["minute"].max() - dataset.rows["minute"].min()
-    )  # the split is by sim time, not by row count
+    span = dataset.rows["minute"].max() - dataset.rows["minute"].min()  # the split is by sim time, not by row count
     assert s.train["minute"].max() == pytest.approx(0.6 * span, abs=30)
     assert s.val["minute"].max() == pytest.approx(0.8 * span, abs=30)
 
@@ -170,9 +164,7 @@ def test_shap_output_has_the_right_shape_and_top_factors_are_named_and_signed(tr
         assert len(s.top_factors) == 3
         names = [n for n, _ in s.top_factors]
         assert len(set(names)) == 3
-        assert all(
-            isinstance(n, str) and n and n not in FEATURE_NAMES for n in names
-        )  # readable, not column names
+        assert all(isinstance(n, str) and n and n not in FEATURE_NAMES for n in names)  # readable, not column names
         assert all(-1.0 <= v <= 1.0 for _, v in s.top_factors)
         assert [abs(v) for _, v in s.top_factors] == sorted((abs(v) for _, v in s.top_factors), reverse=True)
 
@@ -247,9 +239,7 @@ def test_metric_helpers() -> None:
     assert auroc_or_none(np.zeros(100, dtype=int), np.zeros(100)) is None
 
 
-def test_saved_run_has_metrics_and_the_registry_lists_it(
-    trained: TrainResult, dataset: Dataset, tmp_path: Path
-) -> None:
+def test_saved_run_has_metrics_and_the_registry_lists_it(trained: TrainResult, dataset: Dataset, tmp_path: Path) -> None:
     save_run(trained, dataset, tmp_path / MODEL_VERSION)
     saved = json.loads((tmp_path / MODEL_VERSION / "metrics.json").read_text(encoding="utf-8"))
     assert saved["version"] == MODEL_VERSION
@@ -289,9 +279,7 @@ def test_arrivals_model_round_trips(dataset: Dataset, tmp_path: Path) -> None:
 def test_forecast_rows_use_only_the_past(dataset: Dataset) -> None:
     rows = make_rows(dataset.arrivals)
     row = rows.iloc[100]
-    part = dataset.arrivals[
-        dataset.arrivals["hospital"] == ["mercy", "stlukes", "desert"][int(row["hospital"])]
-    ].sort_values("hour")
+    part = dataset.arrivals[dataset.arrivals["hospital"] == ["mercy", "stlukes", "desert"][int(row["hospital"])]].sort_values("hour")
     counts = part["arrivals"].to_numpy(dtype=float)
     t = int(row["hour"])
     assert row["lag_0"] == counts[t] and row["lag_1"] == counts[t - 1]
@@ -354,9 +342,7 @@ def test_gate_failures_name_each_missed_gate(trained: TrainResult, dataset: Data
         gate_failures(trained.metrics, {"validation": 1})
 
 
-def test_model_card_lists_data_features_metrics_fairness_and_limits(
-    trained: TrainResult, dataset: Dataset, tmp_path: Path
-) -> None:
+def test_model_card_lists_data_features_metrics_fairness_and_limits(trained: TrainResult, dataset: Dataset, tmp_path: Path) -> None:
     save_run(trained, dataset, tmp_path / MODEL_VERSION)
     det = json.loads((tmp_path / MODEL_VERSION / "metrics.json").read_text(encoding="utf-8"))
     _, fm = train_arrivals(dataset.arrivals, dataset.unit_stats)

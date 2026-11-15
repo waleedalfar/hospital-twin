@@ -28,9 +28,7 @@ def make_profiles(n: int = 600) -> list[PatientProfile]:
     return profiles
 
 
-def make_sim(
-    seed: int = SEED, warmup_h: float = 24.0, *, debug: bool = True, layout: Layout | None = None
-) -> Simulation:
+def make_sim(seed: int = SEED, warmup_h: float = 24.0, *, debug: bool = True, layout: Layout | None = None) -> Simulation:
     return Simulation(layout or load_layout(), make_profiles(), seed, timedelta(hours=warmup_h), debug=debug)
 
 
@@ -47,7 +45,5 @@ def digest(sim: Simulation, minutes: int) -> str:
 def stream_json(sim: Simulation, minutes: int) -> list[str]:
     out: list[str] = []
     for _ in range(minutes):
-        out.extend(
-            json.dumps(i.event.model_dump(mode="json", by_alias=True), sort_keys=True) for i in sim.tick()
-        )
+        out.extend(json.dumps(i.event.model_dump(mode="json", by_alias=True), sort_keys=True) for i in sim.tick())
     return out

@@ -34,9 +34,7 @@ EXPECTED_COLUMNS = {
 
 
 async def test_tables_have_the_spec_columns(db: asyncpg.Connection) -> None:
-    rows = await db.fetch(
-        "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public'"
-    )
+    rows = await db.fetch("SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public'")
     columns: dict[str, set[str]] = {}
     for row in rows:
         columns.setdefault(row["table_name"], set()).add(row["column_name"])
@@ -81,9 +79,7 @@ async def test_indexes_for_patient_and_hospital_lookups(db: asyncpg.Connection) 
 
 
 async def test_continuous_aggregates_exist_with_refresh_policies(db: asyncpg.Connection) -> None:
-    views = await db.fetch(
-        "SELECT view_name, materialized_only FROM timescaledb_information.continuous_aggregates"
-    )
+    views = await db.fetch("SELECT view_name, materialized_only FROM timescaledb_information.continuous_aggregates")
     assert {row["view_name"] for row in views} == AGGREGATES
     assert not any(row["materialized_only"] for row in views)  # readers also see not-yet-refreshed rows
     jobs = await db.fetch(
@@ -110,9 +106,7 @@ async def test_compression_policy_on_vitals_and_events(db: asyncpg.Connection) -
         "vitals": "1 day",
         "events": "1 day",
     }
-    settings = await db.fetch(
-        "SELECT hypertable_name FROM timescaledb_information.hypertables WHERE compression_enabled"
-    )
+    settings = await db.fetch("SELECT hypertable_name FROM timescaledb_information.hypertables WHERE compression_enabled")
     assert {"vitals", "events"} <= {row["hypertable_name"] for row in settings}
 
 
@@ -128,14 +122,10 @@ async def test_compression_policy_compresses_old_chunks_and_data_stays_readable(
         """
     )
     job_id = await db.fetchval(
-        "SELECT job_id FROM timescaledb_information.jobs "
-        "WHERE proc_name = 'policy_compression' AND hypertable_name = 'vitals'"
+        "SELECT job_id FROM timescaledb_information.jobs WHERE proc_name = 'policy_compression' AND hypertable_name = 'vitals'"
     )
     await db.execute(f"CALL run_job({int(job_id)})")
-    compressed = await db.fetchval(
-        "SELECT count(*) FROM timescaledb_information.chunks "
-        "WHERE hypertable_name = 'vitals' AND is_compressed"
-    )
+    compressed = await db.fetchval("SELECT count(*) FROM timescaledb_information.chunks WHERE hypertable_name = 'vitals' AND is_compressed")
     assert compressed >= 1
     assert await db.fetchval("SELECT count(*) FROM vitals") == 10
     assert await db.fetchval("SELECT avg(hr) FROM vitals") == 84.5
@@ -143,22 +133,13 @@ async def test_compression_policy_compresses_old_chunks_and_data_stays_readable(
 
 async def test_constraints_reject_invalid_rows(db: asyncpg.Connection) -> None:
     with pytest.raises(asyncpg.CheckViolationError):
-        await db.execute(
-            "INSERT INTO bed_state (time, bed_id, hospital_id, patient_id, state) "
-            "VALUES (now(), 'ICU-1', 'mercy', NULL, 'on fire')"
-        )
+        await db.execute("INSERT INTO bed_state (time, bed_id, hospital_id, patient_id, state) VALUES (now(), 'ICU-1', 'mercy', NULL, 'on fire')")
     with pytest.raises(asyncpg.CheckViolationError):  # occupied needs a patient
-        await db.execute(
-            "INSERT INTO bed_state (time, bed_id, hospital_id, patient_id, state) "
-            "VALUES (now(), 'ICU-1', 'mercy', NULL, 'occupied')"
-        )
+        await db.execute("INSERT INTO bed_state (time, bed_id, hospital_id, patient_id, state) VALUES (now(), 'ICU-1', 'mercy', NULL, 'occupied')")
     with pytest.raises(asyncpg.CheckViolationError):
         await db.execute(
             "INSERT INTO risk_scores (time, patient_id, hospital_id, model_version, score, level) "
             "VALUES (now(), 'P-0001', 'mercy', 'v1', 1.5, 'high')"
         )
     with pytest.raises(asyncpg.ForeignKeyViolationError):
-        await db.execute(
-            "INSERT INTO encounters (patient_id, hospital_id, arrived_at, mode, esi) "
-            "VALUES ('P-9999', 'mercy', now(), 'walk_in', 3)"
-        )
+        await db.execute("INSERT INTO encounters (patient_id, hospital_id, arrived_at, mode, esi) VALUES ('P-9999', 'mercy', now(), 'walk_in', 3)")

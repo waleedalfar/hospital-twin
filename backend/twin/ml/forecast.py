@@ -107,9 +107,7 @@ class ArrivalsModel:
 
     def forecast(self, hospital: str, history: Floats, hour: int, scenario: int) -> list[float]:
         """Predicted arrivals for each of the next 6 sim hours (never negative)."""
-        rows = pd.DataFrame(
-            [feature_row(hospital, history, hour, scenario, h) for h in range(1, HORIZON_H + 1)]
-        )
+        rows = pd.DataFrame([feature_row(hospital, history, hour, scenario, h) for h in range(1, HORIZON_H + 1)])
         pred = np.asarray(self.booster.predict(rows[list(FEATURES)]), dtype=np.float64)
         return [max(0.0, float(v)) for v in pred]
 
@@ -153,17 +151,8 @@ def train_arrivals(
     naive = float(np.mean(np.abs(val["naive"].to_numpy(dtype=np.float64) - target)))
     by_h = {
         str(h): {
-            "mae": float(
-                np.mean(np.abs(pred[val["horizon"].to_numpy() == h] - target[val["horizon"].to_numpy() == h]))
-            ),
-            "naive_mae": float(
-                np.mean(
-                    np.abs(
-                        val["naive"].to_numpy()[val["horizon"].to_numpy() == h]
-                        - target[val["horizon"].to_numpy() == h]
-                    )
-                )
-            ),
+            "mae": float(np.mean(np.abs(pred[val["horizon"].to_numpy() == h] - target[val["horizon"].to_numpy() == h]))),
+            "naive_mae": float(np.mean(np.abs(val["naive"].to_numpy()[val["horizon"].to_numpy() == h] - target[val["horizon"].to_numpy() == h]))),
         }
         for h in range(1, HORIZON_H + 1)
     }

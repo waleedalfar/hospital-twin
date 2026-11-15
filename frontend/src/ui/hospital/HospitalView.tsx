@@ -7,6 +7,8 @@ import { useTwin } from '../../state/store';
 import { Banners, ScenarioMenu, SimClock, SpeedControls } from '../common';
 import { go } from '../route';
 import { FloorPlan } from './FloorPlan';
+import { GovernanceButton } from '../governance/Governance';
+import { AgentPanel } from './AgentPanel';
 import { Inspector } from './Inspector';
 import { ForecastPanel, ModelBadge } from './MlPanels';
 import { KpiStrip, Legend, LiveFeed, PresetBar } from './Panels';
@@ -133,6 +135,7 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
         <button type="button" className={showPlan ? 'btn btn--on' : 'btn'} aria-pressed={showPlan} disabled={error !== null} onClick={() => { setPlan(!plan); }}>
           2D plan
         </button>
+        <GovernanceButton />
         <ScenarioMenu hospitals={hospitals} defaultHospital={hospitalId} active={data?.scenarios ?? []} />
       </header>
       <Banners connection={connection} />
@@ -162,6 +165,7 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
               <ForecastPanel hospitalId={hospitalId} />
             </div>
             <div className="hud hud--tr">
+              <AgentPanel />
               <Inspector entity={entity} onFly={() => engine?.focusSelected()} />
             </div>
             <div className="hud hud--bl">

@@ -1,0 +1,34 @@
+{
+ "recommendations": [
+  {
+   "id": "g1",
+   "hospital_id": "mercy",
+   "action": "divert_ambulances",
+   "targets": [
+    "desert"
+   ],
+   "params": {
+    "duration_min": 120
+   },
+   "rationale": "Mercy's ER is full with 10 waiting and a 77.2 min wait; Desert Valley is at 48.3% of capacity.",
+   "cited_metrics": [
+    {
+     "name": "ER.occupied",
+     "value": 6
+    },
+    {
+     "name": "waiting",
+     "value": 10
+    },
+    {
+     "name": "er_wait_min",
+     "value": 77.2
+    },
+    {
+     "name": "other.desert.occupancy_pct",
+     "value": 48.3
+    }
+   ]
+  }
+ ]
+}

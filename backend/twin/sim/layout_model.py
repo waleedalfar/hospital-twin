@@ -149,9 +149,7 @@ class Prop(Model):
 
     @property
     def footprint(self) -> Rect:
-        return Rect(
-            x1=self.x - self.w / 2, x2=self.x + self.w / 2, z1=self.z - self.d / 2, z2=self.z + self.d / 2
-        )
+        return Rect(x1=self.x - self.w / 2, x2=self.x + self.w / 2, z1=self.z - self.d / 2, z2=self.z + self.d / 2)
 
 
 class AmbulanceSlot(Model):

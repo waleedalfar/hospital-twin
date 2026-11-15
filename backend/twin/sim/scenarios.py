@@ -38,9 +38,7 @@ class Scenario:
 
 
 def active(world: World, name: ScenarioName, hospital_id: str) -> bool:
-    return any(
-        s.active and s.name == name and s.hospital_id in (None, hospital_id) for s in world.scenarios.values()
-    )
+    return any(s.active and s.name == name and s.hospital_id in (None, hospital_id) for s in world.scenarios.values())
 
 
 def flu_active(world: World, hospital_id: str) -> bool:
@@ -54,9 +52,7 @@ def demand_multiplier(world: World, hospital_id: str) -> float:
 def nearest_hospital(world: World, lat: float, lon: float) -> str:
     from twin.sim.vehicles import hospital_point, km
 
-    return min(
-        (h.id for h in world.layout.hospitals), key=lambda h: (km((lat, lon), hospital_point(world, h)), h)
-    )
+    return min((h.id for h in world.layout.hospitals), key=lambda h: (km((lat, lon), hospital_point(world, h)), h))
 
 
 def emit(world: World, scenario: Scenario, status: ScenarioStatus) -> None:
@@ -73,9 +69,7 @@ def emit(world: World, scenario: Scenario, status: ScenarioStatus) -> None:
     )
 
 
-def start(
-    world: World, name: ScenarioName, hospital_id: str | None, lat: float | None, lon: float | None
-) -> Scenario:
+def start(world: World, name: ScenarioName, hospital_id: str | None, lat: float | None, lon: float | None) -> Scenario:
     from twin.sim.vehicles import set_hospital_status
 
     if hospital_id is not None and hospital_id not in world.hospitals:
@@ -137,11 +131,7 @@ def mass_casualty(world: World, scenario: Scenario, scene: tuple[float, float]) 
         if not scenario.active or scenario.hospital_id is None:
             return
         esi = int(rng.choices((1, 2, 3, 4), weights=(0.15, 0.35, 0.35, 0.15))[0])
-        world.env.process(
-            run_call(
-                world, scenario.hospital_id, scene, complaint="trauma", forced=scenario.hospital_id, esi=esi
-            )
-        )
+        world.env.process(run_call(world, scenario.hospital_id, scene, complaint="trauma", forced=scenario.hospital_id, esi=esi))
         yield world.env.timeout(gap)
 
 

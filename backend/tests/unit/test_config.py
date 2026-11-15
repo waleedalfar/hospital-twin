@@ -70,8 +70,6 @@ def test_repo_root_is_the_project_root() -> None:
 def test_env_example_lists_every_setting() -> None:
     """CLAUDE.md §1.9: `.env.example` lists every variable."""
     example = (REPO_ROOT / ".env.example").read_text(encoding="utf-8")
-    listed = {
-        line.split("=", 1)[0].strip() for line in example.splitlines() if "=" in line and line[0] != "#"
-    }
+    listed = {line.split("=", 1)[0].strip() for line in example.splitlines() if "=" in line and line[0] != "#"}
     expected = {name.upper() for name in Settings.model_fields}
     assert expected <= listed, f"missing from .env.example: {sorted(expected - listed)}"

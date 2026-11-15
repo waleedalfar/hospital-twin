@@ -67,9 +67,7 @@ class GraphBuilder:
             else:
                 length = math.hypot(na.x - nb.x, na.z - nb.z)
             key = (a, b) if a < b else (b, a)
-            edges[key] = Edge.model_validate(
-                {"a": key[0], "b": key[1], "kind": kind, "length": round(length, 3)}
-            )
+            edges[key] = Edge.model_validate({"a": key[0], "b": key[1], "kind": kind, "length": round(length, 3)})
 
         for (room, lane), xs in sorted(self._lane_xs.items()):
             floor, z, prefix = self._lanes[(room, lane)]

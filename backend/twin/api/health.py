@@ -32,9 +32,7 @@ async def check_database(pool: Pool) -> HealthResponse:
             migrations_applied=int(migrations),
             error="TimescaleDB extension is not installed",
         )
-    return HealthResponse(
-        status="ok", db="ok", timescaledb_version=str(version), migrations_applied=int(migrations)
-    )
+    return HealthResponse(status="ok", db="ok", timescaledb_version=str(version), migrations_applied=int(migrations))
 
 
 def with_sim(result: HealthResponse, request: Request) -> HealthResponse:
@@ -54,9 +52,7 @@ def with_sim(result: HealthResponse, request: Request) -> HealthResponse:
     else:
         sim = "running"
     ml = runtime.sim.ml
-    ml_state = (
-        "ready" if ml is not None else ("missing" if getattr(request.app.state, "ml_error", None) else "off")
-    )
+    ml_state = "ready" if ml is not None else ("missing" if getattr(request.app.state, "ml_error", None) else "off")
     return result.model_copy(
         update={
             "sim": sim,

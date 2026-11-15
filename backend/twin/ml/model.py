@@ -76,9 +76,7 @@ class DeteriorationModel:
         names = json.loads((directory / "features.json").read_text(encoding="utf-8"))
         if names != list(FEATURE_NAMES):
             raise ValueError(f"Model {version} was trained with different features than this code builds")
-        calibrator = Calibrator.from_json(
-            json.loads((directory / "calibrator.json").read_text(encoding="utf-8"))
-        )
+        calibrator = Calibrator.from_json(json.loads((directory / "calibrator.json").read_text(encoding="utf-8")))
         return DeteriorationModel(version, booster, calibrator)
 
     # ---- prediction -----------------------------------------------------------------------------------

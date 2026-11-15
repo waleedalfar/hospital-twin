@@ -153,7 +153,5 @@ def generate(java: str, jar: Path, out_dir: Path, population: int, seed: int) ->
         raise SyntheaError(f"Synthea exited with code {result.returncode}: {tail}")
     if not any(fhir_dir.glob("*.json")):
         raise SyntheaError(f"Synthea finished but wrote no bundles to {fhir_dir}")
-    (out_dir / MARKER_NAME).write_text(
-        json.dumps(marker_for(population, seed), indent=1) + "\n", encoding="utf-8"
-    )
+    (out_dir / MARKER_NAME).write_text(json.dumps(marker_for(population, seed), indent=1) + "\n", encoding="utf-8")
     return fhir_dir

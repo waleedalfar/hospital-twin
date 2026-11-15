@@ -40,9 +40,7 @@ def enter(world: World, hospital: HospitalState, staff: Staff, reason: str) -> N
     staff.on_duty = True
     hospital.people[staff.id] = staff
     world.emit(hospital.id, SpawnEvent(time=world.time(), entity=entity_model(world, staff)))
-    world.emit(
-        hospital.id, StaffEvent(time=world.time(), entity_id=staff.id, change="on_duty", reason=reason)
-    )
+    world.emit(hospital.id, StaffEvent(time=world.time(), entity_id=staff.id, change="on_duty", reason=reason))
     world.env.process(staff_loop(world, hospital, staff))
 
 
@@ -109,19 +107,12 @@ def break_due(world: World, hospital: HospitalState, staff: Staff) -> bool:
     if world.now - staff.last_break < 60 * c.BREAK_EVERY_H or staff.kind == "surgeon":
         return False
     covering = [
-        s
-        for s in hospital.staff()
-        if s.unit == staff.unit
-        and s.kind == staff.kind
-        and s.id != staff.id
-        and s.task not in ("break", "prayer")
+        s for s in hospital.staff() if s.unit == staff.unit and s.kind == staff.kind and s.id != staff.id and s.task not in ("break", "prayer")
     ]
     return bool(covering)
 
 
-def timed_stay(
-    world: World, hospital: HospitalState, staff: Staff, spot: str, task: str, minutes: float
-) -> SimGen:
+def timed_stay(world: World, hospital: HospitalState, staff: Staff, spot: str, task: str, minutes: float) -> SimGen:
     yield from go(world, hospital, staff, spot)
     staff.task = task
     yield from world.wait_for(staff, minutes)
@@ -149,9 +140,7 @@ def staff_loop(world: World, hospital: HospitalState, staff: Staff) -> SimGen:
             staff.prayed.add(prayer)
             yield from timed_stay(world, hospital, staff, spot, "prayer", c.PRAYER_MIN)
             continue
-        lounge = hospital.first_free(
-            hospital.seats_where("lounge") + hospital.spots_where(room="STAFF", kinds=("standing",))
-        )
+        lounge = hospital.first_free(hospital.seats_where("lounge") + hospital.spots_where(room="STAFF", kinds=("standing",)))
         if break_due(world, hospital, staff) and lounge is not None:
             staff.last_break = world.now
             yield from timed_stay(world, hospital, staff, lounge, "break", c.BREAK_MIN)
@@ -170,9 +159,7 @@ def staff_loop(world: World, hospital: HospitalState, staff: Staff) -> SimGen:
             for patient in patients:
                 bedside = bedside_of(hospital, patient.place.bed)
                 if bedside is not None and staff.on_duty:
-                    yield from timed_stay(
-                        world, hospital, staff, bedside, "rounds", rng.uniform(*c.DOCTOR_VISIT_MIN)
-                    )
+                    yield from timed_stay(world, hospital, staff, bedside, "rounds", rng.uniform(*c.DOCTOR_VISIT_MIN))
         else:
             patient = patients[visit % len(patients)]
             visit += 1
@@ -206,9 +193,7 @@ def go_off_duty(world: World, hospital: HospitalState, staff: Staff) -> SimGen:
 
 def send_off_duty(world: World, hospital: HospitalState, staff: Staff, reason: str) -> None:
     staff.on_duty = False
-    world.emit(
-        hospital.id, StaffEvent(time=world.time(), entity_id=staff.id, change="off_duty", reason=reason)
-    )
+    world.emit(hospital.id, StaffEvent(time=world.time(), entity_id=staff.id, change="off_duty", reason=reason))
     world.kick(staff, "off_duty")
 
 

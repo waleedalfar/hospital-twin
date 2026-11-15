@@ -16,9 +16,7 @@ from twin.common.config import Settings
 
 
 @asynccontextmanager
-async def app_client(
-    dsn: str, *, ml: bool = True
-) -> AsyncIterator[tuple[httpx.AsyncClient, SimRuntime, object]]:
+async def app_client(dsn: str, *, ml: bool = True) -> AsyncIterator[tuple[httpx.AsyncClient, SimRuntime, object]]:
     settings = Settings(
         _env_file=None,
         database_url=SecretStr(dsn),
@@ -50,9 +48,7 @@ async def test_scores_and_forecasts_are_stored_and_served(migrated_db_url: str) 
             row = await conn.fetchrow("SELECT * FROM risk_scores ORDER BY time DESC, patient_id LIMIT 1")
             n_forecasts = await conn.fetchval("SELECT count(*) FROM forecasts")
             kinds = {r["metric"] for r in await conn.fetch("SELECT DISTINCT metric FROM forecasts")}
-            assert (
-                await conn.fetchval("SELECT count(*) FROM events WHERE kind = 'risk'") == 0
-            )  # scores live in risk_scores
+            assert await conn.fetchval("SELECT count(*) FROM events WHERE kind = 'risk'") == 0  # scores live in risk_scores
         finally:
             await conn.close()
         assert n_scores > 200 and "low" in levels
@@ -76,9 +72,7 @@ async def test_scores_and_forecasts_are_stored_and_served(migrated_db_url: str) 
         assert [a["hours_ahead"] for a in report["arrivals"]] == [1, 2, 3, 4, 5, 6]
         assert set(report["hours_until_full"]) == {"ER", "WARD", "ICU", "REC"}
         assert (await client.get("/forecast/nope")).status_code == 404
-        assert state["kpis"]["alerts"] == sum(
-            1 for e in state["entities"] if e["risk"] and e["risk"]["level"] == "high"
-        )
+        assert state["kpis"]["alerts"] == sum(1 for e in state["entities"] if e["risk"] and e["risk"]["level"] == "high")
 
 
 async def test_models_endpoint_lists_versions_metrics_and_the_active_models(migrated_db_url: str) -> None:
@@ -90,16 +84,11 @@ async def test_models_endpoint_lists_versions_metrics_and_the_active_models(migr
         det = by_version["lgbm-v1"]
         assert det["kind"] == "deterioration"
         assert det["metrics"]["validation"]["model"]["auroc"] >= 0.75
-        assert (
-            det["metrics"]["validation"]["model"]["auroc"]
-            > det["metrics"]["validation"]["news2_baseline"]["auroc"]
-        )
+        assert det["metrics"]["validation"]["model"]["auroc"] > det["metrics"]["validation"]["news2_baseline"]["auroc"]
         assert by_version["arrivals-lgbm-v1"]["kind"] == "arrivals_forecast"
 
 
-async def test_without_models_the_sim_runs_unscored_and_says_so(
-    migrated_db_url: str, monkeypatch: pytest.MonkeyPatch
-) -> None:
+async def test_without_models_the_sim_runs_unscored_and_says_so(migrated_db_url: str, monkeypatch: pytest.MonkeyPatch) -> None:
     await seed_patients(migrated_db_url)
     monkeypatch.setattr("twin.api.app.MODEL_VERSION", "does-not-exist")
     async with app_client(migrated_db_url) as (client, rt, _):

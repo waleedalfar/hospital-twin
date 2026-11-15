@@ -86,8 +86,8 @@ train: db ## Build the training set from the sim and train/evaluate the models (
 fed-train: ## Federated training from the command line (built in CP7)
 	@echo "make fed-train: federated training is built in CP7 (PROMPT.md §7.6). Nothing was run." >&2; exit 1
 
-verify-live: ## Real Gemini call when a key is present (built in CP6)
-	@echo "make verify-live: the Gemini agent is built in CP6 (PROMPT.md §9). Nothing was run." >&2; exit 1
+verify-live: db ## One real Gemini call on a live sim summary, checked for grounding (needs GEMINI_API_KEY and GEMINI_MODEL)
+	$(UV) python -m twin.agent.live_check
 
 deploy: ## Build and deploy to the Vultr VM (built in CP8)
 	@echo "make deploy: deployment is built in CP8 (PROMPT.md §12). Nothing was run." >&2; exit 1

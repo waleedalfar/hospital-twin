@@ -82,9 +82,7 @@ def test_snapshot_matches_world_state() -> None:
         snap = sim.snapshot(hospital_id, 4, True, False)
         assert snap.speed == 4 and snap.paused and not snap.frozen
         assert {e.id for e in snap.entities} == set(hospital.people)
-        assert {b.id: (b.patient_id, b.state) for b in snap.beds} == {
-            b.id: (b.patient_id, b.state) for b in hospital.beds.values()
-        }
+        assert {b.id: (b.patient_id, b.state) for b in snap.beds} == {b.id: (b.patient_id, b.state) for b in hospital.beds.values()}
         assert snap.kpis.census == sum(1 for b in snap.beds if b.state == "occupied")
         assert snap.kpis.capacity == 29
         for entity in snap.entities:
@@ -160,10 +158,7 @@ def test_moves_have_origin_destination_path_and_walking_duration() -> None:
             assert list(e.times) == sorted(e.times)
             for a, b, ta, tb in zip(e.path, e.path[1:], e.times, e.times[1:], strict=False):
                 if layout.nodes[a].floor == layout.nodes[b].floor and a != b:
-                    dist = (
-                        (layout.nodes[a].x - layout.nodes[b].x) ** 2
-                        + (layout.nodes[a].z - layout.nodes[b].z) ** 2
-                    ) ** 0.5
+                    dist = ((layout.nodes[a].x - layout.nodes[b].x) ** 2 + (layout.nodes[a].z - layout.nodes[b].z) ** 2) ** 0.5
                     assert (tb - ta).total_seconds() == pytest.approx(dist / 1.3, rel=0.02, abs=0.05)
     assert seen > 100
 

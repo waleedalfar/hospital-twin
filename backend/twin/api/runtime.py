@@ -5,7 +5,7 @@ import asyncio
 import logging
 import time
 from datetime import timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from twin.api.hub import Hub
 from twin.common.ws import ActionName, EventsMessage, ScenarioName
@@ -15,6 +15,9 @@ from twin.sim.config import SPEEDS
 from twin.sim.engine import Simulation
 from twin.sim.entities import PatientProfile
 from twin.sim.scenarios import Scenario
+
+if TYPE_CHECKING:
+    from twin.agent.service import AgentService
 
 logger = logging.getLogger(__name__)
 WARMUP_FLUSH_TICKS = 240
@@ -26,13 +29,8 @@ class ControlError(Exception):
 
 async def load_profiles(pool: Pool) -> list[PatientProfile]:
     async with pool.acquire() as conn:
-        rows = await conn.fetch(
-            "SELECT id, age, sex, comorbidity_count, conditions FROM patients ORDER BY id"
-        )
-    return [
-        PatientProfile(r["id"], r["age"], r["sex"], r["comorbidity_count"], tuple(r["conditions"]))
-        for r in rows
-    ]
+        rows = await conn.fetch("SELECT id, age, sex, comorbidity_count, conditions FROM patients ORDER BY id")
+    return [PatientProfile(r["id"], r["age"], r["sex"], r["comorbidity_count"], tuple(r["conditions"])) for r in rows]
 
 
 class SimRuntime:
@@ -44,6 +42,7 @@ class SimRuntime:
         self.hub = hub
         self.writer = SimWriter(sim.world)
         self.speed = speed
+        self.agent: AgentService | None = None
         self.paused = False
         self.frozen = False
         self.ready = False
@@ -83,6 +82,8 @@ class SimRuntime:
         self._task = asyncio.create_task(self._loop(), name="sim-loop")
 
     async def stop(self) -> None:
+        if self.agent is not None:
+            await self.agent.stop()
         if self._task is not None:
             self._task.cancel()
             try:
@@ -113,6 +114,8 @@ class SimRuntime:
         self.ticks += 1
         self.writer.add(emitted)
         self._queue_forecasts()
+        if self.agent is not None:
+            self.agent.tick(round(self.sim.world.now))
         # Broadcast before any await: a snapshot is built between awaits, so it always reflects exactly the
         # ticks whose events have already been sent. Otherwise a client could receive events that its
         # snapshot already includes.
@@ -121,8 +124,11 @@ class SimRuntime:
             await self.writer.flush(conn)
 
     def _queue_forecasts(self) -> None:
-        if self.sim.ml is not None:
-            self.writer.add_forecasts(self.sim.ml.drain_forecasts())
+        ml = self.sim.ml
+        if ml is not None:
+            self.writer.add_forecasts(ml.drain_forecasts())
+            self.writer.add_audit(ml.drain_audit())
+            self.writer.add_drift(ml.drain_drift())
 
     def broadcast(self, emitted: list[Any]) -> None:
         for hospital_id in self.sim.world.hospitals:
@@ -143,9 +149,7 @@ class SimRuntime:
             self.hub.publish_network(self.network_json())
 
     def snapshot_json(self, hospital_id: str) -> str:
-        return self.sim.snapshot(hospital_id, self.speed, self.paused, self.frozen).model_dump_json(
-            by_alias=True
-        )
+        return self.sim.snapshot(hospital_id, self.speed, self.paused, self.frozen).model_dump_json(by_alias=True)
 
     def network_json(self) -> str:
         return self.sim.network(self.speed, self.paused, self.frozen).model_dump_json(by_alias=True)
@@ -180,6 +184,9 @@ class SimRuntime:
         """Tell clients about a control change at once, even while paused, with an events message."""
         self.broadcast([])
 
+    async def publish_now(self) -> None:
+        await self._publish_now()
+
     async def _publish_now(self) -> None:
         """Write and broadcast what a command emitted without waiting for the next tick."""
         emitted = self.sim.world.drain()
@@ -188,11 +195,12 @@ class SimRuntime:
         async with self.pool.acquire() as conn:
             await self.writer.flush(conn)
 
-    async def start_scenario(
-        self, name: ScenarioName, hospital_id: str | None, lat: float | None, lon: float | None
-    ) -> Scenario:
+    async def start_scenario(self, name: ScenarioName, hospital_id: str | None, lat: float | None, lon: float | None) -> Scenario:
         scenario = self.sim.start_scenario(name, hospital_id, lat, lon)
         await self._publish_now()
+        if self.agent is not None:
+            affected = [scenario.hospital_id] if scenario.hospital_id else sorted(self.sim.world.hospitals)
+            self.agent.schedule(affected, "scenario")
         await self.audit(
             "scenario_start",
             {"id": scenario.id, "name": name, "hospital_id": scenario.hospital_id, **scenario.params},
@@ -208,9 +216,7 @@ class SimRuntime:
     async def apply_action(self, action: ActionName, params: dict[str, Any], actor: str) -> str:
         result = self.sim.apply_action(action, params)
         await self._publish_now()
-        await self.audit(
-            "action_applied", {"action": action, "params": params, "result": result}, actor=actor
-        )
+        await self.audit("action_applied", {"action": action, "params": params, "result": result}, actor=actor)
         return result
 
 

@@ -56,9 +56,7 @@ class HospitalState:
             self.pools[unit] = SlotPool(self.env, [b.id for b in self.layout.beds if b.unit == unit])
         triage = [s.id for s in self.layout.seats if s.kind == "triage"]
         self.pools["TRIAGE"] = SlotPool(self.env, triage)
-        self.pools["OR"] = SlotPool(
-            self.env, [s.id for s in self.layout.spots if s.kind == "table" and s.room == "OR"]
-        )
+        self.pools["OR"] = SlotPool(self.env, [s.id for s in self.layout.spots if s.kind == "table" and s.room == "OR"])
         self.status_changed = self.env.event()
 
     # ---- places ---------------------------------------------------------------------------------------
@@ -103,15 +101,9 @@ class HospitalState:
     def first_free(self, spot_ids: list[str]) -> str | None:
         return next((s for s in spot_ids if s not in self.holders), None)
 
-    def spots_where(
-        self, *, room: str | None = None, kinds: tuple[str, ...] = (), rooms: tuple[str, ...] = ()
-    ) -> list[str]:
+    def spots_where(self, *, room: str | None = None, kinds: tuple[str, ...] = (), rooms: tuple[str, ...] = ()) -> list[str]:
         found = [
-            s.id
-            for s in self.layout.spots
-            if (room is None or s.room == room)
-            and (not kinds or s.kind in kinds)
-            and (not rooms or s.room in rooms)
+            s.id for s in self.layout.spots if (room is None or s.room == room) and (not kinds or s.kind in kinds) and (not rooms or s.room in rooms)
         ]
         return found
 
@@ -130,8 +122,4 @@ class HospitalState:
         return [p for p in self.people.values() if isinstance(p, Staff)]
 
     def bedded(self, unit: str | None = None) -> list[Patient]:
-        return [
-            p
-            for p in self.patients()
-            if p.place.bed is not None and (unit is None or self.beds[p.place.bed].unit == unit)
-        ]
+        return [p for p in self.patients() if p.place.bed is not None and (unit is None or self.beds[p.place.bed].unit == unit)]

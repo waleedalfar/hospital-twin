@@ -3,7 +3,7 @@
  * applies the snapshot, then events. These functions are pure; they never mutate their input.
  */
 import { feedItem } from './feed';
-import type { Entity, EventsMessage, FeedItem, HospitalData, SimEvent, SnapshotMessage } from './types';
+import type { AgentRecModel, Entity, EventsMessage, FeedItem, HospitalData, SimEvent, SnapshotMessage } from './types';
 import { FEED_LIMIT } from './types';
 
 export function fromSnapshot(msg: SnapshotMessage): HospitalData {
@@ -98,4 +98,15 @@ export function applyEvents(state: HospitalData, msg: EventsMessage, firstKey: n
     kpis: msg.kpis,
     feed: feed.length > 0 ? [...feed.reverse(), ...next.feed].slice(0, FEED_LIMIT) : next.feed,
   };
+}
+
+/** Newest first; a recommendation that arrives again (new status) replaces the old copy. */
+export function mergeRecs(current: AgentRecModel[], incoming: AgentRecModel[]): AgentRecModel[] {
+  const byId = new Map(current.map((r) => [r.id, r]));
+  for (const r of incoming) byId.set(r.id, r);
+  return [...byId.values()].sort((a, b) => b.created.localeCompare(a.created) || b.id.localeCompare(a.id, undefined, { numeric: true }));
+}
+
+export function recsIn(msg: EventsMessage): AgentRecModel[] {
+  return msg.events.flatMap((e) => (e.kind === 'agent_rec' ? [e.rec] : []));
 }

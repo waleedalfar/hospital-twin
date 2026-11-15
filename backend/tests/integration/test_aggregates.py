@@ -25,8 +25,7 @@ async def refresh(db: asyncpg.Connection, view: str) -> int:
 
 async def add_events(db: asyncpg.Connection, rows: list[tuple[datetime, str, str, str]]) -> None:
     await db.executemany(
-        "INSERT INTO events (time, hospital_id, kind, entity_id, payload) "
-        "VALUES ($1, $2, $3, 'P-0001', $4::jsonb)",
+        "INSERT INTO events (time, hospital_id, kind, entity_id, payload) VALUES ($1, $2, $3, 'P-0001', $4::jsonb)",
         rows,
     )
 
@@ -57,13 +56,8 @@ async def test_occupancy_15m(db: asyncpg.Connection) -> None:
         snapshots,
     )
     assert await refresh(db, "occupancy_15m") == 4
-    rows = await db.fetch(
-        "SELECT bucket, hospital_id, unit, occupied_avg, beds, snapshots FROM occupancy_15m ORDER BY 1, 2, 3"
-    )
-    got = {
-        (r["bucket"], r["hospital_id"], r["unit"]): (r["occupied_avg"], r["beds"], r["snapshots"])
-        for r in rows
-    }
+    rows = await db.fetch("SELECT bucket, hospital_id, unit, occupied_avg, beds, snapshots FROM occupancy_15m ORDER BY 1, 2, 3")
+    got = {(r["bucket"], r["hospital_id"], r["unit"]): (r["occupied_avg"], r["beds"], r["snapshots"]) for r in rows}
     assert got == {
         (at(0), "mercy", "ICU"): (pytest.approx(5 / 3), 3, 3),
         (at(0), "mercy", "WARD"): (1.0, 1, 3),
@@ -73,18 +67,14 @@ async def test_occupancy_15m(db: asyncpg.Connection) -> None:
 
 
 async def test_er_wait_15m(db: asyncpg.Connection) -> None:
-    rows = [
-        (at(i), "mercy", "er_admit", f'{{"wait_min": {wait}}}')
-        for i, wait in enumerate((10, 20, 30, 40, 100))
-    ]
+    rows = [(at(i), "mercy", "er_admit", f'{{"wait_min": {wait}}}') for i, wait in enumerate((10, 20, 30, 40, 100))]
     rows.append((at(20), "mercy", "er_admit", '{"wait_min": 7}'))
     rows.append((at(3), "desert", "er_admit", '{"wait_min": 55.5}'))
     rows.append((at(4), "mercy", "arrival", '{"wait_min": 9999, "mode": "walk_in"}'))  # not an ER admit
     await add_events(db, rows)
     assert await refresh(db, "er_wait_15m") == 3
     got = {
-        (r["bucket"], r["hospital_id"]): (r["avg_wait_min"], r["p90_wait_min"], r["patients"])
-        for r in await db.fetch("SELECT * FROM er_wait_15m")
+        (r["bucket"], r["hospital_id"]): (r["avg_wait_min"], r["p90_wait_min"], r["patients"]) for r in await db.fetch("SELECT * FROM er_wait_15m")
     }
     assert got == {
         (at(0), "mercy"): (40.0, pytest.approx(76.0), 5),  # p90 of 10,20,30,40,100 = 40 + 0.6 * 60
@@ -104,10 +94,7 @@ async def test_arrivals_hourly(db: asyncpg.Connection) -> None:
     rows += [(at(10), "mercy", "discharge", '{"mode": "walk_in"}')]  # not an arrival
     await add_events(db, rows)
     assert await refresh(db, "arrivals_hourly") == 5
-    got = {
-        (r["bucket"], r["hospital_id"], r["mode"]): r["arrivals"]
-        for r in await db.fetch("SELECT * FROM arrivals_hourly")
-    }
+    got = {(r["bucket"], r["hospital_id"], r["mode"]): r["arrivals"] for r in await db.fetch("SELECT * FROM arrivals_hourly")}
     assert got == {
         (at(0), "mercy", "walk_in"): 3,
         (at(0), "mercy", "ambulance"): 2,
@@ -125,10 +112,7 @@ async def test_alerts_hourly(db: asyncpg.Connection) -> None:
     ]
     await add_events(db, rows)
     assert await refresh(db, "alerts_hourly") == 3
-    got = {
-        (r["bucket"], r["hospital_id"], r["level"]): r["alerts"]
-        for r in await db.fetch("SELECT * FROM alerts_hourly")
-    }
+    got = {(r["bucket"], r["hospital_id"], r["level"]): r["alerts"] for r in await db.fetch("SELECT * FROM alerts_hourly")}
     assert got == {(at(0), "mercy", "high"): 3, (at(0), "mercy", "medium"): 1, (at(60), "desert", "high"): 1}
 
 
@@ -140,8 +124,7 @@ async def test_vitals_5m(db: asyncpg.Connection) -> None:
         (at(1), "P-0002", "mercy", 60.0, 99.0, 130.0, 85.0, 36.5, 12.0),
     ]
     await db.executemany(
-        "INSERT INTO vitals (time, patient_id, hospital_id, hr, spo2, sbp, dbp, temp, rr) "
-        "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+        "INSERT INTO vitals (time, patient_id, hospital_id, hr, spo2, sbp, dbp, temp, rr) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
         rows,
     )
     assert await refresh(db, "vitals_5m") == 3
@@ -174,9 +157,7 @@ async def test_refresh_policy_materializes_sim_time_ahead_of_the_wall_clock(db: 
     """The sim runs faster than real time, so its timestamps are in the future. The policy must still
     materialize them."""
     future = datetime.now(UTC).replace(minute=0, second=0, microsecond=0) + timedelta(days=30)
-    await add_events(
-        db, [(future + timedelta(minutes=m), "mercy", "arrival", '{"mode": "air"}') for m in (1, 2)]
-    )
+    await add_events(db, [(future + timedelta(minutes=m), "mercy", "arrival", '{"mode": "air"}') for m in (1, 2)])
     job = await db.fetchrow(
         """
         SELECT j.job_id,

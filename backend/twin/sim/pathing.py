@@ -99,9 +99,7 @@ def ride_minutes(floors: int) -> float:
     return (ELEVATOR_DOOR_S + ELEVATOR_S_PER_FLOOR * floors) / 60.0
 
 
-def timeline(
-    router: Router, path: list[str], depart: float, elevator: ElevatorSchedule
-) -> tuple[list[str], list[float]]:
+def timeline(router: Router, path: list[str], depart: float, elevator: ElevatorSchedule) -> tuple[list[str], list[float]]:
     """Times at which a walker who leaves at `depart` reaches each node of `path`. A run of floor changes is
     one elevator ride; if the car is busy the walker waits at the door, which shows as the door node
     repeated with a later time."""

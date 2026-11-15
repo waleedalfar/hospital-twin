@@ -34,6 +34,8 @@ class Settings(BaseSettings):
     sim_reset_on_start: bool = True
     sim_debug: bool = False
     ml_enabled: bool = True
+    agent_enabled: bool = True
+    agent_llm_min_interval_s: float = 20.0
     synthea_java: str | None = None
     synthea_population: int = Field(default=3000, ge=1)
     synthea_seed: int = 20261114

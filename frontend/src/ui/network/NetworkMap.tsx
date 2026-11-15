@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { useTwin } from '../../state/store';
+import { GovernanceButton } from '../governance/Governance';
 import { Banners, ScenarioMenu, SimClock, SpeedControls } from '../common';
 import { go } from '../route';
 import { drawCity } from './drawCity';
@@ -47,6 +48,7 @@ export function NetworkMap() {
         <span className="bar__grow" />
         <SimClock simMs={net ? useTwin.getState().networkNowMs() : 0} />
         <SpeedControls speed={net?.speed ?? 1} paused={net?.paused ?? false} />
+        <GovernanceButton />
         <ScenarioMenu hospitals={hospitals} defaultHospital={null} active={net?.scenarios ?? []} />
       </header>
       <Banners connection={connection} />

@@ -30,9 +30,7 @@ def walk_ins(world: World, hospital: HospitalState) -> SimGen:
         yield world.env.timeout(c.TICK_MIN)
 
 
-def walk_in(
-    world: World, hospital: HospitalState, rng: object, respiratory_share: float | None, _k: int = 0
-) -> None:
+def walk_in(world: World, hospital: HospitalState, rng: object, respiratory_share: float | None, _k: int = 0) -> None:
     profile = draw_profile(world, rng)
     if profile is None:
         return

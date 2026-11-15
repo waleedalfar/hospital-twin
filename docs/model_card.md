@@ -61,8 +61,8 @@ NEWS2 (calibrated the same way) is the baseline.
 
 | Split | AUROC model | AUROC NEWS2 | AUPRC model | AUPRC NEWS2 | Brier model | Brier NEWS2 |
 | --- | --- | --- | --- | --- | --- | --- |
-| validation | 0.940 | 0.893 | 0.375 | 0.215 | 0.0191 | 0.0218 |
-| test | 0.910 | 0.845 | 0.351 | 0.163 | 0.0225 | 0.0263 |
+| validation | 0.938 | 0.835 | 0.371 | 0.129 | 0.0192 | 0.0235 |
+| test | 0.909 | 0.773 | 0.351 | 0.095 | 0.0225 | 0.0276 |
 
 Positive rate on the test split: 0.030. The calibration curve is in `models/lgbm-v1/metrics.json`.
 
@@ -70,13 +70,13 @@ Positive rate on the test split: 0.030. The calibration curve is in `models/lgbm
 
 | Group | Rows | Positives | AUROC | Calibration gap |
 | --- | --- | --- | --- | --- |
-| age 18-39 | 2920 | 0 | n/a | +0.0104 |
-| age 40-64 | 4221 | 90 | 0.930 | -0.0027 |
-| age 65+ | 7895 | 355 | 0.882 | +0.0002 |
-| male | 7499 | 196 | 0.912 | +0.0055 |
-| female | 7537 | 249 | 0.910 | -0.0028 |
+| age 18-39 | 2920 | 0 | n/a | +0.0108 |
+| age 40-64 | 4221 | 90 | 0.927 | -0.0013 |
+| age 65+ | 7895 | 355 | 0.881 | +0.0012 |
+| male | 7499 | 196 | 0.908 | +0.0063 |
+| female | 7537 | 249 | 0.910 | -0.0016 |
 
-Largest AUROC gap between groups: 0.048 (gaps above 0.05 are flagged in the governance panel).
+Largest AUROC gap between groups: 0.046 (gaps above 0.05 are flagged in the governance panel).
 
 ## Arrivals forecast (`arrivals-lgbm-v1`)
 

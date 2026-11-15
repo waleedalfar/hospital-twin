@@ -1,5 +1,5 @@
 /** Typed REST client for the backend (`/api/*` in the browser; PROMPT.md §6.2). */
-import type { TopFactor } from './types';
+import type { AgentRecModel, TopFactor } from './types';
 
 export class ApiError extends Error {
   constructor(
@@ -61,6 +61,52 @@ export interface ModelsResponse {
   error: string | null;
   models: { version: string; kind: string; metrics: Record<string, unknown> }[];
 }
+export type RecStatus = 'pending' | 'approved' | 'dismissed' | 'expired';
+export interface ApproveResponse {
+  rec: AgentRecModel;
+  result: string;
+}
+export interface DriftCell {
+  hospital_id: string;
+  feature: string;
+  psi: number;
+  alert: boolean;
+  time: string;
+}
+export interface DriftReport {
+  threshold: number;
+  respiratory_features: string[];
+  cells: DriftCell[];
+}
+export interface FairnessGroup {
+  n: number;
+  positives: number;
+  auroc: number | null;
+  calibration_gap: number | null;
+}
+export interface FairnessReport {
+  available: boolean;
+  reason: string | null;
+  as_of: string | null;
+  rows: number | null;
+  positives: number | null;
+  groups: Record<string, FairnessGroup> | null;
+  max_auroc_gap: number | null;
+  flagged: boolean | null;
+  threshold: number | null;
+}
+export interface AuditEntry {
+  time: string;
+  actor: string;
+  action: string;
+  payload: Record<string, unknown>;
+}
+export interface AuditFilter {
+  actor?: string;
+  action?: string;
+  exclude?: string[];
+  limit?: number;
+}
 export type ScenarioName = 'flu_surge' | 'mass_casualty' | 'staff_shortage' | 'hospital_offline';
 
 export type Fetch = typeof fetch;
@@ -105,6 +151,32 @@ export class Api {
   }
   models(): Promise<ModelsResponse> {
     return this.call('/models');
+  }
+  recs(hospitalId: string | null, status: RecStatus | null = null): Promise<AgentRecModel[]> {
+    const q = new URLSearchParams();
+    if (hospitalId) q.set('hospital', hospitalId);
+    if (status) q.set('status', status);
+    return this.call(`/agent/recs?${q.toString()}`);
+  }
+  approve(id: string): Promise<ApproveResponse> {
+    return this.call(`/agent/recs/${encodeURIComponent(id)}/approve`, { method: 'POST' });
+  }
+  dismiss(id: string): Promise<AgentRecModel> {
+    return this.call(`/agent/recs/${encodeURIComponent(id)}/dismiss`, { method: 'POST' });
+  }
+  drift(): Promise<DriftReport> {
+    return this.call('/governance/drift');
+  }
+  fairness(): Promise<FairnessReport> {
+    return this.call('/governance/fairness');
+  }
+  audit(filter: AuditFilter = {}): Promise<AuditEntry[]> {
+    const q = new URLSearchParams();
+    if (filter.actor) q.set('actor', filter.actor);
+    if (filter.action) q.set('action', filter.action);
+    if (filter.exclude?.length) q.set('exclude', filter.exclude.join(','));
+    q.set('limit', String(filter.limit ?? 100));
+    return this.call(`/governance/audit?${q.toString()}`);
   }
   sim(): Promise<SimState> {
     return this.call('/sim');

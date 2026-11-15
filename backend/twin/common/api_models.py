@@ -6,7 +6,16 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from twin.common.ws import ArrivalMode, HospitalStatus, Kpis, Location, RiskLevel, ScenarioName, Vitals
+from twin.common.ws import (
+    AgentRecModel,
+    ArrivalMode,
+    HospitalStatus,
+    Kpis,
+    Location,
+    RiskLevel,
+    ScenarioName,
+    Vitals,
+)
 
 WINDOW_PATTERN = re.compile(r"^(\d{1,4})([mhd])$")
 MAX_WINDOW = timedelta(days=30)
@@ -129,9 +138,7 @@ class ForecastReport(Api):
     as_of: datetime | None
     model_version: str | None
     arrivals: list[ArrivalForecast]
-    hours_until_full: dict[str, float | None] = Field(
-        description="Hours until each unit is full; null if not within 24 h"
-    )
+    hours_until_full: dict[str, float | None] = Field(description="Hours until each unit is full; null if not within 24 h")
 
 
 class ModelsResponse(Api):
@@ -139,6 +146,44 @@ class ModelsResponse(Api):
     active_arrivals: str | None
     error: str | None
     models: list[dict[str, Any]]
+
+
+class ApproveResponse(Api):
+    rec: AgentRecModel
+    result: str
+
+
+class DriftCell(Api):
+    hospital_id: str
+    feature: str
+    psi: float
+    alert: bool
+    time: datetime
+
+
+class DriftReport(Api):
+    threshold: float
+    respiratory_features: list[str]
+    cells: list[DriftCell]
+
+
+class FairnessReport(Api):
+    available: bool
+    reason: str | None = None
+    as_of: str | None = None
+    rows: int | None = None
+    positives: int | None = None
+    groups: dict[str, Any] | None = None
+    max_auroc_gap: float | None = None
+    flagged: bool | None = None
+    threshold: float | None = None
+
+
+class AuditEntry(Api):
+    time: datetime
+    actor: str
+    action: str
+    payload: dict[str, Any]
 
 
 class SimState(Api):

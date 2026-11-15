@@ -440,3 +440,46 @@ test split: 0.048.
 ### Deviations and known issues
 
 None.
+
+---
+
+## CP6 — Agent and governance
+
+### What was built
+
+- §9 Operations agent (`backend/twin/agent/`): summary of one hospital (flat named metrics), Gemini structured
+  output, grounding validator (every cited metric must match the input, targets valid per action), one retry with
+  the errors, rules-engine fallback labelled "Rules engine — Gemini unavailable". Runs every 15 sim minutes, when a
+  scenario starts, and when a unit is projected full within 4 h. Recommendations are stored in `agent_recs`;
+  approve applies the action to the sim and writes the audit log. `GEMINI_MODEL` comes from the environment.
+- §6.2 `/agent/recs`, approve, dismiss; `/governance/drift`, `/fairness`, `/audit`, `/model-card`.
+- §8 Drift (PSI per feature per hospital over 2 sim h, alert above 0.2, per-hospital baselines), fairness (hourly,
+  by age band and sex), audit rows (drift alerts, fairness reports, inference batches, agent and user actions).
+  Flu surge now shifts respiratory vitals so the drift test is meaningful.
+- UI: Agent panel (approve / dismiss, cited metrics, fallback label), Governance drawer (drift heatmap, fairness
+  table, audit log with filters, model card link), drift alerts and recommendations in the live feed.
+- `make verify-live`: one real Gemini call on a live sim summary, checked for grounding (skips without a key).
+- Ruff line length raised from 110 to 150 (style only).
+
+### Commands run and results
+
+| Command | Result |
+| --- | --- |
+| `make verify` | Exit 0. Backend **347 passed**, coverage 96.25%. Frontend **168 passed**, coverage 91.8%, 0 skipped |
+| `make e2e` | Exit 0. **27 passed, 0 skipped**, including test 7 (flu surge, drift alert, recommendation, approve, audit) |
+
+### Evidence
+
+`docs/evidence/cp6/agent-panel.png`, `governance-drift.png`, `governance-audit.png`.
+
+### How to check it yourself
+
+1. `make dev`, open Mercy, press Scenario → Flu surge, speed 8x.
+2. Within a minute the Agent panel shows recommendations with cited numbers and the rules-engine label.
+3. Approve one: the sim changes (e.g. Mercy goes to DIVERTING) and the Governance → Audit log shows it.
+4. Governance → Drift: respiratory cells (spo2, rr) turn red. Fairness shows AUROC by group.
+
+### Deviations and known issues
+
+Gemini has not been run live (no key yet): tests use recorded response fixtures and a fake client, and the
+rules engine is what the app shows. Add `GEMINI_API_KEY` and `GEMINI_MODEL` to `.env` and run `make verify-live`.

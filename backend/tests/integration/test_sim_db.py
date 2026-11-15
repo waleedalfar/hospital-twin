@@ -26,20 +26,14 @@ async def seed_patients(dsn: str, n: int = 600) -> None:
     conn = await asyncpg.connect(dsn)
     try:
         await conn.executemany(
-            "INSERT INTO patients (id, synthea_id, fhir, age, sex, comorbidity_count, conditions) "
-            "VALUES ($1, $2, '{}'::jsonb, $3, $4, $5, $6)",
-            [
-                (p.id, f"syn-{p.id}", p.age, p.sex, p.comorbidity_count, list(p.conditions))
-                for p in make_profiles(n)
-            ],
+            "INSERT INTO patients (id, synthea_id, fhir, age, sex, comorbidity_count, conditions) VALUES ($1, $2, '{}'::jsonb, $3, $4, $5, $6)",
+            [(p.id, f"syn-{p.id}", p.age, p.sex, p.comorbidity_count, list(p.conditions)) for p in make_profiles(n)],
         )
     finally:
         await conn.close()
 
 
-async def test_writer_stores_a_seeded_hour_and_counts_match(
-    db: asyncpg.Connection, migrated_db_url: str
-) -> None:
+async def test_writer_stores_a_seeded_hour_and_counts_match(db: asyncpg.Connection, migrated_db_url: str) -> None:
     await seed_patients(migrated_db_url)
     sim = make_sim(5, 6)
     writer = SimWriter(sim.world)
@@ -68,9 +62,7 @@ async def test_writer_stores_a_seeded_hour_and_counts_match(
     assert await db.fetchval("SELECT count(*) FROM encounters WHERE ended_at < arrived_at") == 0
 
 
-async def test_er_wait_aggregate_matches_the_sim_after_refresh(
-    db: asyncpg.Connection, migrated_db_url: str
-) -> None:
+async def test_er_wait_aggregate_matches_the_sim_after_refresh(db: asyncpg.Connection, migrated_db_url: str) -> None:
     await seed_patients(migrated_db_url)
     sim = make_sim(5, 6)
     writer = SimWriter(sim.world)
@@ -87,9 +79,7 @@ async def test_er_wait_aggregate_matches_the_sim_after_refresh(
     assert avg == pytest.approx(sum(waits) / len(waits), rel=1e-3)
 
 
-async def test_reset_run_clears_run_data_but_keeps_patients_and_building(
-    db: asyncpg.Connection, migrated_db_url: str
-) -> None:
+async def test_reset_run_clears_run_data_but_keeps_patients_and_building(db: asyncpg.Connection, migrated_db_url: str) -> None:
     await seed_patients(migrated_db_url)
     sim = make_sim(5, 2)
     writer = SimWriter(sim.world)
@@ -108,9 +98,7 @@ async def test_reset_run_clears_run_data_but_keeps_patients_and_building(
 
 @asynccontextmanager
 async def running_app(dsn: str) -> AsyncIterator[tuple[httpx.AsyncClient, SimRuntime]]:
-    settings = Settings(
-        _env_file=None, database_url=SecretStr(dsn), sim_warmup_hours=6, sim_autostart=False, sim_seed=5
-    )
+    settings = Settings(_env_file=None, database_url=SecretStr(dsn), sim_warmup_hours=6, sim_autostart=False, sim_seed=5)
     app = create_app(settings)
     async with (
         app.router.lifespan_context(app),
@@ -174,7 +162,9 @@ async def test_api_serves_state_patients_kpis_and_sim_control(migrated_db_url: s
         assert (await client.delete(f"/scenario/{scenario_id}")).status_code == 409
         assert (await client.delete("/scenario/SC-99")).status_code == 404
 
-        audit = [r["action"] for r in await _audit(migrated_db_url)]
+        # the models write their own governance rows (fairness reports, drift alerts); the run controls come in order
+        model_rows = {"fairness_report", "drift_alert", "risk_alert", "inference_batch"}
+        audit = [r["action"] for r in await _audit(migrated_db_url) if r["action"] not in model_rows]
         assert audit[:1] == ["sim_start"]
         assert {"sim_speed", "sim_pause", "sim_freeze", "scenario_start", "scenario_stop"} <= set(audit)
 
@@ -209,9 +199,7 @@ async def test_endpoints_refuse_until_the_sim_is_ready_and_health_reports_an_emp
 async def test_runtime_applies_actions_with_audit_and_rejects_bad_speed(migrated_db_url: str) -> None:
     await seed_patients(migrated_db_url)
     async with running_app(migrated_db_url) as (_, rt):
-        await rt.apply_action(
-            "call_in_staff", {"hospital_id": "mercy", "unit": "ICU", "count": 1}, actor="agent:test"
-        )
+        await rt.apply_action("call_in_staff", {"hospital_id": "mercy", "unit": "ICU", "count": 1}, actor="agent:test")
         with pytest.raises(ControlError):
             await rt.set_speed(5)
         with pytest.raises(ControlError):
@@ -225,9 +213,7 @@ async def test_runtime_applies_actions_with_audit_and_rejects_bad_speed(migrated
 
 def test_websocket_streams_snapshot_then_events_and_resyncs(migrated_db_url: str) -> None:
     asyncio.run(seed_patients(migrated_db_url))
-    settings = Settings(
-        _env_file=None, database_url=SecretStr(migrated_db_url), sim_warmup_hours=6, sim_seed=5, sim_speed=8
-    )
+    settings = Settings(_env_file=None, database_url=SecretStr(migrated_db_url), sim_warmup_hours=6, sim_seed=5, sim_speed=8)
     with TestClient(create_app(settings)) as client:
         with client.websocket_connect("/ws?hospital=mercy") as ws:
             snap = json.loads(ws.receive_text())

@@ -48,9 +48,7 @@ async def forecast(hospital_id: str, rt: Runtime, db: DbPool) -> ForecastReport:
     until_full: dict[str, float | None] = {}
     for r in rows:
         if r["metric"].startswith("hours_until_full:"):
-            until_full[r["metric"].split(":", 1)[1]] = (
-                r["value"] if r["value"] <= MAX_HOURS_UNTIL_FULL else None
-            )
+            until_full[r["metric"].split(":", 1)[1]] = r["value"] if r["value"] <= MAX_HOURS_UNTIL_FULL else None
     return ForecastReport(
         hospital_id=hospital_id,
         as_of=max((r["time"] for r in rows), default=None),

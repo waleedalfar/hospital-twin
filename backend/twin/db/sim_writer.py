@@ -18,7 +18,8 @@ from twin.common.ws import (
     VitalsEvent,
 )
 from twin.db.pool import Conn
-from twin.ml.inference import ForecastRow
+from twin.ml.governance import DriftReading
+from twin.ml.inference import AuditRow, ForecastRow
 from twin.sim.entities import Staff
 from twin.sim.world import Emitted, World
 
@@ -60,6 +61,8 @@ class Batch:
     bed_state: list[tuple[Any, ...]] = field(default_factory=list)
     risk_scores: list[tuple[Any, ...]] = field(default_factory=list)
     forecasts: list[tuple[Any, ...]] = field(default_factory=list)
+    audit: list[tuple[Any, ...]] = field(default_factory=list)
+    drift: list[tuple[Any, ...]] = field(default_factory=list)
     encounters: list[tuple[Any, ...]] = field(default_factory=list)
     encounter_updates: list[tuple[Any, ...]] = field(default_factory=list)
     staff: list[tuple[Any, ...]] = field(default_factory=list)
@@ -73,6 +76,8 @@ class Batch:
             + len(self.encounters)
             + len(self.risk_scores)
             + len(self.forecasts)
+            + len(self.audit)
+            + len(self.drift)
         )
 
 
@@ -96,9 +101,7 @@ class SimWriter:
             hospital_id = item.hospital_id or NETWORK
             if isinstance(event, VitalsEvent):
                 v = event.vitals
-                batch.vitals.append(
-                    (event.time, event.patient_id, hospital_id, v.hr, v.spo2, v.sbp, v.dbp, v.temp, v.rr)
-                )
+                batch.vitals.append((event.time, event.patient_id, hospital_id, v.hr, v.spo2, v.sbp, v.dbp, v.temp, v.rr))
                 continue
             if isinstance(event, RiskEvent):
                 batch.risk_scores.append(
@@ -134,9 +137,7 @@ class SimWriter:
             self._encounter_of[event.patient_id] = event.encounter_id
             patient = self._world.patient(event.patient_id)
             esi = patient[1].esi if patient is not None else event.esi
-            batch.encounters.append(
-                (event.encounter_id, event.patient_id, hospital_id, event.time, event.mode, esi)
-            )
+            batch.encounters.append((event.encounter_id, event.patient_id, hospital_id, event.time, event.mode, esi))
             return
         patient_id = getattr(event, "patient_id", None)
         encounter = self._encounter_of.get(patient_id) if isinstance(patient_id, str) else None
@@ -157,16 +158,20 @@ class SimWriter:
         staff = self._world.staff_by_id(staff_id)
         if isinstance(staff, Staff):
             self._staff_written.add(staff_id)
-            self._batch.staff.append(
-                (staff.id, staff.home_hospital, staff.kind, staff.unit or "ER", staff.id)
-            )
+            self._batch.staff.append((staff.id, staff.home_hospital, staff.kind, staff.unit or "ER", staff.id))
 
     def add_forecasts(self, rows: list[ForecastRow]) -> None:
         """Queue forecast rows from the inference engine."""
         for r in rows:
-            self._batch.forecasts.append(
-                (r.time, r.hospital_id, r.model_version, r.horizon_h, r.metric, r.value)
-            )
+            self._batch.forecasts.append((r.time, r.hospital_id, r.model_version, r.horizon_h, r.metric, r.value))
+
+    def add_audit(self, rows: list[AuditRow]) -> None:
+        for r in rows:
+            self._batch.audit.append((r.time, r.actor, r.action, json.dumps(r.payload)))
+
+    def add_drift(self, rows: list[DriftReading]) -> None:
+        for r in rows:
+            self._batch.drift.append((r.time, r.hospital_id, r.feature, r.psi))
 
     def add_all_staff(self) -> None:
         for staff_id in sorted(self._world.staff):
@@ -179,8 +184,7 @@ class SimWriter:
         async with conn.transaction():
             if batch.staff:
                 await conn.executemany(
-                    "INSERT INTO staff (id, hospital_id, role, unit, name_code) VALUES ($1, $2, $3, $4, $5) "
-                    "ON CONFLICT (id) DO NOTHING",
+                    "INSERT INTO staff (id, hospital_id, role, unit, name_code) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO NOTHING",
                     batch.staff,
                 )
             if batch.encounters:
@@ -198,8 +202,7 @@ class SimWriter:
                     )
                 elif kind == "end":
                     await conn.execute(
-                        "UPDATE encounters SET disposition = COALESCE(disposition, $2), ended_at = $3 "
-                        "WHERE id = $1",
+                        "UPDATE encounters SET disposition = COALESCE(disposition, $2), ended_at = $3 WHERE id = $1",
                         encounter,
                         disposition,
                         ended,
@@ -217,6 +220,8 @@ class SimWriter:
                 ("bed_state", batch.bed_state),
                 ("risk_scores", batch.risk_scores),
                 ("forecasts", batch.forecasts),
+                ("audit_log", batch.audit),
+                ("drift", batch.drift),
             ):
                 if rows:
                     await conn.copy_records_to_table(table, records=rows, columns=COLUMNS[table])
@@ -231,6 +236,8 @@ COLUMNS = {
     "bed_state": ["time", "bed_id", "hospital_id", "patient_id", "state"],
     "risk_scores": ["time", "patient_id", "hospital_id", "model_version", "score", "level", "top_factors"],
     "forecasts": ["time", "hospital_id", "model_version", "horizon_h", "metric", "value"],
+    "audit_log": ["time", "actor", "action", "payload"],
+    "drift": ["time", "hospital_id", "feature", "psi"],
 }
 
 

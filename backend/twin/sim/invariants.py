@@ -30,11 +30,7 @@ def find_problems(world: World) -> list[str]:
             held = [x for x in (place.bed, place.spot, place.vehicle) if x is not None]
             if len(held) != 1:
                 problems.append(f"{person.id} has {len(held)} locations: {place}")
-            if (
-                place.spot is not None
-                and place.spot not in layout.spots_by_id
-                and place.spot not in layout.seats_by_id
-            ):
+            if place.spot is not None and place.spot not in layout.spots_by_id and place.spot not in layout.seats_by_id:
                 problems.append(f"{person.id} is at unknown spot {place.spot}")
             if place.bed is not None and not isinstance(person, Patient):
                 problems.append(f"{person.id} is not a patient but holds bed {place.bed}")
@@ -51,9 +47,7 @@ def find_problems(world: World) -> list[str]:
             if len(holders) > 1:
                 problems.append(f"{hospital.id} {bed.id} holds {holders}")
             if bed.state == "occupied" and holders != [bed.patient_id]:
-                problems.append(
-                    f"{hospital.id} {bed.id} occupied by {bed.patient_id} but patients there: {holders}"
-                )
+                problems.append(f"{hospital.id} {bed.id} occupied by {bed.patient_id} but patients there: {holders}")
             if bed.state != "occupied" and (holders or bed.patient_id is not None):
                 problems.append(f"{hospital.id} {bed.id} is {bed.state} but has {holders or bed.patient_id}")
         for unit in BED_UNITS:
@@ -61,16 +55,12 @@ def find_problems(world: World) -> list[str]:
             occupied = sum(1 for b in hospital.beds.values() if b.unit == unit and b.state == "occupied")
             free = len(hospital.pools[unit].free)
             if occupied > capacity or free > capacity:
-                problems.append(
-                    f"{hospital.id} {unit}: {occupied} occupied, {free} free, capacity {capacity}"
-                )
+                problems.append(f"{hospital.id} {unit}: {occupied} occupied, {free} free, capacity {capacity}")
             open_beds = {b.id for b in hospital.beds.values() if b.unit == unit and b.state == "open"}
             reserved = {p.reserved_bed for p in hospital.patients() if p.reserved_bed is not None}
             lost = open_beds - set(hospital.pools[unit].free) - reserved
             if lost:
-                problems.append(
-                    f"{hospital.id} {unit}: open beds {sorted(lost)} are neither free nor reserved"
-                )
+                problems.append(f"{hospital.id} {unit}: open beds {sorted(lost)} are neither free nor reserved")
             if not set(hospital.pools[unit].free) <= open_beds:
                 problems.append(f"{hospital.id} {unit}: beds queued as free are not open")
 

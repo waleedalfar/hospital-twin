@@ -18,6 +18,7 @@ from sklearn.isotonic import IsotonicRegression
 
 from twin.ml.dataset import Dataset
 from twin.ml.features import FEATURE_NAMES
+from twin.ml.governance import make_baselines, save_baseline
 from twin.ml.metrics import AGE_BANDS, Floats, Ints, auroc_or_none, calibration_gap, evaluate
 from twin.ml.model import Calibrator, DeteriorationModel
 
@@ -134,10 +135,7 @@ def train_deterioration(rows: pd.DataFrame, version: str = MODEL_VERSION) -> Tra
 def _importance(booster: lgb.Booster) -> dict[str, float]:
     gains = booster.feature_importance(importance_type="gain")
     total = float(np.sum(gains)) or 1.0
-    return {
-        name: round(float(g) / total, 4)
-        for name, g in sorted(zip(FEATURE_NAMES, gains, strict=True), key=lambda t: -t[1])
-    }
+    return {name: round(float(g) / total, 4) for name, g in sorted(zip(FEATURE_NAMES, gains, strict=True), key=lambda t: -t[1])}
 
 
 def fairness(frame: pd.DataFrame, prob: Floats) -> dict[str, Any]:
@@ -167,6 +165,7 @@ def _group(y: Ints, prob: Floats) -> dict[str, Any]:
 def save_run(result: TrainResult, dataset: Dataset, directory: Path) -> None:
     """Write the model files and metrics.json under `directory` (models/<version>/)."""
     result.model.save(directory)
+    save_baseline(make_baselines(result.split.train), directory)
     summary = {
         "days": dataset.days,
         "seed": dataset.seed,
@@ -174,6 +173,4 @@ def save_run(result: TrainResult, dataset: Dataset, directory: Path) -> None:
         "positives": int(dataset.rows["label"].sum()),
         "flu_surges": [{"hospital": h, "start_min": a, "end_min": b} for h, a, b in dataset.surges],
     }
-    (directory / "metrics.json").write_text(
-        json.dumps({**result.metrics, "data": summary}, indent=1) + "\n", encoding="utf-8"
-    )
+    (directory / "metrics.json").write_text(json.dumps({**result.metrics, "data": summary}, indent=1) + "\n", encoding="utf-8")

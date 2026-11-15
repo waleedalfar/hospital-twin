@@ -68,9 +68,7 @@ class Simulation:
             out.extend(self.tick())
         return out
 
-    def start_scenario(
-        self, name: ScenarioName, hospital_id: str | None, lat: float | None = None, lon: float | None = None
-    ) -> scenarios.Scenario:
+    def start_scenario(self, name: ScenarioName, hospital_id: str | None, lat: float | None = None, lon: float | None = None) -> scenarios.Scenario:
         return scenarios.start(self.world, name, hospital_id, lat, lon)
 
     def stop_scenario(self, scenario_id: str) -> scenarios.Scenario:

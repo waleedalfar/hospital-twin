@@ -57,9 +57,7 @@ def kpis(world: World, hospital: HospitalState) -> Kpis:
     while hospital.er_waits and hospital.er_waits[0][0] < world.now - ER_WAIT_WINDOW_MIN:
         hospital.er_waits.popleft()
     waits = [w for _, w in hospital.er_waits]
-    waiting_patients = [
-        p for p in hospital.patients() if p.phase in ("waiting_triage", "triage", "waiting_er")
-    ]
+    waiting_patients = [p for p in hospital.patients() if p.phase in ("waiting_triage", "triage", "waiting_er")]
     waits += [world.now - p.arrived_at for p in waiting_patients]
     census = sum(1 for bed in hospital.beds.values() if bed.state == "occupied")
     return Kpis(
@@ -75,9 +73,7 @@ def scenario_infos(world: World) -> list[ScenarioInfo]:
     return [s.info(world) for s in world.scenarios.values() if s.active]
 
 
-def hospital_snapshot(
-    world: World, hospital_id: str, speed: int, paused: bool, frozen: bool
-) -> SnapshotMessage:
+def hospital_snapshot(world: World, hospital_id: str, speed: int, paused: bool, frozen: bool) -> SnapshotMessage:
     hospital = world.hospitals[hospital_id]
     people = sorted(hospital.people.values(), key=lambda p: p.id)
     return SnapshotMessage(

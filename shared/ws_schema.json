@@ -98,6 +98,146 @@
    "title": "AdmitEvent",
    "type": "object"
   },
+  "AgentRecEvent": {
+   "additionalProperties": false,
+   "description": "A new or updated recommendation from the operations agent.",
+   "properties": {
+    "kind": {
+     "const": "agent_rec",
+     "default": "agent_rec",
+     "title": "Kind",
+     "type": "string"
+    },
+    "rec": {
+     "$ref": "#/$defs/AgentRecModel"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "rec"
+   ],
+   "title": "AgentRecEvent",
+   "type": "object"
+  },
+  "AgentRecModel": {
+   "additionalProperties": false,
+   "properties": {
+    "action": {
+     "enum": [
+      "divert_ambulances",
+      "expedite_discharge",
+      "move_patient",
+      "call_in_staff",
+      "hold_bed"
+     ],
+     "title": "Action",
+     "type": "string"
+    },
+    "cited_metrics": {
+     "items": {
+      "$ref": "#/$defs/CitedMetric"
+     },
+     "title": "Cited Metrics",
+     "type": "array"
+    },
+    "created": {
+     "format": "date-time",
+     "title": "Created",
+     "type": "string"
+    },
+    "hospital_id": {
+     "title": "Hospital Id",
+     "type": "string"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "label": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Label"
+    },
+    "params": {
+     "additionalProperties": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       }
+      ]
+     },
+     "title": "Params",
+     "type": "object"
+    },
+    "rationale": {
+     "title": "Rationale",
+     "type": "string"
+    },
+    "source": {
+     "enum": [
+      "gemini",
+      "rules"
+     ],
+     "title": "Source",
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "pending",
+      "approved",
+      "dismissed",
+      "expired"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "targets": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Targets",
+     "type": "array"
+    }
+   },
+   "required": [
+    "id",
+    "hospital_id",
+    "action",
+    "targets",
+    "params",
+    "rationale",
+    "cited_metrics",
+    "source",
+    "status",
+    "created"
+   ],
+   "title": "AgentRecModel",
+   "type": "object"
+  },
   "AlertEvent": {
    "additionalProperties": false,
    "properties": {
@@ -405,6 +545,25 @@
    "title": "BedInfo",
    "type": "object"
   },
+  "CitedMetric": {
+   "additionalProperties": false,
+   "properties": {
+    "name": {
+     "title": "Name",
+     "type": "string"
+    },
+    "value": {
+     "title": "Value",
+     "type": "number"
+    }
+   },
+   "required": [
+    "name",
+    "value"
+   ],
+   "title": "CitedMetric",
+   "type": "object"
+  },
   "CriticalEvent": {
    "additionalProperties": false,
    "description": "Escalation to ICU or a rapid response. These are the deterioration model's labels (\u00a75.4).",
@@ -518,6 +677,38 @@
     "expedited"
    ],
    "title": "DischargeEvent",
+   "type": "object"
+  },
+  "DriftAlertEvent": {
+   "additionalProperties": false,
+   "description": "A feature's distribution at a hospital moved away from the training data (PSI above 0.2).",
+   "properties": {
+    "feature": {
+     "title": "Feature",
+     "type": "string"
+    },
+    "kind": {
+     "const": "drift_alert",
+     "default": "drift_alert",
+     "title": "Kind",
+     "type": "string"
+    },
+    "psi": {
+     "title": "Psi",
+     "type": "number"
+    },
+    "time": {
+     "format": "date-time",
+     "title": "Time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "time",
+    "feature",
+    "psi"
+   ],
+   "title": "DriftAlertEvent",
    "type": "object"
   },
   "Entity": {
@@ -694,6 +885,7 @@
        "mapping": {
         "action": "#/$defs/ActionEvent",
         "admit": "#/$defs/AdmitEvent",
+        "agent_rec": "#/$defs/AgentRecEvent",
         "alert": "#/$defs/AlertEvent",
         "ambulance": "#/$defs/AmbulanceEvent",
         "arrival": "#/$defs/ArrivalEvent",
@@ -701,6 +893,7 @@
         "critical": "#/$defs/CriticalEvent",
         "despawn": "#/$defs/DespawnEvent",
         "discharge": "#/$defs/DischargeEvent",
+        "drift_alert": "#/$defs/DriftAlertEvent",
         "er_admit": "#/$defs/ErAdmitEvent",
         "hospital_status": "#/$defs/HospitalStatusEvent",
         "move": "#/$defs/MoveEvent",
@@ -775,6 +968,12 @@
        },
        {
         "$ref": "#/$defs/ActionEvent"
+       },
+       {
+        "$ref": "#/$defs/DriftAlertEvent"
+       },
+       {
+        "$ref": "#/$defs/AgentRecEvent"
        }
       ]
      },

@@ -104,11 +104,7 @@ _GROUP_PATTERNS: dict[str, re.Pattern[str]] = {
 
 def comorbidity_groups(conditions: list[str]) -> set[str]:
     """The comorbidity groups present in a list of condition names."""
-    return {
-        group
-        for group, pattern in _GROUP_PATTERNS.items()
-        if any(pattern.search(name) for name in conditions)
-    }
+    return {group for group, pattern in _GROUP_PATTERNS.items() if any(pattern.search(name) for name in conditions)}
 
 
 def parse_bundle(bundle: JsonObject, as_of: date) -> PatientRecord | None:

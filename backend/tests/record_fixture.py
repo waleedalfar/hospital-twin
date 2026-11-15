@@ -29,10 +29,7 @@ def score_for(index: int, bed_id: str) -> tuple[float, str]:
 
 def richness(sim: Simulation) -> int:
     mercy = sim.world.hospitals["mercy"]
-    occupied = {
-        u: sum(1 for b in mercy.beds.values() if b.unit == u and b.state == "occupied")
-        for u in ("ER", "WARD", "REC", "ICU")
-    }
+    occupied = {u: sum(1 for b in mercy.beds.values() if b.unit == u and b.state == "occupied") for u in ("ER", "WARD", "REC", "ICU")}
     waiting = sum(1 for p in mercy.patients() if p.phase.startswith("waiting"))
     surgery = sum(1 for p in mercy.patients() if p.phase == "surgery")
     visitors = sum(1 for p in mercy.people.values() if p.kind == "visitor")

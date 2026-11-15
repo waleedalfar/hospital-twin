@@ -7,8 +7,12 @@ from datetime import timedelta
 
 from fastapi import FastAPI
 
+from twin.agent.llm import make_client
+from twin.agent.service import AgentService
 from twin.api.health import router as health_router
 from twin.api.hub import Hub
+from twin.api.routes_agent import router as agent_router
+from twin.api.routes_governance import router as governance_router
 from twin.api.routes_hospitals import router as hospitals_router
 from twin.api.routes_ml import router as ml_router
 from twin.api.routes_patients import router as patients_router
@@ -19,8 +23,9 @@ from twin.common.config import Settings, get_settings
 from twin.common.logging import configure_logging
 from twin.db.pool import create_pool
 from twin.ml.forecast import FORECAST_VERSION, ArrivalsModel
+from twin.ml.governance import load_baseline
 from twin.ml.inference import InferenceEngine
-from twin.ml.model import DeteriorationModel
+from twin.ml.model import MODELS_DIR, DeteriorationModel
 from twin.ml.train import MODEL_VERSION
 from twin.sim.engine import Simulation
 from twin.sim.layout_model import load_layout
@@ -40,7 +45,8 @@ def attach_models(app: FastAPI, sim: Simulation) -> None:
         app.state.ml_error = f"Models not available ({error}). Run `make train`."
         logger.error(app.state.ml_error)
         return
-    sim.attach_ml(InferenceEngine(sim.world, det, arrivals))
+    baseline = load_baseline(MODELS_DIR / det.version)
+    sim.attach_ml(InferenceEngine(sim.world, det, arrivals, baseline))
     logger.info("Inference attached: %s and %s", det.version, arrivals.version)
 
 
@@ -64,6 +70,18 @@ async def start_simulation(app: FastAPI, settings: Settings) -> None:
         attach_models(app, sim)
     runtime = SimRuntime(sim, app.state.pool, Hub(), settings.sim_speed)
     app.state.runtime = runtime
+    if settings.agent_enabled:
+        runtime.agent = AgentService(
+            sim,
+            app.state.pool,
+            make_client(
+                settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None,
+                settings.gemini_model,
+            ),
+            runtime.apply_action,
+            runtime.publish_now,
+            min_llm_interval_s=settings.agent_llm_min_interval_s,
+        )
     await runtime.prepare(reset=settings.sim_reset_on_start)
     if settings.sim_autostart:
         runtime.start()
@@ -93,6 +111,15 @@ def create_app(settings: Settings | None = None, *, simulate: bool = True) -> Fa
 
     app = FastAPI(title=APP_TITLE, version="0.1.0", lifespan=lifespan)
     app.state.settings = resolved
-    for router in (health_router, hospitals_router, patients_router, sim_router, ml_router, ws_router):
+    for router in (
+        health_router,
+        hospitals_router,
+        patients_router,
+        sim_router,
+        ml_router,
+        agent_router,
+        governance_router,
+        ws_router,
+    ):
         app.include_router(router)
     return app

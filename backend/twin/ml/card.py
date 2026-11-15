@@ -11,10 +11,7 @@ def _fmt(value: float | None, spec: str) -> str:
 
 
 def _row(name: str, m: dict[str, Any], b: dict[str, Any]) -> str:
-    return (
-        f"| {name} | {m['auroc']:.3f} | {b['auroc']:.3f} | {m['auprc']:.3f} | {b['auprc']:.3f} | "
-        f"{m['brier']:.4f} | {b['brier']:.4f} |"
-    )
+    return f"| {name} | {m['auroc']:.3f} | {b['auroc']:.3f} | {m['auprc']:.3f} | {b['auprc']:.3f} | {m['brier']:.4f} | {b['brier']:.4f} |"
 
 
 def model_card(det: dict[str, Any], arrivals: dict[str, Any]) -> str:

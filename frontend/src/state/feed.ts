@@ -32,6 +32,10 @@ export function feedItem(event: SimEvent, key: number): FeedItem | null {
       return make('Hospital', `status ${event.status.toUpperCase()}`, event.status === 'open' ? 'low' : 'high');
     case 'scenario':
       return make('Scenario', `${event.name.replace('_', ' ')} ${event.status}`, 'med');
+    case 'drift_alert':
+      return make('Model drift', `${event.feature} PSI ${event.psi.toFixed(2)}`, 'med');
+    case 'agent_rec':
+      return event.rec.status === 'pending' ? make('Agent', `recommends ${event.rec.action.replaceAll('_', ' ')}`, 'info') : null;
     case 'action':
       return make('Action', event.result, 'info');
     default:

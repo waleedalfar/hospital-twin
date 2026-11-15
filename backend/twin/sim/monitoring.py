@@ -43,7 +43,7 @@ def update(world: World, hospital: HospitalState, patient: Patient, flu: bool) -
     interval = c.VITALS_WAITING_MIN if patient.phase in WAITING_PHASES else c.VITALS_ADMITTED_MIN
     if world.now - phys.last_vitals_at >= interval - 1e-6:
         phys.last_vitals_at = world.now
-        patient.vitals = vitals(phys, profile, rng)
+        patient.vitals = vitals(phys, profile, rng, flu)
         world.emit(hospital.id, VitalsEvent(time=world.time(), patient_id=patient.id, vitals=patient.vitals))
     if is_critical(phys, world.now):
         escalate(world, hospital, patient)
@@ -64,9 +64,7 @@ def escalate(world: World, hospital: HospitalState, patient: Patient) -> None:
                 after_icu_transfer(phys, world.now)
                 world.emit(
                     hospital.id,
-                    CriticalEvent(
-                        time=world.time(), patient_id=patient.id, unit=unit, response="icu_transfer"
-                    ),
+                    CriticalEvent(time=world.time(), patient_id=patient.id, unit=unit, response="icu_transfer"),
                 )
                 return
             patient.reserved_bed = None

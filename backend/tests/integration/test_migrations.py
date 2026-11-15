@@ -52,9 +52,7 @@ async def test_only_new_migrations_are_applied(empty_db_url: str, tmp_path: Path
 
 async def test_failed_migration_rolls_back_and_is_not_recorded(empty_db_url: str, tmp_path: Path) -> None:
     (tmp_path / "0001_ok.sql").write_text("CREATE TABLE ok (id int);", encoding="utf-8")
-    (tmp_path / "0002_broken.sql").write_text(
-        "CREATE TABLE half_done (id int); SELECT * FROM table_that_does_not_exist;", encoding="utf-8"
-    )
+    (tmp_path / "0002_broken.sql").write_text("CREATE TABLE half_done (id int); SELECT * FROM table_that_does_not_exist;", encoding="utf-8")
     with pytest.raises(asyncpg.UndefinedTableError):
         await migrate.run(empty_db_url, tmp_path)
     assert await fetch_versions(empty_db_url) == [1]

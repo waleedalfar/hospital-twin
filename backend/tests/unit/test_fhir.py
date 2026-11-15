@@ -86,9 +86,7 @@ def test_comorbidity_groups_match_whole_word_starts() -> None:
         "anemia",
     }
     assert comorbidity_groups(["Malignant neoplasm of breast (disorder)"]) == {"cancer"}
-    assert comorbidity_groups(
-        ["Chronic congestive heart failure (disorder)", "Ischemic heart disease (disorder)"]
-    ) == {
+    assert comorbidity_groups(["Chronic congestive heart failure (disorder)", "Ischemic heart disease (disorder)"]) == {
         "heart_failure",
         "ischemic_heart_disease",
     }

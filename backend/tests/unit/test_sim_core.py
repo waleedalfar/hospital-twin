@@ -95,9 +95,7 @@ def test_every_present_patient_has_exactly_one_location_and_no_entity_is_in_two_
             for person in hospital.people.values():
                 assert person.id not in seen
                 seen.add(person.id)
-                held = [
-                    x for x in (person.place.bed, person.place.spot, person.place.vehicle) if x is not None
-                ]
+                held = [x for x in (person.place.bed, person.place.spot, person.place.vehicle) if x is not None]
                 assert len(held) == 1
 
 

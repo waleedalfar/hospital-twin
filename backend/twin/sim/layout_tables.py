@@ -69,9 +69,7 @@ ROOMS = (
     # Floor 0 - Ground
     RoomDef("ER", "ER", 0, "ER", (-20, -4, -14, -2), "ER", ((-13, -10),), (-12, -8), (-9.6,)),
     RoomDef("IMAGING", "Imaging", 0, "IMAGING", (-4, 8, -14, -2), "IMG", ((0, 3),), (2, -8), (-4.5,)),
-    RoomDef(
-        "PHARMACY", "Pharmacy", 0, "PHARMACY", (8, 20, -14, -2), "PHARM", ((12, 14.5),), (14, -8), (-5.0,)
-    ),
+    RoomDef("PHARMACY", "Pharmacy", 0, "PHARMACY", (8, 20, -14, -2), "PHARM", ((12, 14.5),), (14, -8), (-5.0,)),
     RoomDef("TRIAGE", "Triage", 0, "TRIAGE", (-20, -4, 2, 14), "TRIAGE", ((-13, -10),), (-12, 8), (3.6,)),
     RoomDef(
         "WAITING",
@@ -98,9 +96,7 @@ ROOMS = (
         ((14.0, 0, 1),),
     ),
     # Floor 1 - Wards
-    RoomDef(
-        "WARD_A", "Ward A", 1, "WARD", (-20, 6, -14, -2), "WARD", ((-14, -11), (-1, 2)), (-7, -8), (-9.6,)
-    ),
+    RoomDef("WARD_A", "Ward A", 1, "WARD", (-20, 6, -14, -2), "WARD", ((-14, -11), (-1, 2)), (-7, -8), (-9.6,)),
     RoomDef("OR", "Surgery (OR-1)", 1, "OR", (6, 20, -14, -2), "OR", ((10, 13),), (13, -8), (-4.5,)),
     RoomDef("WARD_B", "Ward B", 1, "WARD", (-20, 6, 2, 14), "WARD", ((-14, -11), (-1, 2)), (-7, 8), (9.6,)),
     RoomDef("RECOVERY", "Recovery", 1, "REC", (6, 20, 2, 14), "RECOV", ((10, 13),), (13, 8), (9.6,)),
@@ -208,9 +204,7 @@ class PropDef:
 
 
 WAITING_SEATS = tuple(
-    SeatDef(f"W-{row * 6 + k + 1}", "WAITING", "waiting", -2.5 + 1.7 * k, z, "north", lane=row)
-    for row, z in enumerate((7.0, 10.0))
-    for k in range(6)
+    SeatDef(f"W-{row * 6 + k + 1}", "WAITING", "waiting", -2.5 + 1.7 * k, z, "north", lane=row) for row, z in enumerate((7.0, 10.0)) for k in range(6)
 )
 ADMIN_DESKS = ((9.0, 7.0, 1), (13.0, 7.0, 1), (17.0, 7.0, 1), (9.0, 11.0, 2), (13.0, 11.0, 2))
 PRAYER_RUGS = tuple((-2.6 + 2.2 * col, 6.0 + 3.0 * row, row) for row in range(2) for col in range(4))
@@ -219,14 +213,8 @@ SEATS = (
     *WAITING_SEATS,
     SeatDef("T-1", "TRIAGE", "triage", -16.0, 9.0, "north"),
     SeatDef("T-2", "TRIAGE", "triage", -14.5, 9.0, "north"),
-    *(
-        SeatDef(f"LOUNGE-{i + 1}", "STAFF", "lounge", x, 11.4, "north", lane=1, chair=False)
-        for i, x in enumerate((-13.4, -12.47, -11.53, -10.6))
-    ),
-    *(
-        SeatDef(f"ADMIN-{i + 1}", "ADMIN", "desk", x, z + 1.0, "north", lane=lane)
-        for i, (x, z, lane) in enumerate(ADMIN_DESKS)
-    ),
+    *(SeatDef(f"LOUNGE-{i + 1}", "STAFF", "lounge", x, 11.4, "north", lane=1, chair=False) for i, x in enumerate((-13.4, -12.47, -11.53, -10.6))),
+    *(SeatDef(f"ADMIN-{i + 1}", "ADMIN", "desk", x, z + 1.0, "north", lane=lane) for i, (x, z, lane) in enumerate(ADMIN_DESKS)),
 )
 
 SPOTS = (
@@ -257,27 +245,18 @@ SPOTS = (
     SpotDef("RECOVERY-ws-4", "RECOVERY", "station", 17.0, 5.0, "south"),
     SpotDef("ICU-ws-7", "ICU", "station", -6.0, -5.0, "north"),
     SpotDef("ICU-ws-8", "ICU", "station", -4.5, -5.0, "north"),
-    *(
-        SpotDef(f"LAB-ws-{i + 1}", "LAB", "station", x, -5.0, "north")
-        for i, x in enumerate((8.5, 11.0, 13.5, 16.0))
-    ),
+    *(SpotDef(f"LAB-ws-{i + 1}", "LAB", "station", x, -5.0, "north") for i, x in enumerate((8.5, 11.0, 13.5, 16.0))),
     SpotDef("STAFF-ws-1", "STAFF", "standing", -18.0, 11.5, "south", lane=1),
     SpotDef("STAFF-ws-2", "STAFF", "standing", -12.0, 7.9, "south"),
     SpotDef("STAFF-ws-3", "STAFF", "standing", -9.5, 9.0, "west"),
-    *(
-        SpotDef(f"PRAYER-{i + 1}", "PRAYER", "prayer", x, z, "north", lane=row)
-        for i, (x, z, row) in enumerate(PRAYER_RUGS)
-    ),
+    *(SpotDef(f"PRAYER-{i + 1}", "PRAYER", "prayer", x, z, "north", lane=row) for i, (x, z, row) in enumerate(PRAYER_RUGS)),
 )
 
 PROPS = (
     *(PropDef(f"ER-curtain-{i + 1}", "curtain", "ER", -16.7 + 2.6 * i, -12.2, 0.05, 2.4) for i in range(5)),
     PropDef("IMAGING-scanner", "ct_scanner", "IMAGING", 2.0, -10.0, 2.8, 1.0),
     PropDef("IMAGING-ct-table", "ct_table", "IMAGING", 2.0, -8.2, 0.8, 3.2),
-    *(
-        PropDef(f"PHARMACY-shelf-{i + 1}", "shelf", "PHARMACY", x, -9.0, 1.0, 4.0)
-        for i, x in enumerate((11.0, 14.0, 17.0))
-    ),
+    *(PropDef(f"PHARMACY-shelf-{i + 1}", "shelf", "PHARMACY", x, -9.0, 1.0, 4.0) for i, x in enumerate((11.0, 14.0, 17.0))),
     PropDef("TRIAGE-desk", "triage_desk", "TRIAGE", -12.0, 6.0, 3.0, 0.9),
     PropDef("RECEPTION-desk", "reception_desk", "RECEPTION", 18.0, 8.0, 1.0, 4.2),
     PropDef("RECEPTION-plant-1", "plant", "RECEPTION", 9.2, 13.0, 0.9, 0.9),
@@ -285,28 +264,16 @@ PROPS = (
     PropDef("OR-table", "or_table", "OR", 13.0, -8.0, 1.0, 2.4),
     PropDef("OR-lamp", "or_lamp", "OR", 13.0, -8.0, 1.4, 1.4, blocks=False),
     PropDef("OR-anesthesia", "anesthesia_machine", "OR", 16.5, -9.5, 0.8, 0.8),
-    *(
-        PropDef(f"ICU-glass-{i + 1}", "glass_partition", "ICU", -16.7 + 3.6 * i, -12.3, 0.06, 2.6)
-        for i in range(5)
-    ),
+    *(PropDef(f"ICU-glass-{i + 1}", "glass_partition", "ICU", -16.7 + 3.6 * i, -12.3, 0.06, 2.6) for i in range(5)),
     PropDef("LAB-bench-1", "lab_bench", "LAB", 13.0, -9.0, 12.0, 1.0),
     PropDef("LAB-bench-2", "lab_bench", "LAB", 13.0, -6.0, 12.0, 1.0),
     PropDef("STAFF-couch", "couch", "STAFF", -12.0, 11.65, 4.0, 1.5),
     PropDef("STAFF-table", "coffee_table", "STAFF", -12.0, 9.0, 1.8, 1.0),
     PropDef("STAFF-vending", "vending_machine", "STAFF", -18.0, 12.8, 1.2, 0.8),
-    *(
-        PropDef(f"PRAYER-rug-{i + 1}", "prayer_rug", "PRAYER", x, z, 1.4, 2.4, blocks=False)
-        for i, (x, z, _) in enumerate(PRAYER_RUGS)
-    ),
+    *(PropDef(f"PRAYER-rug-{i + 1}", "prayer_rug", "PRAYER", x, z, 1.4, 2.4, blocks=False) for i, (x, z, _) in enumerate(PRAYER_RUGS)),
     PropDef("PRAYER-shoe-shelf", "shoe_shelf", "PRAYER", 4.6, 12.8, 2.4, 0.5),
-    *(
-        PropDef(f"ADMIN-desk-{i + 1}", "admin_desk", "ADMIN", x, z, 2.2, 1.0)
-        for i, (x, z, _) in enumerate(ADMIN_DESKS)
-    ),
-    *(
-        PropDef(f"ROOF-hvac-{i + 1}", "hvac", "ROOF", x, z, 3.0, 2.0)
-        for i, (x, z) in enumerate(((-14.0, -8.0), (-14.0, 6.0), (-8.0, -8.0)))
-    ),
+    *(PropDef(f"ADMIN-desk-{i + 1}", "admin_desk", "ADMIN", x, z, 2.2, 1.0) for i, (x, z, _) in enumerate(ADMIN_DESKS)),
+    *(PropDef(f"ROOF-hvac-{i + 1}", "hvac", "ROOF", x, z, 3.0, 2.0) for i, (x, z) in enumerate(((-14.0, -8.0), (-14.0, 6.0), (-8.0, -8.0)))),
     PropDef("ROOF-machine-room", "elevator_machine_room", "ROOF", 18.5, 0.0, 3.0, 4.0),
     PropDef("ROOF-helipad", "helipad", "ROOF", 6.0, 0.0, 12.0, 12.0, blocks=False),
     PropDef("ROOF-helicopter", "helicopter", "ROOF", 6.0, 0.0, 2.0, 3.2),

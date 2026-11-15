@@ -139,9 +139,7 @@ def set_bed(world: World, hospital: HospitalState, bed_id: str, patient_id: str 
     bed = hospital.beds[bed_id]
     bed.patient_id = patient_id
     bed.state = state  # type: ignore[assignment]
-    world.emit(
-        hospital.id, BedEvent(time=world.time(), bed_id=bed_id, patient_id=patient_id, state=bed.state)
-    )
+    world.emit(hospital.id, BedEvent(time=world.time(), bed_id=bed_id, patient_id=patient_id, state=bed.state))
 
 
 def clean_bed(world: World, hospital: HospitalState, bed_id: str) -> SimGen:
@@ -163,9 +161,7 @@ def vacate(world: World, hospital: HospitalState, patient: Patient, place: Place
             hospital.release_place(place, patient.id)
 
 
-def take_bed(
-    world: World, hospital: HospitalState, patient: Patient, bed_id: str, plan: MovePlan | None = None
-) -> SimGen:
+def take_bed(world: World, hospital: HospitalState, patient: Patient, bed_id: str, plan: MovePlan | None = None) -> SimGen:
     """Walk `patient` from where they are to `bed_id` (already granted) and free their old place. `plan` is
     given when the route was planned already (an EMT walks the same route beside the patient)."""
     old = patient.place
@@ -178,9 +174,7 @@ def take_bed(
         yield from world.follow(hospital, patient, old, dest, plan)
 
 
-def admit(
-    world: World, hospital: HospitalState, patient: Patient, bed_id: str, los_median_h: float
-) -> SimGen:
+def admit(world: World, hospital: HospitalState, patient: Patient, bed_id: str, los_median_h: float) -> SimGen:
     yield from take_bed(world, hospital, patient, bed_id)
     unit = hospital.beds[bed_id].unit
     patient.unit = unit
@@ -197,9 +191,7 @@ def admit(
     maybe_visit(world, hospital, patient)
 
 
-def wait_for_slot(
-    world: World, hospital: HospitalState, patient: Patient, pool_name: str, priority: float
-) -> SimGen:
+def wait_for_slot(world: World, hospital: HospitalState, patient: Patient, pool_name: str, priority: float) -> SimGen:
     """Queue for a slot of `pool_name`. Returns the slot id, or None if the patient was kicked first."""
     pool = hospital.pools[pool_name]
     request = pool.request(priority)
@@ -240,17 +232,13 @@ def waiting_er(world: World, hospital: HospitalState, p: Patient) -> SimGen:
     yield from start_er(world, hospital, p, bed)
 
 
-def start_er(
-    world: World, hospital: HospitalState, p: Patient, bed: str, plan: MovePlan | None = None
-) -> SimGen:
+def start_er(world: World, hospital: HospitalState, p: Patient, bed: str, plan: MovePlan | None = None) -> SimGen:
     wait = world.now - p.arrived_at
     hospital.er_waits.append((world.now, wait))
     p.phase = "er"
     p.unit = "ER"
     p.er_bed_at = world.now
-    world.emit(
-        hospital.id, ErAdmitEvent(time=world.time(), patient_id=p.id, bed_id=bed, wait_min=round(wait, 1))
-    )
+    world.emit(hospital.id, ErAdmitEvent(time=world.time(), patient_id=p.id, bed_id=bed, wait_min=round(wait, 1)))
     yield from take_bed(world, hospital, p, bed, plan)
 
 
@@ -281,9 +269,7 @@ def er(world: World, hospital: HospitalState, p: Patient) -> SimGen:
         bed = yield from wait_for_slot(world, hospital, p, target, priority(p))
         if bed is None:
             return
-        yield from admit(
-            world, hospital, p, bed, c.ICU_LOS_MEDIAN_H if target == "ICU" else c.WARD_LOS_MEDIAN_H
-        )
+        yield from admit(world, hospital, p, bed, c.ICU_LOS_MEDIAN_H if target == "ICU" else c.WARD_LOS_MEDIAN_H)
 
 
 def surgery_wait(world: World, hospital: HospitalState, p: Patient) -> SimGen:

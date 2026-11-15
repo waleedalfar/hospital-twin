@@ -7,9 +7,9 @@ import { create, type StoreApi, type UseBoundStore } from 'zustand';
 
 import { Api } from './api';
 import { initialClock, onMessage as clockOnMessage, simNow, type ClockState } from './clock';
-import { applyEvents, fromSnapshot } from './reducers';
+import { applyEvents, fromSnapshot, mergeRecs, recsIn } from './reducers';
 import { WsClient, type ConnectionStatus, type WsOptions } from './socket';
-import type { HospitalData, NetworkMessage } from './types';
+import type { AgentRecModel, HospitalData, NetworkMessage } from './types';
 import type { ServerMessage } from './wsTypes';
 
 export interface ClientLike {
@@ -19,7 +19,7 @@ export interface ClientLike {
 
 export interface StoreDeps {
   createClient: (opts: WsOptions) => ClientLike;
-  api: Pick<Api, 'setFrozen'>;
+  api: Pick<Api, 'setFrozen' | 'recs'>;
   now: () => number;
   wsUrl: (path: string) => string;
 }
@@ -28,6 +28,8 @@ export interface TwinState {
   hospitalId: string | null;
   connection: ConnectionStatus;
   data: HospitalData | null;
+  /** The operations agent's recommendations for this hospital, newest first. */
+  recs: AgentRecModel[];
   clock: ClockState;
   network: NetworkMessage | null;
   networkConnection: ConnectionStatus;
@@ -64,6 +66,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     hospitalId: null,
     connection: 'closed',
     data: null,
+    recs: [],
     clock: initialClock(),
     network: null,
     networkConnection: 'closed',
@@ -74,7 +77,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
 
     connectHospital: (id) => {
       hospitalClient?.stop();
-      set({ hospitalId: id, data: null, connection: 'connecting', selectedId: null, clock: initialClock() });
+      set({ hospitalId: id, data: null, recs: [], connection: 'connecting', selectedId: null, clock: initialClock() });
       hospitalClient = deps.createClient({
         url: () => deps.wsUrl(`/ws?hospital=${encodeURIComponent(id)}`),
         onStatus: (connection) => { set({ connection }); },
@@ -83,6 +86,11 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
           if (msg.type === 'snapshot') {
             const data = fromSnapshot(msg);
             set({ data, clock: clockOnMessage(msg.sim_time, msg.speed, msg.paused, msg.frozen, deps.now()) });
+            // Recommendations are not part of the snapshot: load the stored ones, and keep up through events.
+            deps.api.recs(id).then(
+              (list) => { set((s) => ({ recs: mergeRecs(s.recs, list) })); },
+              (e: unknown) => { set({ problem: `Could not load the agent's recommendations: ${String(e)}` }); },
+            );
             if (get().freeze && !msg.frozen) {
               deps.api.setFrozen(true).catch((e: unknown) => { set({ problem: `Could not freeze the sim: ${String(e)}` }); });
             }
@@ -91,7 +99,12 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
             if (!data) return;
             const next = applyEvents(data, msg, feedKey);
             feedKey += msg.events.length;
-            set({ data: next, clock: clockOnMessage(msg.sim_time, msg.speed, msg.paused, msg.frozen, deps.now()) });
+            const fresh = recsIn(msg);
+            set((s) => ({
+              data: next,
+              recs: fresh.length > 0 ? mergeRecs(s.recs, fresh) : s.recs,
+              clock: clockOnMessage(msg.sim_time, msg.speed, msg.paused, msg.frozen, deps.now()),
+            }));
           }
         },
       });
@@ -101,7 +114,7 @@ export function createTwinStore(deps: StoreDeps): TwinStore {
     disconnectHospital: () => {
       hospitalClient?.stop();
       hospitalClient = null;
-      set({ hospitalId: null, data: null, connection: 'closed', selectedId: null });
+      set({ hospitalId: null, data: null, recs: [], connection: 'closed', selectedId: null });
     },
 
     connectNetwork: () => {

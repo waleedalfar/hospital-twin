@@ -81,10 +81,7 @@ def build_dataset(
     start = warmup_days * 1440
     total = days * 1440
     # Flu surges are spread over the run, never in the first or last two days.
-    schedule = sorted(
-        (start + int(rng.uniform(2, days - 2) * 1440), hospital_ids[i % len(hospital_ids)])
-        for i in range(surges)
-    )
+    schedule = sorted((start + int(rng.uniform(2, days - 2) * 1440), hospital_ids[i % len(hospital_ids)]) for i in range(surges))
     surge_spans: list[tuple[str, float, float]] = []
     records: list[dict[str, float | int | str]] = []
     admits = dict.fromkeys(BED_UNITS, 0)
@@ -111,10 +108,7 @@ def build_dataset(
                         departures[unit] += 1
             for hospital in world.hospitals.values():
                 for unit in BED_UNITS:
-                    occupied_bed_hours[unit] += (
-                        sum(1 for b in hospital.beds.values() if b.unit == unit and b.state == "occupied")
-                        / 60.0
-                    )
+                    occupied_bed_hours[unit] += sum(1 for b in hospital.beds.values() if b.unit == unit and b.state == "occupied") / 60.0
             if round(now) % SNAPSHOT_EVERY_MIN == 0:
                 for hospital, patient in observer.scorable():
                     features = observer.features_for(hospital, patient, now)
@@ -133,9 +127,7 @@ def build_dataset(
     rows = pd.DataFrame.from_records(records, columns=[*META[:4], *FEATURE_NAMES])
     rows["label"] = _label(rows, [(m - start, p, e) for m, p, e in observer.criticals])
     arrivals_total = sum(1 for m, _, _ in observer.arrivals if m >= start)
-    arrivals = _hourly_arrivals(
-        observer.arrivals, start, total, hospital_ids, [(h, a - start, b - start) for h, a, b in surge_spans]
-    )
+    arrivals = _hourly_arrivals(observer.arrivals, start, total, hospital_ids, [(h, a - start, b - start) for h, a, b in surge_spans])
     unit_stats = {
         unit: {
             "admit_per_arrival": admits[unit] / max(1, arrivals_total),

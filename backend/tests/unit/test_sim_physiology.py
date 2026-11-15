@@ -34,18 +34,12 @@ def test_episode_rate_rises_with_age_comorbidity_esi_and_flu() -> None:
     base = phys.episode_rate_per_h(YOUNG, 4, False, False, False)
     assert phys.episode_rate_per_h(OLD_SICK, 4, False, False, False) > base
     assert phys.episode_rate_per_h(PatientProfile("x", 25, "male", 5, ()), 4, False, False, False) > base
-    assert phys.episode_rate_per_h(YOUNG, 1, False, False, False) > phys.episode_rate_per_h(
-        YOUNG, 4, False, False, False
-    )
+    assert phys.episode_rate_per_h(YOUNG, 1, False, False, False) > phys.episode_rate_per_h(YOUNG, 4, False, False, False)
     assert phys.episode_rate_per_h(YOUNG, 3, True, True, False) == pytest.approx(
         c.EPISODE_FLU_RESPIRATORY_FACTOR * phys.episode_rate_per_h(YOUNG, 3, True, False, False)
     )
-    assert phys.episode_rate_per_h(YOUNG, 3, False, True, False) == phys.episode_rate_per_h(
-        YOUNG, 3, False, False, False
-    )
-    assert phys.episode_rate_per_h(YOUNG, 3, False, False, True) < phys.episode_rate_per_h(
-        YOUNG, 3, False, False, False
-    )
+    assert phys.episode_rate_per_h(YOUNG, 3, False, True, False) == phys.episode_rate_per_h(YOUNG, 3, False, False, False)
+    assert phys.episode_rate_per_h(YOUNG, 3, False, False, True) < phys.episode_rate_per_h(YOUNG, 3, False, False, False)
 
 
 def test_deterioration_episodes_happen_and_reach_the_critical_threshold() -> None:
@@ -112,9 +106,7 @@ def test_respiratory_patients_lose_more_spo2() -> None:
     rng = random.Random(4)
     plain, resp = fresh(), phys.initial_physiology(YOUNG, 3, True, random.Random(1))
     plain.s = resp.s = 3.0
-    assert sum(phys.vitals(resp, YOUNG, rng).spo2 for _ in range(100)) < sum(
-        phys.vitals(plain, YOUNG, rng).spo2 for _ in range(100)
-    )
+    assert sum(phys.vitals(resp, YOUNG, rng).spo2 for _ in range(100)) < sum(phys.vitals(plain, YOUNG, rng).spo2 for _ in range(100))
 
 
 def test_vitals_are_sampled_every_5_minutes_admitted_and_15_waiting() -> None:
@@ -130,9 +122,7 @@ def test_vitals_are_sampled_every_5_minutes_admitted_and_15_waiting() -> None:
                 if pid in last:
                     located = sim.world.patient(pid)
                     phase = located[1].phase if located else "gone"
-                    gaps.setdefault(("waiting" if phase.startswith("waiting") else "other", pid), []).append(
-                        t - last[pid]
-                    )
+                    gaps.setdefault(("waiting" if phase.startswith("waiting") else "other", pid), []).append(t - last[pid])
                 last[pid] = t
     waiting = [g for (kind, _), gs in gaps.items() if kind == "waiting" for g in gs]
     other = [g for (kind, _), gs in gaps.items() if kind == "other" for g in gs]

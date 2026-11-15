@@ -9,13 +9,23 @@ capacity projection are refreshed and queued for the `forecasts` table. The engi
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from twin.common.ws import AlertEvent, Risk, RiskEvent
+from twin.common.ws import AlertEvent, DriftAlertEvent, Risk, RiskEvent
 from twin.ml.features import FEATURE_NAMES
 from twin.ml.forecast import BED_UNITS, LAGS, MAX_HOURS_UNTIL_FULL, ArrivalsModel, project_capacity
+from twin.ml.governance import (
+    DRIFT_EVERY_MIN,
+    FAIRNESS_EVERY_MIN,
+    DriftMonitor,
+    DriftReading,
+    FairnessMonitor,
+    FeatureBaseline,
+    ScoredRow,
+)
 from twin.ml.model import DeteriorationModel
 from twin.ml.observe import Observer
 from twin.sim.config import SIM_START
@@ -40,19 +50,36 @@ class ForecastRow:
     value: float
 
 
+@dataclass(frozen=True)
+class AuditRow:
+    time: datetime
+    actor: str
+    action: str
+    payload: dict[str, Any]
+
+
 @dataclass
 class InferenceEngine:
     world: World
     model: DeteriorationModel
     arrivals_model: ArrivalsModel | None = None
+    baseline: dict[str, dict[str, FeatureBaseline]] | None = None
     observer: Observer = field(init=False)
     levels: dict[str, str] = field(default_factory=dict)
     pending_forecasts: list[ForecastRow] = field(default_factory=list)
+    pending_audit: list[AuditRow] = field(default_factory=list)
+    pending_drift: list[DriftReading] = field(default_factory=list)
+    drift: DriftMonitor | None = None
+    fairness: FairnessMonitor = field(default_factory=FairnessMonitor)
+    latest_drift: list[DriftReading] = field(default_factory=list)
+    latest_fairness: dict[str, Any] | None = None
     batches: int = 0
     scored: int = 0
 
     def __post_init__(self) -> None:
         self.observer = Observer(self.world)
+        if self.baseline is not None:
+            self.drift = DriftMonitor(self.baseline)
 
     # ---- called by the simulation after every tick ---------------------------------------------------------
 
@@ -66,6 +93,10 @@ class InferenceEngine:
             self.score_all()
         if self.arrivals_model is not None and minute % FORECAST_EVERY_MIN == 0:
             self.forecast_all()
+        if self.drift is not None and minute % DRIFT_EVERY_MIN == 0:
+            self.check_drift()
+        if minute % FAIRNESS_EVERY_MIN == 0:
+            self.check_fairness()
 
     # ---- risk scores ----------------------------------------------------------------------------------
 
@@ -82,7 +113,11 @@ class InferenceEngine:
         if not rows:
             return 0
         scored = self.model.score(pd.DataFrame(rows, columns=list(FEATURE_NAMES)))
-        for (hospital, patient), s in zip(targets, scored, strict=True):
+        per_hospital: dict[str, dict[str, dict[str, float]]] = {}
+        for (hospital, patient), s, features in zip(targets, scored, rows, strict=True):
+            per_hospital.setdefault(hospital.id, {})[patient.id] = features
+            if round(now) % 30 == 0 and patient.profile is not None:
+                self.fairness.add(ScoredRow(now, patient.id, patient.profile.age, patient.profile.sex == "male", s.score))
             risk = Risk(
                 score=round(s.score, 4),
                 level=s.level,
@@ -106,10 +141,56 @@ class InferenceEngine:
                     hospital.id,
                     AlertEvent(time=self.world.time(), patient_id=patient.id, level="high", score=risk.score),
                 )
+                self.audit(
+                    "system",
+                    "risk_alert",
+                    {"patient_id": patient.id, "hospital_id": hospital.id, "score": risk.score},
+                )
             self.levels[patient.id] = s.level
         self.batches += 1
         self.scored += len(targets)
+        if self.drift is not None:
+            for hospital_id, hospital_rows in per_hospital.items():
+                self.drift.add(hospital_id, now, hospital_rows)
+        self.audit(
+            "system",
+            "inference_batch",
+            {
+                "model_version": self.model.version,
+                "patients": len(targets),
+                "by_hospital": {h: len(r) for h, r in per_hospital.items()},
+            },
+        )
         return len(targets)
+
+    # ---- governance ---------------------------------------------------------------------------------
+
+    def audit(self, actor: str, action: str, payload: dict[str, Any]) -> None:
+        self.pending_audit.append(AuditRow(self.world.time(), actor, action, payload))
+
+    def check_drift(self) -> None:
+        """PSI per feature and hospital over the last 2 sim hours; a drift alert for each new crossing of 0.2."""
+        if self.drift is None:
+            return
+        readings, fresh = self.drift.evaluate(self.world.now, self.world.time())
+        self.latest_drift = readings
+        self.pending_drift.extend(readings)
+        for r in fresh:
+            self.world.emit(r.hospital_id, DriftAlertEvent(time=r.time, feature=r.feature, psi=round(r.psi, 3)))
+            self.audit(
+                "system",
+                "drift_alert",
+                {"hospital_id": r.hospital_id, "feature": r.feature, "psi": round(r.psi, 3)},
+            )
+
+    def check_fairness(self) -> None:
+        report = self.fairness.report(self.world.now, self.observer.criticals)
+        self.latest_fairness = {**report, "as_of": self.world.time().isoformat()}
+        self.audit(
+            "system",
+            "fairness_report",
+            {"rows": report["rows"], "max_auroc_gap": report["max_auroc_gap"], "flagged": report["flagged"]},
+        )
 
     # ---- forecasts ------------------------------------------------------------------------------------
 
@@ -135,13 +216,8 @@ class InferenceEngine:
         for hospital_id in sorted(self.world.hospitals):
             hospital = self.world.hospitals[hospital_id]
             history, last = self.hourly_arrivals(hospital_id, LAGS)
-            forecast = self.arrivals_model.forecast(
-                hospital_id, history, last, int(flu_active(self.world, hospital_id))
-            )
-            occupancy = {
-                u: sum(1 for b in hospital.beds.values() if b.unit == u and b.state == "occupied")
-                for u in BED_UNITS
-            }
+            forecast = self.arrivals_model.forecast(hospital_id, history, last, int(flu_active(self.world, hospital_id)))
+            occupancy = {u: sum(1 for b in hospital.beds.values() if b.unit == u and b.state == "occupied") for u in BED_UNITS}
             hours = project_capacity(forecast, occupancy, layout.capacity, self.arrivals_model.unit_stats)
             when, version = self.world.time(), self.arrivals_model.version
             for h, value in enumerate(forecast, start=1):
@@ -158,6 +234,14 @@ class InferenceEngine:
                         NOT_FULL if hrs is None else hrs,
                     )
                 )
+
+    def drain_audit(self) -> list[AuditRow]:
+        out, self.pending_audit = self.pending_audit, []
+        return out
+
+    def drain_drift(self) -> list[DriftReading]:
+        out, self.pending_drift = self.pending_drift, []
+        return out
 
     def drain_forecasts(self) -> list[ForecastRow]:
         out, self.pending_forecasts = self.pending_forecasts, []

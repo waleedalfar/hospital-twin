@@ -31,15 +31,10 @@ AUROC_GATE = 0.75
 async def load_profiles(dsn: str) -> list[PatientProfile]:
     conn = await asyncpg.connect(dsn)
     try:
-        rows = await conn.fetch(
-            "SELECT id, age, sex, comorbidity_count, conditions FROM patients ORDER BY id"
-        )
+        rows = await conn.fetch("SELECT id, age, sex, comorbidity_count, conditions FROM patients ORDER BY id")
     finally:
         await conn.close()
-    return [
-        PatientProfile(r["id"], r["age"], r["sex"], r["comorbidity_count"], tuple(r["conditions"]))
-        for r in rows
-    ]
+    return [PatientProfile(r["id"], r["age"], r["sex"], r["comorbidity_count"], tuple(r["conditions"])) for r in rows]
 
 
 def gate_failures(det: dict[str, object], arrivals: dict[str, object]) -> list[str]:
@@ -57,9 +52,7 @@ def gate_failures(det: dict[str, object], arrivals: dict[str, object]) -> list[s
     if not isinstance(fa, dict):
         raise TypeError("forecast metrics have no validation section")
     if fa["mae"] >= fa["seasonal_naive_mae"]:
-        problems.append(
-            f"arrivals MAE {fa['mae']:.3f} does not beat seasonal naive {fa['seasonal_naive_mae']:.3f}"
-        )
+        problems.append(f"arrivals MAE {fa['mae']:.3f} does not beat seasonal naive {fa['seasonal_naive_mae']:.3f}")
     return problems
 
 
@@ -81,18 +74,14 @@ def main(argv: list[str] | None = None) -> int:
     forecast, forecast_metrics = train_arrivals(dataset.arrivals, dataset.unit_stats)
     save_run(result, dataset, args.models_dir / MODEL_VERSION)
     forecast.save(args.models_dir / FORECAST_VERSION)
-    (args.models_dir / FORECAST_VERSION / "metrics.json").write_text(
-        json.dumps(forecast_metrics, indent=1) + "\n", encoding="utf-8"
-    )
+    (args.models_dir / FORECAST_VERSION / "metrics.json").write_text(json.dumps(forecast_metrics, indent=1) + "\n", encoding="utf-8")
     det = json.loads((args.models_dir / MODEL_VERSION / "metrics.json").read_text(encoding="utf-8"))
     args.card.parent.mkdir(parents=True, exist_ok=True)
     args.card.write_text(model_card(det, forecast_metrics), encoding="utf-8")
 
     v, t = det["validation"], det["test"]
     fa = forecast_metrics["validation"]
-    print(
-        f"Deterioration model {MODEL_VERSION}: {det['data']['rows']:,} rows, {det['data']['positives']:,} positive"
-    )
+    print(f"Deterioration model {MODEL_VERSION}: {det['data']['rows']:,} rows, {det['data']['positives']:,} positive")
     print(
         f"  validation AUROC {v['model']['auroc']:.3f} (NEWS2 {v['news2_baseline']['auroc']:.3f}), AUPRC {v['model']['auprc']:.3f} (NEWS2 {v['news2_baseline']['auprc']:.3f})"
     )

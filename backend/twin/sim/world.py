@@ -56,9 +56,7 @@ class World:
         self.env = simpy.Environment()
         self.router = Router(layout)
         self.pool = PoolState(profiles=sorted(profiles, key=lambda p: p.id))
-        self.hospitals: dict[str, HospitalState] = {
-            h.id: HospitalState(id=h.id, name=h.name, layout=layout, env=self.env) for h in layout.hospitals
-        }
+        self.hospitals: dict[str, HospitalState] = {h.id: HospitalState(id=h.id, name=h.name, layout=layout, env=self.env) for h in layout.hospitals}
         self.outbox: list[Emitted] = []
         self._counters: dict[str, int] = {}
         self._streams: dict[tuple[str, ...], Any] = {}
@@ -131,26 +129,20 @@ class World:
         if place.vehicle is not None:
             slot = hospital.slots_used.get(place.vehicle)
             if slot is not None:
-                return layout.spots_by_id[
-                    next(s.spot for s in layout.outside.ambulance_slots if s.id == slot)
-                ].node
+                return layout.spots_by_id[next(s.spot for s in layout.outside.ambulance_slots if s.id == slot)].node
             if place.vehicle.startswith("HELI-"):
                 return layout.spots_by_id[layout.roof.helipad_spot].node
             return layout.spots_by_id[layout.outside.curb_spot].node
         raise ValueError(f"Place {place} has no waypoint")
 
     def location(self, place: Place) -> Location:
-        return Location(
-            floor=place.floor, room=place.room, bed=place.bed, spot=place.spot, vehicle=place.vehicle
-        )
+        return Location(floor=place.floor, room=place.room, bed=place.bed, spot=place.spot, vehicle=place.vehicle)
 
     def curb(self) -> Place:
         spot = self.layout.spots_by_id[self.layout.outside.curb_spot]
         return Place(floor=spot.floor, room=spot.room, spot=spot.id)
 
-    def walk(
-        self, hospital: HospitalState, person: Person, dest: Place, *, start: Place | None = None
-    ) -> SimGen:
+    def walk(self, hospital: HospitalState, person: Person, dest: Place, *, start: Place | None = None) -> SimGen:
         """Walk `person` to `dest`. The person's place becomes `dest` at once (it is reserved); the walk
         itself is described by `person.move` until arrival."""
         origin = start if start is not None else person.place
@@ -158,9 +150,7 @@ class World:
         nodes, times = timeline(self.router, path, self.now, hospital.elevator)
         yield from self.follow(hospital, person, origin, dest, MovePlan(nodes, times))
 
-    def follow(
-        self, hospital: HospitalState, person: Person, origin: Place, dest: Place, plan: MovePlan
-    ) -> SimGen:
+    def follow(self, hospital: HospitalState, person: Person, origin: Place, dest: Place, plan: MovePlan) -> SimGen:
         """Walk along an already planned route (used to keep an escort and a patient together)."""
         person.place = dest
         person.move = plan

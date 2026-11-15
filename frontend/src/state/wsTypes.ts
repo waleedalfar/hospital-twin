@@ -164,6 +164,24 @@ export type Action = 'divert_ambulances' | 'expedite_discharge' | 'move_patient'
 export type Kind21 = 'action';
 export type Result = string;
 export type Time19 = string;
+export type Feature = string;
+export type Kind22 = 'drift_alert';
+export type Psi = number;
+export type Time20 = string;
+export type Kind23 = 'agent_rec';
+export type Action1 = 'divert_ambulances' | 'expedite_discharge' | 'move_patient' | 'call_in_staff' | 'hold_bed';
+export type Name3 = string;
+export type Value = number;
+export type CitedMetrics = CitedMetric[];
+export type Created = string;
+export type HospitalId2 = string;
+export type Id5 = string;
+export type Label = string | null;
+export type Rationale = string;
+export type Source = 'gemini' | 'rules';
+export type Status5 = 'pending' | 'approved' | 'dismissed' | 'expired';
+export type Targets = string[];
+export type Time21 = string;
 export type Events = (
   | MoveEvent
   | SpawnEvent
@@ -185,6 +203,8 @@ export type Events = (
   | HospitalStatusEvent
   | ScenarioEvent
   | ActionEvent
+  | DriftAlertEvent
+  | AgentRecEvent
 )[];
 export type Frozen1 = boolean;
 export type Paused1 = boolean;
@@ -193,11 +213,11 @@ export type Speed1 = number;
 export type Type1 = 'events';
 export type V1 = 1;
 export type Frozen2 = boolean;
-export type Id5 = string;
+export type Id6 = string;
 export type Lat = number;
 export type Lon = number;
-export type Name3 = string;
-export type Status5 = 'open' | 'diverting' | 'offline';
+export type Name4 = string;
+export type Status6 = 'open' | 'diverting' | 'offline';
 export type StatusUntil = string | null;
 export type Hospitals = NetworkHospital[];
 export type Paused2 = boolean;
@@ -208,8 +228,8 @@ export type Type2 = 'network';
 export type V2 = 1;
 export type Destination1 = string | null;
 export type Home = string;
-export type Id6 = string;
-export type Kind22 = 'ambulance' | 'helicopter';
+export type Id7 = string;
+export type Kind24 = 'ambulance' | 'helicopter';
 export type Lat1 = number;
 export type Lon1 = number;
 export type PatientId14 = string | null;
@@ -217,7 +237,7 @@ export type Lat2 = number;
 export type Lon2 = number;
 export type T = string;
 export type Route = RoutePoint[];
-export type Status6 = 'at_base' | 'to_scene' | 'on_scene' | 'to_hospital' | 'unloading' | 'returning' | 'transferring';
+export type Status7 = 'at_base' | 'to_scene' | 'on_scene' | 'to_hospital' | 'unloading' | 'returning' | 'transferring';
 export type Vehicles1 = NetworkVehicle[];
 export type Message = string;
 export type Type3 = 'error';
@@ -489,6 +509,43 @@ export interface ActionEvent {
 export interface Params1 {
   [k: string]: string | number | string[];
 }
+/**
+ * A feature's distribution at a hospital moved away from the training data (PSI above 0.2).
+ */
+export interface DriftAlertEvent {
+  feature: Feature;
+  kind?: Kind22;
+  psi: Psi;
+  time: Time20;
+}
+/**
+ * A new or updated recommendation from the operations agent.
+ */
+export interface AgentRecEvent {
+  kind?: Kind23;
+  rec: AgentRecModel;
+  time: Time21;
+}
+export interface AgentRecModel {
+  action: Action1;
+  cited_metrics: CitedMetrics;
+  created: Created;
+  hospital_id: HospitalId2;
+  id: Id5;
+  label?: Label;
+  params: Params2;
+  rationale: Rationale;
+  source: Source;
+  status: Status5;
+  targets: Targets;
+}
+export interface CitedMetric {
+  name: Name3;
+  value: Value;
+}
+export interface Params2 {
+  [k: string]: string | number | string[];
+}
 export interface NetworkMessage {
   frozen: Frozen2;
   hospitals: Hospitals;
@@ -501,24 +558,24 @@ export interface NetworkMessage {
   vehicles: Vehicles1;
 }
 export interface NetworkHospital {
-  id: Id5;
+  id: Id6;
   kpis: Kpis;
   lat: Lat;
   lon: Lon;
-  name: Name3;
-  status: Status5;
+  name: Name4;
+  status: Status6;
   status_until: StatusUntil;
 }
 export interface NetworkVehicle {
   destination: Destination1;
   home: Home;
-  id: Id6;
-  kind: Kind22;
+  id: Id7;
+  kind: Kind24;
   lat: Lat1;
   lon: Lon1;
   patient_id: PatientId14;
   route: Route;
-  status: Status6;
+  status: Status7;
 }
 export interface RoutePoint {
   lat: Lat2;

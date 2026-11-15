@@ -64,9 +64,7 @@ def km(a: tuple[float, float], b: tuple[float, float]) -> float:
     return math.hypot((a[0] - b[0]) * KM_PER_DEG_LAT, (a[1] - b[1]) * KM_PER_DEG_LON)
 
 
-def plan_route(
-    kind: VehicleKind, start: tuple[float, float], end: tuple[float, float], t0: float
-) -> list[tuple[float, float, float]]:
+def plan_route(kind: VehicleKind, start: tuple[float, float], end: tuple[float, float], t0: float) -> list[tuple[float, float, float]]:
     if kind == "helicopter":
         flight = max(c.HELICOPTER_MIN_FLIGHT_MIN, km(start, end) / c.HELICOPTER_KM_PER_MIN)
         return [(start[0], start[1], t0), (end[0], end[1], t0 + flight)]
@@ -193,9 +191,7 @@ def build_vehicles(world: World) -> None:
                 lon=layout_h.lon,
             )
             for _ in range(c.EMTS_PER_AMBULANCE):
-                emt = new_staff(
-                    world, hospital, "emt", "ER", Place(floor=0, room="OUTSIDE", vehicle=vehicle.id)
-                )
+                emt = new_staff(world, hospital, "emt", "ER", Place(floor=0, room="OUTSIDE", vehicle=vehicle.id))
                 emt.hospital_id = None
                 emt.vehicle_id = vehicle.id
                 vehicle.crew.append(emt)
@@ -220,9 +216,7 @@ def get_ambulance(world: World, home: str, scene: tuple[float, float], priority:
     hospital = world.hospitals[home]
     taken = hospital.pools["AMB"].try_take() if hospital.pools["AMB"].queue_length == 0 else None
     if taken is None:
-        others = sorted(
-            (h for h in world.hospitals if h != home), key=lambda h: (km(scene, hospital_point(world, h)), h)
-        )
+        others = sorted((h for h in world.hospitals if h != home), key=lambda h: (km(scene, hospital_point(world, h)), h))
         for other in others:
             taken = world.hospitals[other].pools["AMB"].try_take()
             if taken is not None:
@@ -303,13 +297,9 @@ def deliver(world: World, vehicle: Vehicle, hospital: HospitalState, mode: Arriv
     vehicle.patient = None
     vehicle.destination = None
     arrival = (
-        Place(floor=0, room="OUTSIDE", vehicle=vehicle.id)
-        if vehicle.kind == "ambulance"
-        else hospital.place_of_spot(world.layout.roof.helipad_spot)
+        Place(floor=0, room="OUTSIDE", vehicle=vehicle.id) if vehicle.kind == "ambulance" else hospital.place_of_spot(world.layout.roof.helipad_spot)
     )
-    patient = create_patient(
-        world, hospital, patient.profile, mode, patient.esi, patient.complaint, arrival, existing=patient
-    )
+    patient = create_patient(world, hospital, patient.profile, mode, patient.esi, patient.complaint, arrival, existing=patient)
     want_icu = vehicle.kind == "helicopter" and patient.esi == 1
     bed = hospital.pools["ICU"].try_take() if want_icu else None
     if bed is None:
@@ -327,9 +317,7 @@ def deliver(world: World, vehicle: Vehicle, hospital: HospitalState, mode: Arriv
         patient.phase = "escalate"
         world.env.process(journey(world, patient))
     else:
-        world.env.process(
-            chain(world.follow(hospital, patient, arrival, dest, plan), journey(world, patient))
-        )
+        world.env.process(chain(world.follow(hospital, patient, arrival, dest, plan), journey(world, patient)))
     yield world.env.timeout(0)
 
 
@@ -349,9 +337,7 @@ def escort(world: World, hospital: HospitalState, vehicle: Vehicle, plan: MovePl
     emt.hospital_id = hospital.id
     hospital.people[emt.id] = emt
     world.emit(hospital.id, SpawnEvent(time=world.time(), entity=entity_model(world, emt)))
-    back_nodes, back_times = timeline(
-        world.router, list(reversed(plan.path)), plan.arrive + HANDOFF_MIN, hospital.elevator
-    )
+    back_nodes, back_times = timeline(world.router, list(reversed(plan.path)), plan.arrive + HANDOFF_MIN, hospital.elevator)
     round_trip = MovePlan([*plan.path, *back_nodes], [*plan.times, *back_times])
     emt.task = "handover"
     yield from world.follow(hospital, emt, home_place, home_place, round_trip)
@@ -399,9 +385,7 @@ def carry_transfer(world: World, vehicle: Vehicle, target: str) -> SimGen:
     yield from return_home(world, vehicle)
 
 
-def set_hospital_status(
-    world: World, hospital: HospitalState, status: HospitalStatus, until: float | None, reason: str
-) -> None:
+def set_hospital_status(world: World, hospital: HospitalState, status: HospitalStatus, until: float | None, reason: str) -> None:
     hospital.status = status
     hospital.status_until = until
     world.emit(

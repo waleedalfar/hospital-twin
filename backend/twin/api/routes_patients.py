@@ -57,14 +57,12 @@ async def patient(patient_id: str, rt: Runtime, db: DbPool) -> PatientDetail:
             now,
         )
         vitals = await conn.fetchrow(
-            "SELECT time, hr, spo2, sbp, dbp, temp, rr FROM vitals WHERE patient_id = $1 AND time <= $2 "
-            "ORDER BY time DESC LIMIT 1",
+            "SELECT time, hr, spo2, sbp, dbp, temp, rr FROM vitals WHERE patient_id = $1 AND time <= $2 ORDER BY time DESC LIMIT 1",
             patient_id,
             now,
         )
         risk = await conn.fetchrow(
-            "SELECT time, score, level, model_version, top_factors FROM risk_scores WHERE patient_id = $1 "
-            "AND time <= $2 ORDER BY time DESC LIMIT 1",
+            "SELECT time, score, level, model_version, top_factors FROM risk_scores WHERE patient_id = $1 AND time <= $2 ORDER BY time DESC LIMIT 1",
             patient_id,
             now,
         )
@@ -115,8 +113,7 @@ async def patient_risk(patient_id: str, rt: Runtime, db: DbPool, window: Window 
     now = rt.sim.now
     async with db.acquire() as conn:
         rows = await conn.fetch(
-            "SELECT time, score, level, model_version, top_factors FROM risk_scores "
-            "WHERE patient_id = $1 AND time > $2 AND time <= $3 ORDER BY time",
+            "SELECT time, score, level, model_version, top_factors FROM risk_scores WHERE patient_id = $1 AND time > $2 AND time <= $3 ORDER BY time",
             patient_id,
             now - delta,
             now,
