@@ -173,6 +173,9 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
             </div>
             <div className="hud hud--bl">
               <PresetBar active={preset} onPick={(id) => engine?.preset(id)} />
+              <div className="chip" data-testid="controls-hint">
+                {mode === 'iso' ? 'W A S D pan · Q/E down/up · Shift faster · drag to rotate · wheel to zoom · use "Free-fly camera" to fly through the building' : 'W A S D fly · Q/E down/up · Shift faster · drag to look'}
+              </div>
             </div>
             <div className="hud hud--br">
               <Legend xray={xray} />

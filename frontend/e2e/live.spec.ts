@@ -261,3 +261,34 @@ test('5b. live risk scores, SHAP factors, forecast and model version appear in t
   for (const [name] of (target.risk?.top_factors ?? []) as unknown as [string, number][]) await expect(inspector).toContainText(name);
   await page.screenshot({ path: `${EVIDENCE}/risk-inspector.png` });
 });
+
+test('W A S D move the camera right after the page loads, and free-fly mode flies through the building', async ({ page, request }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?freeze=1#/hospital/mercy');
+  await page.waitForFunction(() => (window as unknown as { __TWIN_DEBUG__: TwinDebug }).__TWIN_DEBUG__.frameStats().frames > 3);
+  await expect.poll(async () => ((await (await request.get('/api/sim')).json()) as { frozen: boolean }).frozen, { timeout: 15_000 }).toBe(true);
+  await page.waitForTimeout(800);
+  await expect(page.getByTestId('controls-hint')).toContainText('W A S D pan');
+  const target = (await debug(page, (d) => d.entities())).find((e) => e.kind === 'patient')?.id ?? '';
+  const where = () => page.evaluate((id) => (window as unknown as { __TWIN_DEBUG__: TwinDebug }).__TWIN_DEBUG__.screenPoint(id), target);
+  const moved = (a: { x: number; y: number } | null, b: { x: number; y: number } | null) => Math.hypot((a?.x ?? 0) - (b?.x ?? 0), (a?.y ?? 0) - (b?.y ?? 0));
+
+  // No click first: the canvas already has focus.
+  const before = await where();
+  await page.keyboard.down('KeyW');
+  await page.waitForTimeout(600);
+  await page.keyboard.up('KeyW');
+  await page.waitForTimeout(200);
+  expect(moved(before, await where())).toBeGreaterThan(5);
+
+  // Free-fly: W moves the camera forward through the scene.
+  await page.getByRole('button', { name: 'Free-fly camera' }).click();
+  await expect(page.getByTestId('controls-hint')).toContainText('W A S D fly');
+  await page.getByTestId('scene').focus();
+  const flyBefore = await where();
+  await page.keyboard.down('KeyW');
+  await page.waitForTimeout(800);
+  await page.keyboard.up('KeyW');
+  await page.waitForTimeout(200);
+  expect(moved(flyBefore, await where())).toBeGreaterThan(5);
+});

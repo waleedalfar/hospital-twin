@@ -5,7 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [ -f .env.deploy ]; then set -a; . ./.env.deploy; set +a; fi
+ENV_FILE="${DEPLOY_ENV_FILE:-.env.deploy}"
+if [ -f "$ENV_FILE" ]; then set -a; . "$ENV_FILE"; set +a; fi
 : "${DEPLOY_HOST:?Set DEPLOY_HOST (the VM IP) in .env.deploy}"
 : "${DOMAIN:?Set DOMAIN (the public host name) in .env.deploy}"
 DEPLOY_USER="${DEPLOY_USER:-deploy}"
@@ -21,15 +22,13 @@ remote() { run ssh "${SSH_OPTS[@]}" "$TARGET" "cd $DEPLOY_DIR && $*"; }
 echo "==> Checking the VM ($TARGET)"
 run ssh "${SSH_OPTS[@]}" "$TARGET" "mkdir -p $DEPLOY_DIR && docker --version"
 
-echo "==> Secrets: the VM keeps its own .env (never copied from git)"
-if [ "${DRY_RUN:-0}" != 1 ] && ! ssh "${SSH_OPTS[@]}" "$TARGET" "test -f $DEPLOY_DIR/.env"; then
-  if [ -f .env.prod ]; then
-    scp "${SSH_OPTS[@]}" .env.prod "$TARGET:$DEPLOY_DIR/.env"
-    ssh "${SSH_OPTS[@]}" "$TARGET" "chmod 600 $DEPLOY_DIR/.env"
-  else
-    echo "No $DEPLOY_DIR/.env on the VM and no local .env.prod. Create one (DATABASE_URL, DOMAIN, GEMINI_*)." >&2
-    exit 1
-  fi
+echo "==> Secrets: your local .env.prod (never in git) becomes the VM's .env"
+if [ -f .env.prod ]; then
+  run scp "${SSH_OPTS[@]}" .env.prod "$TARGET:$DEPLOY_DIR/.env"
+  run ssh "${SSH_OPTS[@]}" "$TARGET" "chmod 600 $DEPLOY_DIR/.env"
+elif [ "${DRY_RUN:-0}" != 1 ] && ! ssh "${SSH_OPTS[@]}" "$TARGET" "test -f $DEPLOY_DIR/.env"; then
+  echo "No local .env.prod and no $DEPLOY_DIR/.env on the VM. Create .env.prod (DATABASE_URL, DOMAIN, GEMINI_*)." >&2
+  exit 1
 fi
 
 echo "==> Copying the project"

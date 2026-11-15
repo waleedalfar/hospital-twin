@@ -11,6 +11,7 @@ SCRIPT = REPO_ROOT / "scripts" / "deploy.sh"
 
 def run_script(**env: str) -> subprocess.CompletedProcess[str]:
     clean = {k: v for k, v in os.environ.items() if not k.startswith(("DEPLOY_", "DOMAIN"))}
+    clean["DEPLOY_ENV_FILE"] = "/nonexistent/.env.deploy"  # never read the developer's real settings in a test
     # Run from a temp-free copy of the environment; .env.deploy in the repo (if any) is read by the script itself.
     # Runs the repository's own script in dry-run mode.
     return subprocess.run(  # noqa: S603

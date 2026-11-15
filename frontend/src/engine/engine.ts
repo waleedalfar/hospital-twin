@@ -101,6 +101,8 @@ export class Engine {
     this.applyPixel();
     this.buildScene();
     this.attachInput();
+    // Keys control the camera while the canvas has focus, so give it focus: W A S D work without a click first.
+    opts.canvas.focus({ preventScroll: true });
     this.preset('outside', false);
     installDebug(this.debugApi());
     this.last = performance.now();
