@@ -32,6 +32,8 @@ function useEngine(canvas: React.RefObject<HTMLCanvasElement | null>, box: React
         width: r.width || 1280,
         height: r.height || 744,
         frozen: useTwin.getState().freeze,
+        cameraMode: 'free', // fly through the building by default; the Isometric button switches
+
         simClock: () => useTwin.getState().simNowMs(),
         onPick: (id) => { useTwin.getState().select(id); },
         onView: (v) => { setPreset(v.preset); },
@@ -86,7 +88,7 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
   const box = useRef<HTMLDivElement>(null);
   const [xray, setXray] = useState(false);
   const [night, setNight] = useState(false);
-  const [mode, setMode] = useState<CameraMode>('iso');
+  const [mode, setMode] = useState<CameraMode>('free');
   const [pixel, setPixel] = useState(2);
   const [plan, setPlan] = useState(false);
   const { engine, error, preset } = useEngine(canvas, box, data?.hospital.name ?? null);
@@ -174,7 +176,7 @@ export function HospitalView({ hospitalId }: { hospitalId: string }) {
             <div className="hud hud--bl">
               <PresetBar active={preset} onPick={(id) => engine?.preset(id)} />
               <div className="chip" data-testid="controls-hint">
-                {mode === 'iso' ? 'W A S D pan · Q/E down/up · Shift faster · drag to rotate · wheel to zoom · use "Free-fly camera" to fly through the building' : 'W A S D fly · Q/E down/up · Shift faster · drag to look'}
+                {mode === 'iso' ? 'W A S D pan · Q/E down/up · Shift faster · drag to rotate · wheel to zoom · "Free-fly camera" flies through the building' : 'W A S D fly · Q/E down/up · Shift faster · drag to look · "Isometric camera" for the top-down view'}
               </div>
             </div>
             <div className="hud hud--br">

@@ -149,7 +149,7 @@ test('6. floor presets hide and show the right floors', async ({ page, request }
 
 test('8. faceAudit passes for every character in the live scene', async ({ page, request }) => {
   await openFrozen(page, request);
-  await page.getByRole('button', { name: 'Free-fly camera' }).click();
+  expect((await debug(page, (d) => d.view())).mode).toBe('free'); // the default view is the free-fly one
   await page.getByRole('button', { name: 'Night' }).click();
   const audit = await debug(page, (d) => d.faceAudit());
   expect(audit.checked).toBeGreaterThan(15);
@@ -198,7 +198,20 @@ test('the 2D floor plan shows the same live entities and stays usable without We
   await page.getByRole('tab', { name: /Floor 3/ }).click();
   const icu = api.entities.filter((e) => e.location.floor === 2 && !e.move);
   await expect.poll(() => page.getByTestId('plan-dot').count()).toBeGreaterThanOrEqual(Math.min(icu.length, 1));
-  const first = page.getByTestId('plan-dot').first();
+  // Click a dot that nothing in the HUD is drawn over.
+  const dots = page.getByTestId('plan-dot');
+  let index = 0;
+  for (let i = 0; i < (await dots.count()); i++) {
+    const free = await dots.nth(i).evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2) === el;
+    });
+    if (free) {
+      index = i;
+      break;
+    }
+  }
+  const first = dots.nth(index);
   const id = (await first.getAttribute('data-entity'))!;
   await first.click();
   await expect(page.getByTestId('inspector-id')).toHaveText(id);
@@ -262,33 +275,36 @@ test('5b. live risk scores, SHAP factors, forecast and model version appear in t
   await page.screenshot({ path: `${EVIDENCE}/risk-inspector.png` });
 });
 
-test('W A S D move the camera right after the page loads, and free-fly mode flies through the building', async ({ page, request }) => {
+test('the view starts in free-fly: W A S D fly through the building right after the page loads, and Isometric pans', async ({ page, request }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/?freeze=1#/hospital/mercy');
   await page.waitForFunction(() => (window as unknown as { __TWIN_DEBUG__: TwinDebug }).__TWIN_DEBUG__.frameStats().frames > 3);
   await expect.poll(async () => ((await (await request.get('/api/sim')).json()) as { frozen: boolean }).frozen, { timeout: 15_000 }).toBe(true);
   await page.waitForTimeout(800);
-  await expect(page.getByTestId('controls-hint')).toContainText('W A S D pan');
+  expect((await debug(page, (d) => d.view())).mode).toBe('free');
+  await expect(page.getByTestId('controls-hint')).toContainText('W A S D fly');
+  await expect(page.getByRole('button', { name: 'Isometric camera' })).toBeVisible();
   const target = (await debug(page, (d) => d.entities())).find((e) => e.kind === 'patient')?.id ?? '';
   const where = () => page.evaluate((id) => (window as unknown as { __TWIN_DEBUG__: TwinDebug }).__TWIN_DEBUG__.screenPoint(id), target);
   const moved = (a: { x: number; y: number } | null, b: { x: number; y: number } | null) => Math.hypot((a?.x ?? 0) - (b?.x ?? 0), (a?.y ?? 0) - (b?.y ?? 0));
 
-  // No click first: the canvas already has focus.
+  // No click first: the canvas already has focus, and W flies forward.
   const before = await where();
-  await page.keyboard.down('KeyW');
-  await page.waitForTimeout(600);
-  await page.keyboard.up('KeyW');
-  await page.waitForTimeout(200);
-  expect(moved(before, await where())).toBeGreaterThan(5);
-
-  // Free-fly: W moves the camera forward through the scene.
-  await page.getByRole('button', { name: 'Free-fly camera' }).click();
-  await expect(page.getByTestId('controls-hint')).toContainText('W A S D fly');
-  await page.getByTestId('scene').focus();
-  const flyBefore = await where();
   await page.keyboard.down('KeyW');
   await page.waitForTimeout(800);
   await page.keyboard.up('KeyW');
   await page.waitForTimeout(200);
-  expect(moved(flyBefore, await where())).toBeGreaterThan(5);
+  expect(moved(before, await where())).toBeGreaterThan(5);
+
+  // The isometric view is one click away, and there W pans.
+  await page.getByRole('button', { name: 'Isometric camera' }).click();
+  await expect(page.getByTestId('controls-hint')).toContainText('W A S D pan');
+  expect((await debug(page, (d) => d.view())).mode).toBe('iso');
+  await page.getByTestId('scene').focus();
+  const isoBefore = await where();
+  await page.keyboard.down('KeyW');
+  await page.waitForTimeout(600);
+  await page.keyboard.up('KeyW');
+  await page.waitForTimeout(200);
+  expect(moved(isoBefore, await where())).toBeGreaterThan(5);
 });
