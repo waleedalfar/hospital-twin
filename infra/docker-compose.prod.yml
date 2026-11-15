@@ -1,0 +1,37 @@
+# Production: backend container plus Caddy (HTTPS). The database is Tiger Cloud, reached through DATABASE_URL
+# in the .env file next to this stack (PROMPT.md §12). Run from the repo root on the VM:
+#   docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --build
+name: hospital-twin-prod
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/backend.Dockerfile
+    env_file: ../.env
+    environment:
+      API_HOST: 0.0.0.0
+    volumes:
+      # Training rows for the federated run button (copied there by `make deploy`).
+      - ../data/ml:/app/data/ml
+    restart: unless-stopped
+    expose:
+      - "8000"
+  caddy:
+    build:
+      context: ..
+      dockerfile: infra/caddy.Dockerfile
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy-data:
+  caddy-config:

@@ -10,7 +10,7 @@ UV := env -u VIRTUAL_ENV uv run --directory backend
 NPM := npm --prefix frontend
 
 .PHONY: faceless help setup db db-down test-db test-db-down dev test test-backend test-frontend lint \
-        placeholders e2e verify seed train demo deploy record fed-train verify-live
+        placeholders e2e verify seed train demo deploy record fed-train verify-live seed-prod smoke
 
 help: ## List the commands
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -89,11 +89,22 @@ fed-train: ## Federated training across the three hospitals (needs `make train` 
 verify-live: db ## One real Gemini call on a live sim summary, checked for grounding (needs GEMINI_API_KEY and GEMINI_MODEL)
 	$(UV) python -m twin.agent.live_check
 
-deploy: ## Build and deploy to the Vultr VM (built in CP8)
-	@echo "make deploy: deployment is built in CP8 (PROMPT.md §12). Nothing was run." >&2; exit 1
+deploy: ## Build and deploy to the Vultr VM, migrate, smoke-check (needs .env.deploy)
+	bash scripts/deploy.sh
 
-demo: ## Start the stack with the demo scenario script (built in CP9)
-	@echo "make demo: the demo scenario is built in CP9 (PROMPT.md §13). Nothing was run." >&2; exit 1
+seed-prod: ## Migrate and load Synthea patients into the production database (PROD_DATABASE_URL in .env.deploy)
+	@set -a; . ./.env.deploy; set +a; : "$${PROD_DATABASE_URL:?Set PROD_DATABASE_URL in .env.deploy}"; \
+	DATABASE_URL="$$PROD_DATABASE_URL" $(UV) python -m twin.db.migrate && DATABASE_URL="$$PROD_DATABASE_URL" $(MAKE) seed
 
-record: ## Record the demo video (built in CP9)
-	@echo "make record: the demo recording is built in CP9 (PROMPT.md §13). Nothing was run." >&2; exit 1
+smoke: ## Smoke-check a running deployment: make smoke URL=https://example.com
+	$(UV) python -m twin.ops.smoke $(URL)
+
+demo: db ## Start the stack and the timed demo helper (docs/demo_script.md)
+	@trap 'kill 0' INT TERM EXIT; \
+	$(UV) uvicorn twin.api.main:app --host 127.0.0.1 --port 8000 & \
+	$(NPM) run dev & \
+	$(UV) python -m twin.ops.demo & \
+	wait
+
+record: db ## Perform the demo in a browser and record it to docs/demo.webm (stack must be seeded and trained)
+	$(NPM) run record

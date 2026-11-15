@@ -1,0 +1,21 @@
+# {$DOMAIN} is the public host name; Caddy gets and renews its certificate by itself. For a local test use
+# DOMAIN=localhost (Caddy then uses its own local certificate).
+{$DOMAIN} {
+	encode gzip
+
+	# The browser calls /api/... and the backend serves /...
+	handle /api/* {
+		uri strip_prefix /api
+		reverse_proxy backend:8000
+	}
+
+	handle /ws* {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

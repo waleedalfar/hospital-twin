@@ -19,6 +19,7 @@ dependencies = [
     "google-genai>=1.0",
     "flwr[simulation]>=1.43.0",
     "torch>=2.15.0",
+    "websockets>=13",
 ]
 
 [dependency-groups]

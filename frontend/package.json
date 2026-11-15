@@ -14,7 +14,8 @@
     "test": "vitest run --coverage",
     "e2e": "playwright test",
     "gen:types": "node scripts/gen-types.mjs",
-    "check:types": "node scripts/gen-types.mjs --check"
+    "check:types": "node scripts/gen-types.mjs --check",
+    "record": "playwright test -c playwright.record.config.ts"
   },
   "dependencies": {
     "react": "18.3.1",

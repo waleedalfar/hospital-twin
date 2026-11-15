@@ -565,6 +565,7 @@ dependencies = [
     { name = "simpy" },
     { name = "torch" },
     { name = "uvicorn", extra = ["standard"] },
+    { name = "websockets" },
 ]
 
 [package.dev-dependencies]
@@ -596,6 +597,7 @@ requires-dist = [
     { name = "simpy", specifier = ">=4.1" },
     { name = "torch", specifier = ">=2.15.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
+    { name = "websockets", specifier = ">=13" },
 ]
 
 [package.metadata.requires-dev]

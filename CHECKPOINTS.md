@@ -542,3 +542,22 @@ rules engine is what the app shows. Add `GEMINI_API_KEY` and `GEMINI_MODEL` to `
 ### Known issues
 
 None.
+
+---
+
+## CP8 and CP9: work done without credentials (in progress)
+
+Built and checked locally; the parts that need your accounts are not done yet.
+
+- **CP8 deploy files:** `infra/backend.Dockerfile` (CPU PyTorch, runs from source), `infra/caddy.Dockerfile` +
+  `infra/Caddyfile` (serves the built frontend, proxies `/api` and `/ws`, automatic HTTPS for `DOMAIN`),
+  `infra/docker-compose.prod.yml`, `scripts/deploy.sh` (`make deploy`: rsync, build, migrate, patient check,
+  smoke check with retries), `make seed-prod`, `make smoke URL=...`, `backend/twin/ops/smoke.py`
+  (health, page, WebSocket snapshot). Checked: both images build; the prod compose stack ran locally with
+  `DOMAIN=localhost`; through Caddy over HTTPS `/api/health` reported ok with models ready, the front page loaded and a
+  WebSocket sent a snapshot. **Not done:** the real deploy to Vultr with Tiger Cloud and the registered domain.
+  Setup guide: `docs/deployment.md`.
+- **CP9 pieces:** `docs/demo_script.md`, `make demo` (stack plus the timed helper `backend/twin/ops/demo.py`),
+  `make record` (Playwright performs the demo and saves `docs/demo.webm`; recorded once, 1.8 min, 30 MB so it is
+  gitignored), README with screenshots, commands, architecture and the four prize-track sections, team.
+  **Not done:** a clean-clone `make verify` and `make e2e`, and final evidence once deployed.

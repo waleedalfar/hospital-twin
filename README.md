@@ -10,16 +10,30 @@ All data is simulated. No real patient data is used anywhere.
 The build spec is [PROMPT.md](PROMPT.md), the working rules are [CLAUDE.md](CLAUDE.md), and progress is
 recorded checkpoint by checkpoint in [CHECKPOINTS.md](CHECKPOINTS.md).
 
-## Status
+## What it is
 
-Done so far (details and evidence in [CHECKPOINTS.md](CHECKPOINTS.md)):
+![Network map](docs/evidence/cp4/network-map-live.png)
 
-- **CP0 Scaffold:** repo layout, Makefile, Docker database, API with `/health`, frontend shell, lint, tests,
-  coverage gates and CI.
-- **CP1 Data layer:** `shared/layout.json` generated from the building tables, the full Tiger Data schema
-  (hypertables, continuous aggregates, compression), and 3,000 Synthea patients for Phoenix.
+- **Network map:** the three hospitals with live status, ambulances on the roads, and the agent's diversions.
+- **3D hospital:** a pixel-art, faceless-character building with every patient, nurse and doctor moving in real
+  time. X-ray mode, floor presets, night mode, free-fly camera.
+- **Risk models:** every patient is scored every 5 sim minutes (LightGBM with SHAP reasons), ER arrivals are
+  forecast, length of stay is predicted, and a federated MLP can replace the central model.
+- **Operations agent:** Gemini recommends diversions, discharges, staffing and bed holds with cited numbers; a
+  rules engine takes over when Gemini is unavailable. Approving applies the action to the simulation.
+- **Ask Hospital Twin:** hold the mic (or type) and ask "who is most likely to crash in the ICU?"; the answer is
+  spoken and the patient is highlighted in 3D.
+- **Governance:** drift heatmap, fairness table, audit log, model card, and federated vs centralized training.
 
-The simulation, 3D scene, models and agent are built in CP2-CP9 as listed in PROMPT.md §14.
+![Inspector with risk factors](docs/evidence/cp4/risk-inspector.png)
+![X-ray ICU close-up](docs/evidence/cp3/xray-icu-closeup.png)
+![Agent panel](docs/evidence/cp6/agent-panel.png)
+![Governance drift](docs/evidence/cp6/governance-drift.png)
+![Ask Hospital Twin](docs/evidence/cp7/ask-highlight.png)
+![Federated training](docs/evidence/cp7/federated.png)
+
+Progress and evidence per checkpoint are in [CHECKPOINTS.md](CHECKPOINTS.md); the demo walkthrough is
+[docs/demo_script.md](docs/demo_script.md); the deployment guide is [docs/deployment.md](docs/deployment.md).
 
 ## Setup on macOS
 
@@ -69,16 +83,19 @@ Ports used on your machine: 5173 (frontend), 8000 (backend), 5433 (development d
 | --- | --- |
 | `make setup` | Install backend + frontend deps, pull Docker images, copy `.env.example` → `.env` if missing |
 | `make db` | Start TimescaleDB (Docker), run migrations, copy the building from `shared/layout.json` into the reference tables |
+| `make seed` | Generate Synthea patients and load them; prints the number loaded |
+| `make train` | Simulate 30 days headless, train and evaluate the deterioration, arrivals and length-of-stay models, write the model card |
+| `make fed-train` | Federated training across the three hospitals (needs `make train` first) |
 | `make dev` | Run DB, backend and frontend dev server together |
+| `make demo` | Start the stack and run the scripted demo scenario (see `docs/demo_script.md`) |
+| `make record` | Perform the demo in a browser and record it to `docs/demo.webm` |
 | `make test` | Unit + integration tests (integration tests use a real TimescaleDB in Docker) |
 | `make e2e` | Playwright end-to-end tests against the running stack |
 | `make verify` | Lint, type checks, all tests, coverage gates, skipped-test check, placeholder check |
-| `make seed` | Generate Synthea patients and load them; prints the number loaded |
-| `make train` | Train and evaluate the models (built in CP5) |
-| `make demo` | Start the stack with the demo scenario (built in CP9) |
-| `make deploy` | Build and deploy to the Vultr VM (built in CP8) |
-
-A command marked "built in CPn" stops with an error message until that checkpoint is done.
+| `make verify-live` | One real Gemini call on a live summary (needs `GEMINI_API_KEY` and `GEMINI_MODEL`) |
+| `make seed-prod` | Load patients into the production (Tiger Cloud) database |
+| `make deploy` | Build and deploy to the Vultr VM, migrate, smoke-check the public URL |
+| `make smoke URL=https://...` | Smoke-check a running deployment |
 
 ## Repo layout
 
@@ -96,3 +113,37 @@ scripts/        checks used by make verify
 
 Settings come from environment variables or `.env` (never committed). `.env.example` lists every
 variable. Secrets are removed from log output.
+
+## Prize tracks
+
+### Tiger Data (TimescaleDB)
+
+All time series live in hypertables: vitals, events, bed state, risk scores, forecasts, drift readings and the audit
+log (`backend/twin/db/migrations/0003_hypertables.sql`). The dashboards and KPI endpoints read continuous aggregates
+with real-time aggregation (`0004_continuous_aggregates.sql`), and vitals older than a day are compressed by a
+policy (`0005_compression.sql`). The simulation writes in batches through `backend/twin/db/sim_writer.py`; the API
+reads through `backend/twin/api/routes_*.py`. Production uses a Tiger Cloud service through `DATABASE_URL`.
+
+### Gemini API
+
+The operations agent asks Gemini for structured output (`backend/twin/agent/llm.py`, schema in `schema.py`), checks
+every cited number against the data it was given (`validator.py`), retries once with the errors, and falls back to a
+labelled rules engine (`rules.py`). "Ask Hospital Twin" uses Gemini function calling over six read-only tools
+(`ask_llm.py`, `tools.py`) with the same grounding idea (`grounding.py`) and a deterministic intent parser fallback
+(`intents.py`). The model name comes from `GEMINI_MODEL`; nothing is hardcoded. `make verify-live` makes one real
+call.
+
+### Vultr
+
+Production runs on a Vultr VM: `infra/docker-compose.prod.yml` (backend container and Caddy),
+`infra/backend.Dockerfile`, `infra/caddy.Dockerfile`, and `scripts/deploy.sh` (`make deploy`). Setup steps are in
+[docs/deployment.md](docs/deployment.md).
+
+### GoDaddy Registry
+
+The site is served on a registered domain over automatic HTTPS: the A record points at the Vultr VM and Caddy
+(`infra/Caddyfile`) obtains and renews the certificate for `DOMAIN`. `make smoke` checks the public URL.
+
+## Team
+
+Waleed Alfar (@waleedalfar).

@@ -33,3 +33,4 @@ models/**/*.pt
 .DS_Store
 .vscode/
 .idea/
+docs/demo.webm
